@@ -40,6 +40,27 @@
         urlid: DEFAULT_URLID,
         prefix: DEFAULT_PREFIX
       };
+      //  opt-<majorAttr>-<minorAttr>-<v#> 
+      const ATTR_DISPLAY_CONFIG = {
+        body: {
+          label: 'Size',
+          versions: {
+
+          },
+          isMajorAttr: true,
+        },
+        mouth: {
+          label: 'Mouth',
+          versions: {
+
+          }
+        }
+      };
+
+      const ATTR_ORDER = [
+        'body',
+        'mouth'
+      ];
 
       const Configurator = {
           api: null,
@@ -55,31 +76,30 @@
                   ui_infos: 0,
                   ui_controls: 0,
                   graph_optimizer: 0,
-                  success: function onSuccess(api) {
-                      api.start();
-                      api.addEventListener('viewerready', function () {
-                          this.api = api;
-                          this.initializeOptions(function () {
-                              console.log('Found the following options:', this.options);
-                              // this.selectOption(0); //instantiate the visible model
-                              UI.init(this.config, this.options);
-                          }.bind(this));
-                      }.bind(this));
-                  }.bind(this),
-                  error: function onError() {
-                      console.log('Viewer error');
-                  }
+                  success: (api) => {
+                    api.start();
+                    api.addEventListener('viewerready', () => {
+                      this.api = api;
+                      this.initializeOptions(() => {
+                          console.log('Found the following options:', this.modelOpts);
+                          // this.selectOption(0); //instantiate the visible model
+                          // instantiate with default values
+                          UI.init(this.config, this.modelOpts);
+                      });
+                    });
+                  }, 
+                  error: () => { console.log('Viewer error') }
               });
           },
           /**
            * Initialize options from scene
            */
-          initializeOptions: function initializeOptions(callback) {
-            this.api.getNodeMap(function (err, nodes) {
+          initializeOptions: (callback) => {
+            this.api.getNodeMap((err, nodes) => {
               console.log('get node map results', nodes)
               if (err) {
-                  console.error(err);
-                  return;
+                console.error(err);
+                return;
               }
 
               Object.values(nodes).forEach((node) => {
@@ -93,20 +113,29 @@
                 }
 
                 if (!size || !name || !version) return;
-                if (!this.options[size]) this.options[size] = {};
-                if (!this.options[size][name]) this.options[size][name] = {};
+                if (!this.modelOpts[size]) this.modelOpts[size] = {};
+                if (!this.modelOpts[size][name]) this.modelOpts[size][name] = {};
 
-                this.options[size][name][version] = newOption;
+                this.modelOpts[size][name][version] = newOption;
               });
               callback();
-            }.bind(this));
+            });
           },
           /**
            * Select option to show
            */
-          selectOption: function selectOption(index) {
-            var options = this.options;
-            console.log('options ===', this.options);
+          selectOption: (minorAttr, version) => {
+            var options = this.modelOpts;
+            console.log('options ===', this.modelOpts);
+            // look up minor attr in display config
+            // if major attr -> swap everything
+            // if !major attr
+              // look up minor attr and iterate over versions
+              // if version === input version set selected to true, turn on option on api
+              // else set selected to false, turn off option on api
+
+
+
             // for (var i = 0, l = options.length; i < l; i++) {
             //   if (i === index) {
             //       options[i].selected = true;
@@ -123,29 +152,44 @@
       var UI = {
           config: null,
           options: null,
-          init: function init(config, options) {
-              this.config = config;
-              this.options = options;
-              this.el = document.querySelector('.options');
-              this.render();
+          init: (config, options) => {
+            this.config = config;
+            this.modelOpts = options;
+            this.el = document.querySelector('.options');
+            this.render();
 
-              this.el.addEventListener('change', function (e) {
-                  e.preventDefault();
-                  console.log('here', this.el.elements);
-                  var index = parseInt(this.el.elements['color'].value, 10);
-                  this.select(index);
-              }.bind(this));
+            this.el.addEventListener('change', function (e) {
+                e.preventDefault();
+                console.log('here', this.el.elements);
+                // var index = parseInt(this.el.elements['color'].value, 10);
+                // determine minorAttr and version via element that changed
+                this.select(minorAttr, version);
+            });
           },
-          select: function (index) {
-              // Configurator.selectOption(parseInt(index, 10));
-              // this.render();
+          select: (minorAttr, version) => {
+              Configurator.selectOption(minorAttr, version);
+              this.render();
           },
-          render: function () { this.renderRadio(); },
+          render: () => { this.renderRadio(); },
           /**
            * Render options as multiple `<input type="radio">`
            */
-          renderRadio: function render() {
-              // var html = this.options.map(function (option, i) {
+          renderRadio: () => {
+            // map over opt order
+            ATTR_ORDER.forEach((minorAttr) => {
+              // look up model opts by major/minor attr this.modelOptions, 
+              // const modelOptions = this.modelOpts
+            })
+            // if !modelOption return
+            // look up minor attr display in attr_display_config
+            // build label
+            // iterate over attr_display opts and check model options for opt
+            // if !minor_attr opt return
+            // produce a radio button for each 
+            // if opt isSelected then make it checked
+
+
+              // var html = this.modelOpts.map(function (option, i) {
               //     var checkedState = option.selected ? 'checked="checked"' : '';
               //     var className = option.name.replace(this.config.prefix, '');
               //     return [
@@ -157,51 +201,11 @@
               // }.bind(this)).join('');
               // this.el.innerHTML = html;
           },
-          /**
-           * Render option as `<select>`
-           */
-          renderSelect: function () {
-              var html = this.options.map(function (option, i) {
-                  var checkedState = option.selected ? 'selected="selected"' : '';
-                  return [
-                      '<option value="' + i + '" ' + checkedState + '>',
-                      option.name,
-                      '</option>',
-                  ].join('');
-              }).join('');
-              this.el.innerHTML = '<select name="color">' + html + '</select>';
-          }
       }
 
       Configurator.init(CONFIG, iframe);
 
 
     </script>
-    <!-- <script type="text/javascript">
-      var iframe = document.getElementById( 'api-frame' );
-      var uid = '7w7pAfrCfjovwykkEeRFLGw5SXS';
-  
-      // By default, the latest version of the viewer API will be used.
-      var client = new Sketchfab( iframe );
-  
-      // Alternatively, you can request a specific version.
-      // var client = new Sketchfab( '1.5.1', iframe );
-  
-      client.init( uid, {
-          success: function onSuccess( api ){
-              api.start();
-              api.addEventListener( 'viewerready', function() {
-  
-                  // API is ready to use
-                  // Insert your code here
-                  console.log( 'Viewer is ready' );
-  
-              } );
-          },
-          error: function onError() {
-              console.log( 'Viewer error' );
-          }
-      } );
-      </script> -->
   </body>
 </html>
