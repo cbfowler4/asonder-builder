@@ -1,4 +1,4 @@
-const Sketchfab = window.Sketchfab;
+const { Sketchfab } = window;
 const iframe = document.getElementById('api-frame');
 const DEFAULT_URLID = 'bf8ed63c2de24613a564f91c125c84dd';
 const DEFAULT_PREFIX = 'hello-bryan ';
@@ -7,46 +7,71 @@ const CONFIG = {
   urlid: DEFAULT_URLID,
   prefix: DEFAULT_PREFIX
 };
+//  opt-<majorAttr>-<minorAttr>-<v#> 
+const DEFAULT_MAJOR_ATTR = { minorAttr: 'body', value: 'solo' };
+
+const ATTR_DISPLAY_CONFIG = {
+  body: {
+    label: 'Size',
+    versions: [
+      { id: 'v0', text: 'Solo' },
+      { id: 'v1', text: 'Communal' },
+    ],
+  },
+  Mouthpiece: {
+    label: 'Mouth',
+    versions: [
+      { id: 'v0', text: 'Open Tube' },
+      { id: 'v1', text: 'Mouthpiece' },
+    ]
+  }
+};
+
+const ATTR_ORDER = [
+  'body',
+  'Mouthpiece'
+];
+
 
 const Configurator = {
     api: null,
     config: null,
-    options: {},
+    modelOpts: {},
+    majorAttr: DEFAULT_MAJOR_ATTR,
     /**
      * Initialize viewer
      */
     init: function (config, iframe) {
-        this.config = config;
-        var client = new Sketchfab(iframe);
-        client.init(config.urlid, {
-            ui_infos: 0,
-            ui_controls: 0,
-            graph_optimizer: 0,
-            success: function onSuccess(api) {
-                api.start();
-                api.addEventListener('viewerready', function () {
-                    this.api = api;
-                    this.initializeOptions(function () {
-                        console.log('Found the following options:', this.options);
-                        // this.selectOption(0); //instantiate the visible model
-                        UI.init(this.config, this.options);
-                    }.bind(this));
-                }.bind(this));
-            }.bind(this),
-            error: function onError() {
-                console.log('Viewer error');
-            }
-        });
+      this.config = config;
+      var client = new Sketchfab(iframe);
+      client.init(config.urlid, {
+        ui_infos: 0,
+        ui_controls: 0,
+        graph_optimizer: 0,
+        success: (api) => {
+          api.start();
+          api.addEventListener('viewerready', () => {
+            this.api = api;
+            this.initializeOptions(() => {
+                console.log('Found the following options:', this.modelOpts);
+                // this.selectOption(0); //instantiate the visible model
+                // instantiate with default values
+                UI.init(this.config, this.modelOpts);
+            });
+          });
+        }, 
+        error: () => { console.log('Viewer error') }
+      });
     },
     /**
      * Initialize options from scene
      */
-    initializeOptions: function initializeOptions(callback) {
-      this.api.getNodeMap(function (err, nodes) {
+    initializeOptions: function (callback) {
+      this.api.getNodeMap((err, nodes) => {
         console.log('get node map results', nodes)
         if (err) {
-            console.error(err);
-            return;
+          console.error(err);
+          return;
         }
 
         Object.values(nodes).forEach((node) => {
@@ -60,23 +85,29 @@ const Configurator = {
           }
 
           if (!size || !name || !version) return;
-          if (!this.options[size]) this.options[size] = {};
-          if (!this.options[size][name]) this.options[size][name] = {};
+          if (!this.modelOpts[size]) this.modelOpts[size] = {};
+          if (!this.modelOpts[size][name]) this.modelOpts[size][name] = {};
 
-          this.options[size][name][version] = newOption;
+          this.modelOpts[size][name][version] = newOption;
         });
         callback();
-      }.bind(this));
+      });
     },
     /**
      * Select option to show
      */
-    selectOption: function selectOption(name, version) {
-      var options = this.options;
-      if (name === 'size') {
+    selectOption: function (minorAttr, version) {
+      console.log('options ===', this.modelOpts);
+      console.log('selecting', minorAttr, version)
+      // look up minor attr in display config
+      // if major attr -> swap everything
+      // if !major attr
+        // look up minor attr and iterate over versions
+        // if version === input version set selected to true, turn on option on api
+        // else set selected to false, turn off option on api
 
-      }
-      console.log('options ===', this.options);
+
+
       // for (var i = 0, l = options.length; i < l; i++) {
       //   if (i === index) {
       //       options[i].selected = true;
@@ -93,86 +124,60 @@ const Configurator = {
 var UI = {
     config: null,
     options: null,
-    init: function init(config, options) {
-        this.config = config;
-        this.options = options;
-        this.el = document.querySelector('.options');
-        this.render();
+    init: function (config, options) {
+      this.config = config;
+      this.modelOpts = options;
+      this.el = document.querySelector('.options');
+      this.render();
 
-        this.el.addEventListener('change', (e) => {
-            e.preventDefault();
-            const [name, version] = e.target.classList;
-            this.select(name, version);
-        });
+      this.el.addEventListener('change', (e) => {
+          e.preventDefault();
+          const [minorAttr, version] = e.target.value.split('-');
+          this.select(minorAttr, version);
+      });
     },
-    select: function (name, version) {
-        Configurator.selectOption(name, version);
-        // this.render();
+    select: function (minorAttr, version) {
+        Configurator.selectOption(minorAttr, version);
+        this.render();
     },
-    selectSize: function (size) {
-      
-    },
-    render: function () {
-      // this.renderBodySelector();
-      // this.renderRadio();
-    },
+    render: function () { this.renderRadio(); },
     /**
      * Render options as multiple `<input type="radio">`
      */
-    renderRadio: function render() {
-        // var html = this.options.map(function (option, i) {
-        //     var checkedState = option.selected ? 'checked="checked"' : '';
-        //     var className = option.name.replace(this.config.prefix, '');
-        //     return [
-        //         '<label class="options__option">',
-        //         '<input type="radio" name="color" value="' + i + '" ' + checkedState + '>',
-        //         '<span class="' + className + '">' + option.name + '</span>',
-        //         '</label>'
-        //     ].join('');
-        // }.bind(this)).join('');
-        // this.el.innerHTML = html;
+    renderRadio: function () {
+      const radioHTML = ATTR_ORDER.reduce((acc, minorAttr) => {
+        const modelOptions = this.modelOpts[DEFAULT_MAJOR_ATTR.value][minorAttr];
+        const minorAttrDisplay = ATTR_DISPLAY_CONFIG[minorAttr];
+        if (!modelOptions || !minorAttrDisplay) return acc;
+
+        const radioButtons = minorAttrDisplay.versions.reduce((btnAcc, el) => {
+          const option = modelOptions[el.id];
+          if (!option) return btnAcc;
+
+          const btn = `
+            <label class="options__option">
+              <input type="radio" name=${minorAttr} value="${minorAttr}-${el.id}" ${option.selected ? 'checked' : ''}>
+              <span>${el.text}</span>
+            </label>
+          `
+          return btnAcc + btn;
+        }, '');
+
+        const fieldSet = `
+          <div class="option-set">
+            <h2>${minorAttrDisplay.label}</h2>
+            <fieldset>
+              ${radioButtons}
+            </fieldset>
+          </div>
+        `
+
+        return acc + fieldSet;
+      }, '');
+
+      this.el.innerHTML = radioHTML;
     },
-    renderBodySelector: function () {
-      const bodySelector = document.createElement('div');
-      const genSizeInput = (size) => `
-        <label>${size}
-          <input type='radio' value=${size} class='size ${size}'/>
-        </label>
-      `;
-
-      const inputs = Object.keys(this.options).map(size => genSizeInput(size)).join('');
-
-      bodySelector.innerHTML = `
-        <fieldset>
-          <h2>Size</h2>
-          ${ inputs }
-        </fieldset>
-      `
-
-      this.el.appendChild(bodySelector);
-    },
-    /**
-     * Render option as `<select>`
-     */
-    // renderSelect: function () {
-    //     var html = this.options.map(function (option, i) {
-    //         var checkedState = option.selected ? 'selected="selected"' : '';
-    //         return [
-    //             '<option value="' + i + '" ' + checkedState + '>',
-    //             option.name,
-    //             '</option>',
-    //         ].join('');
-    //     }).join('');
-    //     this.el.innerHTML = '<select name="color">' + html + '</select>';
-    // }
 }
 
 Configurator.init(CONFIG, iframe);
-
-
-
-// 1.) load the model
-// 2.) parse nodes to generate options tree
-// 3.) 
-
 
