@@ -8,7 +8,7 @@ const CONFIG = {
   prefix: DEFAULT_PREFIX
 };
 //  opt-<majorAttr>-<minorAttr>-<v#> 
-const DEFAULT_MAJOR_ATTR = { minorAttr: 'body', value: 'solo' };
+const DEFAULT_MAJOR_ATTR = { minorAttr: 'body', version: 'solo' };
 
 const ATTR_DISPLAY_CONFIG = {
   body: {
@@ -54,8 +54,7 @@ const Configurator = {
             this.api = api;
             this.initializeOptions(() => {
                 console.log('Found the following options:', this.modelOpts);
-                // this.selectOption(0); //instantiate the visible model
-                // instantiate with default values
+                this.updateModel();
                 UI.init(this.config, this.modelOpts);
             });
           });
@@ -75,13 +74,19 @@ const Configurator = {
         }
 
         Object.values(nodes).forEach((node) => {
-          if (!node.name && !['Geometry', 'Group'].includes(node.type)) return;
-          const [opt, size, name, version] = node.name.split('-');
+          if (!node.name && 'Geometry' !== node.type) return;
+          const [opt, size, name, versionFull] = node.name.split('-');
+
+          if (!versionFull) return;
+          const version = versionFull.split('_')[0];
+
+          const defaultVersion = ATTR_DISPLAY_CONFIG[name].versions[0];
+          const selected = defaultVersion.id === version && this.majorAttr.version === size;
 
           const newOption = {
             id: node.instanceID,
             name: node.name,
-            selected: false
+            selected,
           }
 
           if (!size || !name || !version) return;
@@ -96,27 +101,73 @@ const Configurator = {
     /**
      * Select option to show
      */
-    selectOption: function (minorAttr, version) {
-      console.log('options ===', this.modelOpts);
-      console.log('selecting', minorAttr, version)
-      // look up minor attr in display config
-      // if major attr -> swap everything
-      // if !major attr
-        // look up minor attr and iterate over versions
-        // if version === input version set selected to true, turn on option on api
-        // else set selected to false, turn off option on api
+    selectVersion: function ({ version, minorAttr, majorAttr }) {
+      const majorAttrVersion = majorAttr || this.majorAttr.version;
+      if (!this.modelOpts[majorAttrVersion]) throw new Error(`Major attribute version ${majorAttrVersion} does not exist`);
+      if (!this.modelOpts[majorAttrVersion][minorAttr]) {
+        console.log(`WARNING: Minor attribute version ${minorAttr} does not exist`);
+      }
+      if (!this.modelOpts[majorAttrVersion][minorAttr][version]) {
+        console.log(`WARNING: version ${version} does not exist on minor attributue ${minorAttr} from major attribute version ${majorAttrVersion}`)
+        const defaultVersion = ATTR_DISPLAY_CONFIG[minorAttr].options[0];
+        if (!defaultVersion) throw new Error('No default version to select');
+        console.log('Selecting ', majorAttrVersion, minorAttr, defaultVersion.id)
+        Object.keys(this.modelOpts[majorAttrVersion][minorAttr]).forEach((v) => {
+          this.modelOpts[majorAttrVersion][minorAttr][v] = v === defaultVersion.id;
+        })
+      } else {
+        console.log('Selecting ', majorAttrVersion, minorAttr, version)
+        Object.keys(this.modelOpts[majorAttrVersion][minorAttr]).forEach((v) => {
+          this.modelOpts[majorAttrVersion][minorAttr][v].selected = v === version; 
+        })
+      }
 
+    },
+    clearSelections: function (majorAttr) {
 
+    },
+    updateModel: function () {
+      Object.values(this.modelOpts).forEach((minorAttrs) => {
+        Object.values(minorAttrs).forEach((versions) => {
+          Object.values(versions).forEach((version) => {
+            if (version.selected) {
+              this.api.show(version.id);
+            } else {
+              this.api.hide(version.id);
+            }
+          })
+        })
+      })
+    },
+    selectOption: function ({ newMinorAttr, newVersion }) {
+      const isMajorAttr = this.majorAttr.minorAttr === newMinorAttr;
+      if (isMajorAttr) {
+        const currentMinorAttrs = this.modelOpts[this.majorAttr.version];
+        const selectedMinorAttrs = Object.keys(currentMinorAttrs).reduce((acc, minorAttr) => {
+          const version = Object.keys(currentMinorAttrs[minorAttr]).find((v) => (
+            currentMinorAttrs[minorAttr][v].selected
+          ));
+          return { ...acc, [minorAttr]: version }
+        }, {});
 
-      // for (var i = 0, l = options.length; i < l; i++) {
-      //   if (i === index) {
-      //       options[i].selected = true;
-      //       this.api.show(options[i].id);
-      //   } else {
-      //       options[i].selected = false;
-      //       this.api.hide(options[i].id);
-      //   }
-      // }
+        const newMinorAttrs = this.modelOpts[newMinorAttr];
+        Object.keys(newMinorAttrs).forEach((minorAttr) => {
+          const selectedVersion = selectedMinorAttrs[minorAttr];
+          if (selectedVersion && newMinorAttrs[minorAttr][selectedVersion]) {
+            this.selectVersion({
+              version: selectedVersion,
+              minorAttr: this.majorAttr.minorAttr,
+              majorAttr: newVersion
+            });
+          } 
+        })
+        // Object.keys(selectedOptions).forEach((minorAttrName) => {
+        //   this.modelOpts[newVersion][minorAttrName]
+        // })
+      } else {
+        this.selectVersion({ version: newVersion, minorAttr: newMinorAttr })
+      }
+      this.updateModel();
     }
 }
 
@@ -133,20 +184,17 @@ var UI = {
       this.el.addEventListener('change', (e) => {
           e.preventDefault();
           const [minorAttr, version] = e.target.value.split('-');
-          this.select(minorAttr, version);
+          this.select({ minorAttr, version });
       });
     },
-    select: function (minorAttr, version) {
-        Configurator.selectOption(minorAttr, version);
+    select: function ({ minorAttr, version }) {
+        Configurator.selectOption({ newMinorAttr: minorAttr, newVersion: version });
         this.render();
     },
     render: function () { this.renderRadio(); },
-    /**
-     * Render options as multiple `<input type="radio">`
-     */
     renderRadio: function () {
       const radioHTML = ATTR_ORDER.reduce((acc, minorAttr) => {
-        const modelOptions = this.modelOpts[DEFAULT_MAJOR_ATTR.value][minorAttr];
+        const modelOptions = this.modelOpts[Configurator.majorAttr.version][minorAttr];
         const minorAttrDisplay = ATTR_DISPLAY_CONFIG[minorAttr];
         if (!modelOptions || !minorAttrDisplay) return acc;
 
