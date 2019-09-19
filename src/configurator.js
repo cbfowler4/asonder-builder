@@ -8,14 +8,19 @@ const CONFIG = {
   prefix: DEFAULT_PREFIX
 };
 //  opt-<majorAttr>-<minorAttr>-<v#> 
-const DEFAULT_MAJOR_ATTR = { minorAttr: 'body', version: 'solo' };
 
 const ATTR_DISPLAY_CONFIG = {
-  body: {
+  major: {
     label: 'Size',
     versions: [
-      { id: 'v0', text: 'Solo' },
-      { id: 'v1', text: 'Communal' },
+      { id: 'solo', text: 'Solo' },
+      { id: 'com', text: 'Communal' },
+    ]
+  },
+  body: {
+    label: 'Stem',
+    versions: [
+      { id: 'v0', text: 'N/A' },
     ],
   },
   Mouthpiece: {
@@ -28,6 +33,7 @@ const ATTR_DISPLAY_CONFIG = {
 };
 
 const ATTR_ORDER = [
+  'major',
   'body',
   'Mouthpiece'
 ];
@@ -37,7 +43,6 @@ const Configurator = {
     api: null,
     config: null,
     modelOpts: {},
-    majorAttr: DEFAULT_MAJOR_ATTR,
     /**
      * Initialize viewer
      */
@@ -66,6 +71,8 @@ const Configurator = {
      * Initialize options from scene
      */
     initializeOptions: function (callback) {
+      this.majorAttr = ATTR_DISPLAY_CONFIG.major.versions[0].id;
+
       this.api.getNodeMap((err, nodes) => {
         console.log('get node map results', nodes)
         if (err) {
@@ -81,7 +88,7 @@ const Configurator = {
           const version = versionFull.split('_')[0];
 
           const defaultVersion = ATTR_DISPLAY_CONFIG[name].versions[0];
-          const selected = defaultVersion.id === version && this.majorAttr.version === size;
+          const selected = defaultVersion.id === version && this.majorAttr === size;
 
           const newOption = {
             id: node.instanceID,
@@ -101,29 +108,25 @@ const Configurator = {
     /**
      * Select option to show
      */
-    selectVersion: function ({ version, minorAttr, majorAttr }) {
-      const majorAttrVersion = majorAttr || this.majorAttr.version;
-      if (!this.modelOpts[majorAttrVersion]) throw new Error(`Major attribute version ${majorAttrVersion} does not exist`);
-      if (!this.modelOpts[majorAttrVersion][minorAttr]) {
-        console.log(`WARNING: Minor attribute version ${minorAttr} does not exist`);
+    selectVersion: function ({ versionId, attr, majorAttr }) {
+      const safeMajorAttr = majorAttr || this.majorAttr;
+      if (!this.modelOpts[safeMajorAttr][attr]) {
+        console.log(`WARNING: Minor attribute ${attr} does not exist`);
+        return;
       }
-      if (!this.modelOpts[majorAttrVersion][minorAttr][version]) {
-        console.log(`WARNING: version ${version} does not exist on minor attributue ${minorAttr} from major attribute version ${majorAttrVersion}`)
-        const defaultVersion = ATTR_DISPLAY_CONFIG[minorAttr].options[0];
+      if (!this.modelOpts[safeMajorAttr][attr][versionId]) {
+        console.log(`WARNING: versionId ${versionId} does not exist on minor attributue ${attr} from major attribute version ${safeMajorAttr}
+        Selecting default version`)
+        const defaultVersion = ATTR_DISPLAY_CONFIG[attr].versions[0];
         if (!defaultVersion) throw new Error('No default version to select');
-        console.log('Selecting ', majorAttrVersion, minorAttr, defaultVersion.id)
-        Object.keys(this.modelOpts[majorAttrVersion][minorAttr]).forEach((v) => {
-          this.modelOpts[majorAttrVersion][minorAttr][v] = v === defaultVersion.id;
+        Object.keys(this.modelOpts[safeMajorAttr][attr]).forEach((v) => {
+          this.modelOpts[safeMajorAttr][attr][v] = v === defaultVersion.id;
         })
       } else {
-        console.log('Selecting ', majorAttrVersion, minorAttr, version)
-        Object.keys(this.modelOpts[majorAttrVersion][minorAttr]).forEach((v) => {
-          this.modelOpts[majorAttrVersion][minorAttr][v].selected = v === version; 
+        Object.keys(this.modelOpts[safeMajorAttr][attr]).forEach((v) => {
+          this.modelOpts[safeMajorAttr][attr][v].selected = v === versionId; 
         })
       }
-
-    },
-    clearSelections: function (majorAttr) {
 
     },
     updateModel: function () {
@@ -139,33 +142,41 @@ const Configurator = {
         })
       })
     },
-    selectOption: function ({ newMinorAttr, newVersion }) {
-      const isMajorAttr = this.majorAttr.minorAttr === newMinorAttr;
-      if (isMajorAttr) {
-        const currentMinorAttrs = this.modelOpts[this.majorAttr.version];
-        const selectedMinorAttrs = Object.keys(currentMinorAttrs).reduce((acc, minorAttr) => {
-          const version = Object.keys(currentMinorAttrs[minorAttr]).find((v) => (
-            currentMinorAttrs[minorAttr][v].selected
-          ));
+    deselectInactiveMajorAttrs: function () {
+      Object.keys(this.modelOpts).forEach((majorAttr) => {
+        if (this.majorAttr === majorAttr) return;
+        const minorAttrs = this.modelOpts[majorAttr];
+        Object.values(minorAttrs).forEach((versions) => {
+          Object.values(versions).forEach((version) => version.selected = false)
+        })
+      })
+    },
+    selectOption: function ({ attr, newVersionId }) {
+      if (attr === 'major') {
+        const nextMajorAttr = newVersionId;
+        const prevMinorAttrs = this.modelOpts[this.majorAttr];
+        const prevSelVersions = Object.keys(prevMinorAttrs).reduce((acc, minorAttr) => {
+          const version = Object.keys(prevMinorAttrs[minorAttr]).find((v) => (
+            prevMinorAttrs[minorAttr][v].selected
+            ));
           return { ...acc, [minorAttr]: version }
         }, {});
 
-        const newMinorAttrs = this.modelOpts[newMinorAttr];
-        Object.keys(newMinorAttrs).forEach((minorAttr) => {
-          const selectedVersion = selectedMinorAttrs[minorAttr];
-          if (selectedVersion && newMinorAttrs[minorAttr][selectedVersion]) {
-            this.selectVersion({
-              version: selectedVersion,
-              minorAttr: this.majorAttr.minorAttr,
-              majorAttr: newVersion
-            });
-          } 
-        })
-        // Object.keys(selectedOptions).forEach((minorAttrName) => {
-        //   this.modelOpts[newVersion][minorAttrName]
-        // })
+        const nextMinorAttrs = this.modelOpts[newVersionId];
+
+        Object.keys(nextMinorAttrs).forEach((nextMinorAttr) => {
+          const newVersionId = prevSelVersions[nextMinorAttr];
+          this.selectVersion({
+            versionId: newVersionId,
+            attr: nextMinorAttr,
+            majorAttr: nextMajorAttr,
+          });
+        });
+
+        this.majorAttr = nextMajorAttr;
+        this.deselectInactiveMajorAttrs();
       } else {
-        this.selectVersion({ version: newVersion, minorAttr: newMinorAttr })
+        this.selectVersion({ versionId: newVersionId, attr })
       }
       this.updateModel();
     }
@@ -183,47 +194,64 @@ var UI = {
 
       this.el.addEventListener('change', (e) => {
           e.preventDefault();
-          const [minorAttr, version] = e.target.value.split('-');
-          this.select({ minorAttr, version });
+          const [attr, versionId] = e.target.value.split('-');
+          this.select({ attr, versionId });
       });
     },
-    select: function ({ minorAttr, version }) {
-        Configurator.selectOption({ newMinorAttr: minorAttr, newVersion: version });
+    select: function ({ attr, versionId }) {
+        Configurator.selectOption({ attr, newVersionId: versionId });
         this.render();
     },
-    render: function () { this.renderRadio(); },
-    renderRadio: function () {
-      const radioHTML = ATTR_ORDER.reduce((acc, minorAttr) => {
-        const modelOptions = this.modelOpts[Configurator.majorAttr.version][minorAttr];
-        const minorAttrDisplay = ATTR_DISPLAY_CONFIG[minorAttr];
-        if (!modelOptions || !minorAttrDisplay) return acc;
+    getSelectedVersion: function (attr) {
+      if (attr === 'major') return Configurator.majorAttr;
 
-        const radioButtons = minorAttrDisplay.versions.reduce((btnAcc, el) => {
-          const option = modelOptions[el.id];
-          if (!option) return btnAcc;
+      const versions = this.modelOpts[Configurator.majorAttr][attr];
+      return Object.keys(versions).find((versionId) => versions[versionId].selected);
+    },
+    getAvailableVersions: function (attr) {
+      let availableVersions = {};
+      if (attr === 'major') {
+        availableVersions = Object.keys(this.modelOpts)
+          .reduce((acc, key) => ({ ...acc, [key]: true }), {});
+      } else {
+        availableVersions = this.modelOpts[Configurator.majorAttr][attr];
+      }
+      return ATTR_DISPLAY_CONFIG[attr].versions
+        .filter(version => (availableVersions[version.id]));
+    },
+    render: function () {
+      const radioHTML = ATTR_ORDER.reduce((acc, attr) => {
+        const attrDisplay = { ...ATTR_DISPLAY_CONFIG[attr] };
+        attrDisplay.versions = this.getAvailableVersions(attr);
 
-          const btn = `
-            <label class="options__option">
-              <input type="radio" name=${minorAttr} value="${minorAttr}-${el.id}" ${option.selected ? 'checked' : ''}>
-              <span>${el.text}</span>
-            </label>
-          `
-          return btnAcc + btn;
-        }, '');
+        if (attrDisplay.versions.length < 2) return acc;
 
-        const fieldSet = `
-          <div class="option-set">
-            <h2>${minorAttrDisplay.label}</h2>
-            <fieldset>
-              ${radioButtons}
-            </fieldset>
-          </div>
-        `
-
+        const selectedVersion = this.getSelectedVersion(attr);
+        const fieldSet = this.generateRadio({ attrDisplay, attr, selectedVersion });
         return acc + fieldSet;
       }, '');
 
       this.el.innerHTML = radioHTML;
+    },
+    generateRadio: function ({ attrDisplay, attr, selectedVersion }) {
+      const radioButtons = attrDisplay.versions.reduce((btnAcc, el) => {
+        const btn = `
+          <label class="options__option">
+            <input type="radio" name=${attr} value="${attr}-${el.id}" ${el.id === selectedVersion ? 'checked' : ''}>
+            <span>${el.text}</span>
+          </label>
+        `
+        return btnAcc + btn;
+      }, '');
+
+      return `
+        <div class="option-set">
+          <h2>${attrDisplay.label}</h2>
+          <fieldset>
+            ${radioButtons}
+          </fieldset>
+        </div>
+      `;
     },
 }
 
