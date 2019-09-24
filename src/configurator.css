@@ -1,0 +1,77 @@
+
+fieldset {
+  border: none;
+}
+
+iframe {
+  border: none;
+}
+
+.configurator-root {
+  width: 100%;
+  display: flex;
+  height: inherit;
+}
+
+.configurator-root * {
+  text-transform: uppercase;
+}
+
+.iframe-container {
+  position: relative;
+  width: 62%;
+  display: flex;
+  min-height: 420px;
+}
+
+.bottom-strip {
+  position: absolute;
+  right: -5px;
+  left: -5px;
+  bottom: -2px;
+  height: 45px;
+  background: black;
+}
+
+#api-frame {
+  flex-grow: 1;
+}
+
+.option-set.radio input {
+  height: 0;
+  display: none;
+  width: 0;
+}
+
+.option-set {
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  margin-bottom: 25px
+}
+
+.option-set .options__option.checked {
+  border: 1px solid white;
+}
+
+.option-set .options__option {
+  cursor: pointer;
+  padding: 10px;
+  margin-right: 10px;
+}
+
+.option-container {
+  display: flex;
+  flex-direction: column;
+  width: 37%;
+  padding-left: 45px;
+  padding-right: 25px;
+}
+
+.opt-title {
+  text-align: center;
+}
+
+.price {
+  text-align: center;
+}

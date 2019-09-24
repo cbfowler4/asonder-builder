@@ -1,7 +1,7 @@
 const { Sketchfab } = window;
 const iframe = document.getElementById('api-frame');
-const DEFAULT_URLID = 'bf8ed63c2de24613a564f91c125c84dd';
-const DEFAULT_PREFIX = 'hello-bryan ';
+const DEFAULT_URLID = 'd7fd9646449e44b78f092ed629982624';
+const DEFAULT_PREFIX = 'dummy-model-rev2';
 
 const CONFIG = {
   urlid: DEFAULT_URLID,
@@ -13,29 +13,45 @@ const ATTR_DISPLAY_CONFIG = {
   major: {
     label: 'Size',
     versions: [
-      { id: 'solo', text: 'Solo' },
-      { id: 'com', text: 'Communal' },
+      { id: 'solo', text: 'Solo', variant: '14621554311223' },
+      { id: 'comm', text: 'Communal', variant: '14621554442295' },
     ]
   },
-  body: {
+  stem: {
     label: 'Stem',
     versions: [
       { id: 'v0', text: 'N/A' },
     ],
   },
-  Mouthpiece: {
+  mouth: {
     label: 'Mouth',
     versions: [
       { id: 'v0', text: 'Open Tube' },
       { id: 'v1', text: 'Mouthpiece' },
+    ]
+  },
+  bowl: {
+    label: 'Bowl',
+    versions: [
+      { id: 'v0', text: 'Round' },
+      { id: 'v1', text: 'Pyramid' },
+    ]
+  },
+  stand: {
+    label: 'Stand',
+    versions: [
+      { id: 'v0', text: 'Round' },
+      { id: 'v1', text: 'Square' },
     ]
   }
 };
 
 const ATTR_ORDER = [
   'major',
-  'body',
-  'Mouthpiece'
+  'stem',
+  'mouth',
+  'bowl',
+  'stand',
 ];
 
 
@@ -53,13 +69,17 @@ const Configurator = {
         ui_infos: 0,
         ui_controls: 0,
         graph_optimizer: 0,
+        autostart: 1,
+        autospin: 0.5,
+        ui_stop: 0,
+        ui_general_controls: 0,
         success: (api) => {
           api.start();
           api.addEventListener('viewerready', () => {
             this.api = api;
             this.initializeOptions(() => {
-                console.log('Found the following options:', this.modelOpts);
                 this.updateModel();
+                console.log('model opts', this.modelOpts);
                 UI.init(this.config, this.modelOpts);
             });
           });
@@ -74,7 +94,6 @@ const Configurator = {
       this.majorAttr = ATTR_DISPLAY_CONFIG.major.versions[0].id;
 
       this.api.getNodeMap((err, nodes) => {
-        console.log('get node map results', nodes)
         if (err) {
           console.error(err);
           return;
@@ -87,7 +106,9 @@ const Configurator = {
           if (!versionFull) return;
           const version = versionFull.split('_')[0];
 
-          const defaultVersion = ATTR_DISPLAY_CONFIG[name].versions[0];
+          const dispAttributes = ATTR_DISPLAY_CONFIG[name];
+          if (!ATTR_DISPLAY_CONFIG[name]) return;
+          const defaultVersion = dispAttributes.versions[0];
           const selected = defaultVersion.id === version && this.majorAttr === size;
 
           const newOption = {
@@ -127,7 +148,6 @@ const Configurator = {
           this.modelOpts[safeMajorAttr][attr][v].selected = v === versionId; 
         })
       }
-
     },
     updateModel: function () {
       Object.values(this.modelOpts).forEach((minorAttrs) => {
@@ -190,6 +210,8 @@ var UI = {
       this.config = config;
       this.modelOpts = options;
       this.el = document.querySelector('.options');
+      this.priceEl = document.querySelector('.price');
+
       this.render();
 
       this.el.addEventListener('change', (e) => {
@@ -214,8 +236,9 @@ var UI = {
         availableVersions = Object.keys(this.modelOpts)
           .reduce((acc, key) => ({ ...acc, [key]: true }), {});
       } else {
-        availableVersions = this.modelOpts[Configurator.majorAttr][attr];
+        availableVersions = (this.modelOpts[Configurator.majorAttr] || {})[attr] || [];
       }
+      if (!ATTR_DISPLAY_CONFIG[attr]) return [];
       return ATTR_DISPLAY_CONFIG[attr].versions
         .filter(version => (availableVersions[version.id]));
     },
@@ -231,13 +254,21 @@ var UI = {
         return acc + fieldSet;
       }, '');
 
-      this.el.innerHTML = radioHTML;
+      const selectHTML = this.generateSelect();
+
+      this.el.innerHTML = radioHTML.concat(selectHTML);
     },
     generateRadio: function ({ attrDisplay, attr, selectedVersion }) {
       const radioButtons = attrDisplay.versions.reduce((btnAcc, el) => {
+        const checked = el.id === selectedVersion;
         const btn = `
-          <label class="options__option">
-            <input type="radio" name=${attr} value="${attr}-${el.id}" ${el.id === selectedVersion ? 'checked' : ''}>
+          <label class="options__option ${checked ? 'checked' : ''}">
+            <input
+              type="radio"
+              name=${attr}
+              value="${attr}-${el.id}"
+              ${checked ? 'checked' : ''}
+            >
             <span>${el.text}</span>
           </label>
         `
@@ -245,12 +276,32 @@ var UI = {
       }, '');
 
       return `
-        <div class="option-set">
+        <div class="option-set radio">
           <h2>${attrDisplay.label}</h2>
           <fieldset>
             ${radioButtons}
           </fieldset>
         </div>
+      `;
+    },
+    generateSelect: function () {
+      const majorAttrDisp = ATTR_DISPLAY_CONFIG.major;
+
+      const options = majorAttrDisp.versions.reduce((acc, el) => {
+        const selected = el.id === Configurator.majorAttr;
+        const element = `
+          <option 
+            ${selected ? 'selected="selected"' : ''}
+            value="${el.variant}"
+          />
+        `
+        return acc + element;
+      }, '');
+
+      return `
+        <select name="id" id="ProductSelect" class="product-single__variants no-js">
+          ${options}
+        </select>
       `;
     },
 }

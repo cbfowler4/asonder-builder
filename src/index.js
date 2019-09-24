@@ -1,3 +1,4 @@
+import './configurator.css';
 import './index.css';
 import * as serviceWorker from './serviceWorker';
 import './configurator';
