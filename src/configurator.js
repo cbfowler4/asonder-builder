@@ -35,6 +35,7 @@ const ATTR_DISPLAY_CONFIG = {
     versions: [
       { id: 'v0', text: 'Round' },
       { id: 'v1', text: 'Pyramid' },
+      { id: 'v2', text: 'Spiral' },
     ]
   },
   stand: {
@@ -42,6 +43,7 @@ const ATTR_DISPLAY_CONFIG = {
     versions: [
       { id: 'v0', text: 'Round' },
       { id: 'v1', text: 'Square' },
+      { id: 'v2', text: 'Octagonal' },
     ]
   }
 };
@@ -303,6 +305,9 @@ var UI = {
           ${options}
         </select>
       `;
+    },
+    generatePrice: function () {
+      const majorAttrDisp = ATTR_DISPLAY_CONFIG.major;
     },
 }
 
