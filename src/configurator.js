@@ -13,8 +13,8 @@ const ATTR_DISPLAY_CONFIG = {
   major: {
     label: 'Size',
     versions: [
-      { id: 'solo', text: 'Solo', variant: '14621554311223' },
-      { id: 'comm', text: 'Communal', variant: '14621554442295' },
+      { id: 'solo', text: 'Solo', variant: '14621554311223', price: 99 },
+      { id: 'comm', text: 'Communal', variant: '14621554442295', price: 100 },
     ]
   },
   stem: {
@@ -218,7 +218,7 @@ var UI = {
 
       this.el.addEventListener('change', (e) => {
           e.preventDefault();
-          const [attr, versionId] = e.target.value.split('-');
+          const [attr, versionId] = e.target.id.split('-');
           this.select({ attr, versionId });
       });
     },
@@ -244,6 +244,12 @@ var UI = {
       return ATTR_DISPLAY_CONFIG[attr].versions
         .filter(version => (availableVersions[version.id]));
     },
+    getSelectedAttrDisplay: function (attr) {
+      const versions = this.getAvailableVersions(attr);
+      const selectedVersion = this.getSelectedVersion(attr);
+
+      return versions.find((v) => v.id === selectedVersion);
+    },
     render: function () {
       const radioHTML = ATTR_ORDER.reduce((acc, attr) => {
         const attrDisplay = { ...ATTR_DISPLAY_CONFIG[attr] };
@@ -259,6 +265,7 @@ var UI = {
       const selectHTML = this.generateSelect();
 
       this.el.innerHTML = radioHTML.concat(selectHTML);
+      this.renderPrice();
     },
     generateRadio: function ({ attrDisplay, attr, selectedVersion }) {
       const radioButtons = attrDisplay.versions.reduce((btnAcc, el) => {
@@ -266,9 +273,10 @@ var UI = {
         const btn = `
           <label class="options__option ${checked ? 'checked' : ''}">
             <input
+              id="${attr}-${el.id}"
               type="radio"
-              name=${attr}
-              value="${attr}-${el.id}"
+              name="properties[${attrDisplay.label}]"
+              value="${el.text}"
               ${checked ? 'checked' : ''}
             >
             <span>${el.text}</span>
@@ -306,8 +314,17 @@ var UI = {
         </select>
       `;
     },
-    generatePrice: function () {
-      const majorAttrDisp = ATTR_DISPLAY_CONFIG.major;
+    renderPrice: function () {
+      const attrDisplay = this.getSelectedAttrDisplay('major');
+      if (!this.priceEl || !attrDisplay || !attrDisplay.price) return;
+
+      const priceElement = `
+      <span id="ProductPrice" class="product-single__price">
+        $${attrDisplay.price.toFixed(2)}
+      </span>
+      `
+
+      this.priceEl.innerHTML = priceElement;
     },
 }
 
