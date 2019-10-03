@@ -21,14 +21,22 @@ iframe {
   position: relative;
   width: 62%;
   display: flex;
-  min-height: 420px;
+  min-height: 600px;
 }
 
 .bottom-strip {
+  bottom: -2px;
+}
+
+.top-strip {
+  top: -2px;
+}
+
+.bottom-strip, .top-strip {
   position: absolute;
   right: -5px;
   left: -5px;
-  bottom: -2px;
+
   height: 45px;
   background: black;
 }
@@ -63,6 +71,7 @@ iframe {
 .option-container {
   display: flex;
   flex-direction: column;
+  align-items: center;
   width: 37%;
   padding-left: 45px;
   padding-right: 25px;
@@ -74,4 +83,18 @@ iframe {
 
 .price {
   text-align: center;
+}
+
+@media (max-width: 950px) {
+  .configurator-root {
+    flex-direction: column;
+  }
+
+  .iframe-container {
+    width: 100%;
+  }
+
+  .option-container {
+    width: 100%;
+  }
 }

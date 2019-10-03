@@ -1,7 +1,7 @@
 const { Sketchfab } = window;
 const iframe = document.getElementById('api-frame');
-const DEFAULT_URLID = 'd7fd9646449e44b78f092ed629982624';
-const DEFAULT_PREFIX = 'dummy-model-rev2';
+const DEFAULT_URLID = '1fe3d58cf57a44c9b6fd2258ed038ed7';
+const DEFAULT_PREFIX = 'merchant-account-rev2';
 
 const CONFIG = {
   urlid: DEFAULT_URLID,
@@ -45,8 +45,37 @@ const ATTR_DISPLAY_CONFIG = {
       { id: 'v1', text: 'Square' },
       { id: 'v2', text: 'Octagonal' },
     ]
-  }
+  },
 };
+
+const MATERIALS_CONFIG = {
+  black: {
+    label: 'Black Matte',
+    color: 'black',
+    channels: [
+      {
+        propertyName: 'AlbedoPBR',
+        properties: [
+          { name: 'color', value: [0.012, 0.012, 0.012] },
+          { name: 'factor', value: 0.392 },
+        ],
+      },
+    ]
+  },
+  bronze: {
+    label: 'Bronze-Silver',
+    color: 'yellow',
+    channels: [
+      {
+        propertyName: 'AlbedoPBR',
+        properties: [
+          { name: 'color', value: [200, 200, 200] },
+          { name: 'factor', value: 0.392 },
+        ],
+      },
+    ],
+  }
+}
 
 const ATTR_ORDER = [
   'major',
@@ -81,7 +110,6 @@ const Configurator = {
             this.api = api;
             this.initializeOptions(() => {
                 this.updateModel();
-                console.log('model opts', this.modelOpts);
                 UI.init(this.config, this.modelOpts);
             });
           });
@@ -94,6 +122,7 @@ const Configurator = {
      */
     initializeOptions: function (callback) {
       this.majorAttr = ATTR_DISPLAY_CONFIG.major.versions[0].id;
+      this.selectedMaterial = Object.keys(MATERIALS_CONFIG)[0];
 
       this.api.getNodeMap((err, nodes) => {
         if (err) {
@@ -125,12 +154,28 @@ const Configurator = {
 
           this.modelOpts[size][name][version] = newOption;
         });
-        callback();
+
+        this.api.getMaterialList(function (err, materials) {
+          this.material = materials[0];
+          this.selectMaterial(this.selectedMaterial);
+          callback();
+        }.bind(this));
       });
     },
-    /**
-     * Select option to show
-     */
+    selectMaterial: function (id) {
+      const attrDisplay = MATERIALS_CONFIG[id];
+      if (!attrDisplay) { console.log(`WARNING: No material with id ${id}`); return; }
+      if (!this.material) { console.log('WARNING: No material to update'); return; }
+
+      attrDisplay.channels.forEach(({ propertyName, properties }) => {
+        properties.forEach(({ name, value }) => {
+          this.material.channels[propertyName][name] = value;
+        });
+      });
+
+      this.selectedMaterial = id;
+      this.api.setMaterial(this.material);
+    },
     selectVersion: function ({ versionId, attr, majorAttr }) {
       const safeMajorAttr = majorAttr || this.majorAttr;
       if (!this.modelOpts[safeMajorAttr][attr]) {
@@ -197,13 +242,14 @@ const Configurator = {
 
         this.majorAttr = nextMajorAttr;
         this.deselectInactiveMajorAttrs();
+      } else if (attr === 'material') {
+        this.selectMaterial(newVersionId);
       } else {
         this.selectVersion({ versionId: newVersionId, attr })
       }
       this.updateModel();
     }
 }
-
 
 var UI = {
     config: null,
@@ -263,8 +309,9 @@ var UI = {
       }, '');
 
       const selectHTML = this.generateSelect();
+      const materialHTML = this.generateColorRadio();
 
-      this.el.innerHTML = radioHTML.concat(selectHTML);
+      this.el.innerHTML = radioHTML.concat(materialHTML).concat(selectHTML);
       this.renderPrice();
     },
     generateRadio: function ({ attrDisplay, attr, selectedVersion }) {
@@ -312,6 +359,36 @@ var UI = {
         <select name="id" id="ProductSelect" class="product-single__variants no-js">
           ${options}
         </select>
+      `;
+    },
+    generateColorRadio: function () {
+      const radioButtons = Object.keys(MATERIALS_CONFIG).map(key => {
+
+        const checked = key === Configurator.selectedMaterial;
+        const attrDisplay = MATERIALS_CONFIG[key];
+      
+        const btn = `
+          <label class="options__option ${checked ? 'checked' : ''}">
+            <input
+              id="material-${key}"
+              type="radio"
+              name="properties[Material]"
+              value="${key}"
+              ${checked ? 'checked' : ''}
+            >
+            <span>${attrDisplay.label}</span>
+          </label>
+        `
+        return btn;
+      }, '').join('');
+
+      return `
+        <div class="option-set radio">
+          <h2>Material</h2>
+          <fieldset>
+            ${radioButtons}
+          </fieldset>
+        </div>
       `;
     },
     renderPrice: function () {
