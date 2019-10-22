@@ -36,13 +36,24 @@ iframe {
   position: absolute;
   right: -5px;
   left: -5px;
-
   height: 45px;
   background: black;
 }
 
 #api-frame {
   flex-grow: 1;
+}
+
+.field-set {
+  display: flex;
+  min-inline-size: unset;
+  padding: 0;
+  margin: 0;
+  width: 100%;
+}
+
+.opt-title {
+  display: none;
 }
 
 .option-set.radio input {
@@ -55,17 +66,38 @@ iframe {
   display: flex;
   flex-direction: column;
   align-items: center;
-  margin-bottom: 25px
+  margin-bottom: 25px;
+  text-align: center;
 }
 
+.option-set .options__option {
+  transition: all .2s ease-out;
+  border: 1px solid rgba(23, 103, 23, .7);
+  font-style: normal;
+}
 .option-set .options__option.checked {
-  border: 1px solid white;
+  background: rgb(23, 103, 23);
+}
+
+.option-set .options__option:hover {
+  background: rgba(64, 255, 64, 0.3);
+}
+
+.option-set .options__option.checked:hover {
+  background: rgb(27, 116, 27);
 }
 
 .option-set .options__option {
   cursor: pointer;
   padding: 10px;
-  margin-right: 10px;
+  flex-grow: 1;
+  text-align: center;
+}
+
+.option-set h2 {
+  margin-bottom: 10px;
+  letter-spacing: 1.2px;
+  font-size: 18px;
 }
 
 .option-container {
@@ -97,4 +129,31 @@ iframe {
   .option-container {
     width: 100%;
   }
+}
+
+.line-item-property-field input {
+	margin-bottom: 10px;
+  background-color: transparent;
+  border: 1px solid #176717b3;
+  font-style: normal;
+  width: 100%;
+  color: white;
+  text-transform: none;
+}
+
+.line-item-property-field input:focus {
+  outline-color: rgb(27, 116, 27);
+}
+
+.btn--add-to-cart {
+  margin: 0;
+}
+
+.shopify-payment-button {
+  margin-right: 0px;
+  cursor: pointer;
+}
+
+.shopify-payment-button:hover {
+  color: white;
 }

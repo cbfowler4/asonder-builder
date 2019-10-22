@@ -3,10 +3,7 @@ const iframe = document.getElementById('api-frame');
 const DEFAULT_URLID = '1fe3d58cf57a44c9b6fd2258ed038ed7';
 const DEFAULT_PREFIX = 'merchant-account-rev2';
 
-const CONFIG = {
-  urlid: DEFAULT_URLID,
-  prefix: DEFAULT_PREFIX
-};
+
 //  opt-<majorAttr>-<minorAttr>-<v#> 
 
 const ATTR_DISPLAY_CONFIG = {
@@ -85,6 +82,12 @@ const ATTR_ORDER = [
   'stand',
 ];
 
+const getConfig = () => {
+  const urlParams = new URLSearchParams(window.location.search);
+  const urlid = urlParams.get('id') || DEFAULT_URLID;
+  const prefix = urlParams.get('prefix') || DEFAULT_PREFIX;
+  return { urlid, prefix };
+}
 
 const Configurator = {
     api: null,
@@ -93,10 +96,10 @@ const Configurator = {
     /**
      * Initialize viewer
      */
-    init: function (config, iframe) {
-      this.config = config;
+    init: function (iframe) {
+      this.config = getConfig();
       var client = new Sketchfab(iframe);
-      client.init(config.urlid, {
+      client.init(this.config.urlid, {
         ui_infos: 0,
         ui_controls: 0,
         graph_optimizer: 0,
@@ -335,9 +338,9 @@ var UI = {
       return `
         <div class="option-set radio">
           <h2>${attrDisplay.label}</h2>
-          <fieldset>
+          <div class="field-set">
             ${radioButtons}
-          </fieldset>
+          </div>
         </div>
       `;
     },
@@ -385,9 +388,9 @@ var UI = {
       return `
         <div class="option-set radio">
           <h2>Material</h2>
-          <fieldset>
+          <div class="field-set">
             ${radioButtons}
-          </fieldset>
+          </div>
         </div>
       `;
     },
@@ -405,5 +408,5 @@ var UI = {
     },
 }
 
-Configurator.init(CONFIG, iframe);
+Configurator.init(iframe);
 
