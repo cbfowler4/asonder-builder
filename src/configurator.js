@@ -10,8 +10,8 @@ const ATTR_DISPLAY_CONFIG = {
   major: {
     label: 'Size',
     versions: [
-      { id: 'solo', text: 'Solo', variant: '14621554311223', price: 99 },
-      { id: 'comm', text: 'Communal', variant: '14621554442295', price: 100 },
+      { id: 'solo', text: 'Solo', variant: '14621554311223', price: 75 },
+      { id: 'comm', text: 'Communal', variant: '14621554442295', price: 95 },
     ]
   },
   stem: {
@@ -139,12 +139,18 @@ const Configurator = {
 
           if (!versionFull) return;
           const version = versionFull.split('_')[0];
-
+          
           const dispAttributes = ATTR_DISPLAY_CONFIG[name];
+
           if (!ATTR_DISPLAY_CONFIG[name]) return;
+          if (version.includes(':')) {
+            this.api.show(node.instanceID);
+            return;
+          }
           const defaultVersion = dispAttributes.versions[0];
           const selected = defaultVersion.id === version && this.majorAttr === size;
-
+          
+          
           const newOption = {
             id: node.instanceID,
             name: node.name,
@@ -195,7 +201,7 @@ const Configurator = {
         })
       } else {
         Object.keys(this.modelOpts[safeMajorAttr][attr]).forEach((v) => {
-          this.modelOpts[safeMajorAttr][attr][v].selected = v === versionId; 
+          this.modelOpts[safeMajorAttr][attr][v].selected = v === versionId;
         })
       }
     },
@@ -303,7 +309,6 @@ var UI = {
       const radioHTML = ATTR_ORDER.reduce((acc, attr) => {
         const attrDisplay = { ...ATTR_DISPLAY_CONFIG[attr] };
         attrDisplay.versions = this.getAvailableVersions(attr);
-
         if (attrDisplay.versions.length < 2) return acc;
 
         const selectedVersion = this.getSelectedVersion(attr);
@@ -346,7 +351,7 @@ var UI = {
     },
     generateSelect: function () {
       const majorAttrDisp = ATTR_DISPLAY_CONFIG.major;
-
+  
       const options = majorAttrDisp.versions.reduce((acc, el) => {
         const selected = el.id === Configurator.majorAttr;
         const element = `
