@@ -22,19 +22,25 @@
       work correctly both with client-side routing and a non-root public URL.
       Learn how to configure a non-root public URL by running `npm run build`.
     -->
+
+    <script crossorigin src="https://unpkg.com/react@16/umd/react.development.js"></script>
+    <script crossorigin src="https://unpkg.com/react-dom@16/umd/react-dom.development.js"></script>
     <script type="text/javascript" src="https://static.sketchfab.com/api/sketchfab-viewer-1.5.1.js"></script>
+    <!-- <script type="text/javascript" src="/src/app.js"></script> -->
+
     <title>UNCUT // BK</title>
   </head>
   <body>
+    <div id='root' />
     <div class='configurator-root'>
       <div class='iframe-container'>
         <div class='top-strip'></div>
-        <iframe src="" id="api-frame"></iframe>
         <div class='bottom-strip'></div>
       </div>
       <div class='option-container'>
         <h1 class="opt-title">Build your pipe</h1>
-        <h2 class='price'>{ insert price here }</h2>
+        <h2 class='price'></h2>
+        <div class="lds-roller"><div></div><div></div><div></div><div></div><div></div><div></div><div></div><div></div></div>
         <form class="options"></form>
       </div>
     </div>

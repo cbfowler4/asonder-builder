@@ -1,3 +1,7 @@
+h2, h1 {
+  margin: 0;
+}
+
 
 fieldset {
   border: none;
@@ -22,6 +26,78 @@ iframe {
   flex-grow: 1;
   display: flex;
   min-height: 600px;
+}
+
+.selector {
+  width: 150px;
+  background: rgba(23, 103, 23);
+  display: flex;
+  flex-direction: column;
+  border-left: 1px solid rgb(101, 121, 101);
+  box-sizing: border-box;
+}
+
+.selector .option-tile {
+  padding: 15px;
+  height: 150px;
+  width: 100%;
+  box-sizing: border-box;
+  position: relative;
+  cursor: pointer;
+  display: flex;
+  flex-direction: column;
+  justify-content: center;
+  align-items: center;
+  border-bottom: 1px solid rgb(101, 121, 101);
+}
+
+.selector .option-tile:hover {
+  background: rgb(20, 90, 20);
+}
+
+.selector .attr-label {
+  position: absolute;
+  top: 10px;
+  right: 10px;
+  font-weight: lighter;
+  font-size: 12px;
+}
+
+.selector .sel-attr-title {
+  font-size: 16px;
+  text-align: center;
+}
+
+.selector .verions-options-list {
+  position: absolute;
+  top: 0;
+  bottom: 0;
+  right: 150px;
+  background: rgb(52, 122, 52);
+  border-left: 1px solid rgb(101, 121, 101);
+  width: 200px;
+  height: 600px;
+}
+
+.verions-options-list .option-tile {
+  /* border-bottom: none; */
+}
+
+.selector .verions-options-list .option-tile.active {
+  background: rgb(81, 141, 81);
+}
+
+.verions-options-list .option-tile:hover {
+  background: rgb(81, 141, 81);
+}
+
+
+.selector .option-tile.active {
+  background: rgb(20, 90, 20);
+}
+
+#ProductSelect {
+  display: none;
 }
 
 .bottom-strip {
