@@ -6,6 +6,8 @@ const { useState } = React;
 
 export const Selector = ({ modelOpts, selectedMaterial }) => {
   const [attrMenu, setAttrMenu] = useState('');
+  const [text, setText] = useState('');
+
 
   const getAvailableVersions = (attr) => {
     let availableVersions = {};
@@ -21,6 +23,7 @@ export const Selector = ({ modelOpts, selectedMaterial }) => {
   }
 
   const getSelectedVersion = (attr) => {
+    if (!attr) return null;
     if (attr === 'major') return Configurator.majorAttr;
 
     const versions = modelOpts[Configurator.majorAttr][attr];
@@ -64,6 +67,7 @@ export const Selector = ({ modelOpts, selectedMaterial }) => {
           className={ `option-tile ${attrMenu === 'material' ? 'active' : ''}` }
           key='material-selector'
           onClick={ () => {
+            console.log('here', attr)
             if (attr === attrMenu) setAttrMenu(''); 
             else setAttrMenu(attr);
           } }
@@ -74,59 +78,100 @@ export const Selector = ({ modelOpts, selectedMaterial }) => {
       );
     }
 
-    return optionsList.concat(<MaterialSelector />);
+    const CustomTextSelector = () => {
+      const attr = 'text';
+
+      return (
+        <div
+          className={ `option-tile ${attrMenu === 'text' ? 'active' : ''}` }
+          key='material-selector'
+          onClick={ () => {
+            if (attr === attrMenu) setAttrMenu(''); 
+            else setAttrMenu(attr);
+          } }
+        >
+          <h2 className='attr-label'>Custom Text</h2>
+          <h1
+            className='sel-attr-title'
+            style={ { textTransform: 'none' } }
+          >
+            { text ? `"${text}"` : '(No Custom Text)' }
+          </h1>
+        </div>
+      )
+    }
+
+    return optionsList.concat(<MaterialSelector />).concat(<CustomTextSelector />);
   }
 
   const VersionOptionsList = () => {
-    const versions = getAvailableVersions(attrMenu);
-    if (versions.length === 0) return null;
-    
-    const selectedVersion = getSelectedVersion(attrMenu);
-    console.log(selectedVersion);
-    const list = versions.reduce((acc, el) => {
-      const optionTile = (
-        <div
-          className={ `option-tile ${el.id === selectedVersion.id ? 'active' : ''}` }
-          key={ el.id }
-          onClick={ () => {
-            Configurator.selectOption({ attr: attrMenu, newVersionId: el.id });
-          }}
-        >
-          <h1 className='sel-attr-title'>{ el.text }</h1>
-        </div>
-      );
-      return acc.concat(optionTile);
-    }, []);
+    let content = null;
+    let header = '';
+
+    console.log(attrMenu);
+    switch (attrMenu) {
+      case 'material':
+        header = 'Material';
+        content = Object.keys(MATERIALS_CONFIG).reduce((acc, key) => {
+          const material = MATERIALS_CONFIG[key];
+          const optionTile = (
+            <div
+              className={ `option-tile ${key === selectedMaterial ? 'active' : ''}` }
+              key={ key }
+              onClick={ () => {
+                Configurator.selectMaterial(key);
+              }}
+            >
+              <h1 className='sel-attr-title'>{ material.text }</h1>
+            </div>
+          );
+          return acc.concat(optionTile);
+        }, []);
+        break;
+      case 'text':
+        header = 'Custom Text'
+        content = (
+          <div className='custom-message-container'>
+            <input
+              id='custom-message'
+              type='text'
+              name='properties[Custom Message]'
+              maxLength='25'
+              placeholder='25 character limit'
+              onChange={ (e) => { setText(e.target.value); }}
+              value={ text }
+              autoFocus
+            />
+          </div>
+        );
+        break;
+      default:
+        const selectedVersion = getSelectedVersion(attrMenu);
+        const versions = getAvailableVersions(attrMenu);
+        if (versions.length === 0) break;
+
+        header = ATTR_DISPLAY_CONFIG[attrMenu].label;
+        content = versions.reduce((acc, el) => {
+          const optionTile = (
+            <div
+              className={ `option-tile ${el.id === selectedVersion.id ? 'active' : ''}` }
+              key={ el.id }
+              onClick={ () => {
+                Configurator.selectOption({ attr: attrMenu, newVersionId: el.id });
+              }}
+            >
+              <h1 className='sel-attr-title'>{ el.text }</h1>
+            </div>
+          );
+          return acc.concat(optionTile);
+        }, []);
+        break;
+    }
 
     return (
-      <div className='verions-options-list'>
-        { list }
-      </div>
-    )
-  }
-
-  const MaterialVersionOptionsList = () => {
-    if (attrMenu !== 'material') return null;
-
-    const list = Object.keys(MATERIALS_CONFIG).reduce((acc, key) => {
-      const material = MATERIALS_CONFIG[key];
-      const optionTile = (
-        <div
-          className='option-tile'
-          key={ key }
-          onClick={ () => {
-            Configurator.selectMaterial(key);
-          }}
-        >
-          <h1 className='sel-attr-title'>{ material.text }</h1>
-        </div>
-      );
-      return acc.concat(optionTile);
-    }, []);
-
-    return (
-      <div className='verions-options-list'>
-        { list }
+      <div className={ `verions-options-list ${!content ? 'closed' : ''}` }>
+        <h2 className='header'>{ header }</h2>
+        { content }
       </div>
     )
   }
@@ -151,7 +196,6 @@ export const Selector = ({ modelOpts, selectedMaterial }) => {
     <div className='selector'>
       <OptionsList />
       <VersionOptionsList />
-      <MaterialVersionOptionsList />
       <HiddenSelect />
     </div>
   );

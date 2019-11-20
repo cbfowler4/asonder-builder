@@ -25,10 +25,11 @@ iframe {
   position: relative;
   flex-grow: 1;
   display: flex;
-  min-height: 600px;
+  min-height: 690px;
 }
 
 .selector {
+  margin: 45px 0;
   width: 150px;
   background: rgba(23, 103, 23);
   display: flex;
@@ -66,22 +67,40 @@ iframe {
 .selector .sel-attr-title {
   font-size: 16px;
   text-align: center;
+  width: 100%;
+  word-break: break-word;
 }
 
 .selector .verions-options-list {
   position: absolute;
-  top: 0;
+  top: 45px;
   bottom: 0;
   right: 150px;
   background: rgb(52, 122, 52);
   border-left: 1px solid rgb(101, 121, 101);
   width: 200px;
   height: 600px;
+  border-top-left-radius: 6px;
+  border-bottom-left-radius: 6px;
+  transition: all 1s;
+}
+
+.selector .verions-options-list.closed {
+  width: 0px;
+  transition: all 1s;
+}
+
+.verions-options-list .header {
+  text-align: center;
+  padding: 15px;
+  font-weight: 100;
+  font-size: 16px;
 }
 
 .verions-options-list .option-tile {
-  /* border-bottom: none; */
+  border-bottom: none;
 }
+
 
 .selector .verions-options-list .option-tile.active {
   background: rgb(81, 141, 81);
@@ -100,6 +119,33 @@ iframe {
   display: none;
 }
 
+.custom-message-container {
+  display: flex;
+  justify-content: center;
+  align-items: center;
+  margin-top: 30px;
+  padding: 15px;
+}
+
+#custom-message {
+  background-color: transparent;
+  font-style: normal;
+  width: 100%;
+  color: white;
+  text-transform: none;
+  border: 1px solid rgb(20, 90, 20);
+  padding: 10px;
+}
+
+#custom-message:focus {
+  /* outline: thick double rgb(20, 90, 20); */
+  outline: none;
+}
+
+#custom-message::placeholder {
+  color: white;
+}
+
 .bottom-strip {
   bottom: -2px;
 }
@@ -110,9 +156,9 @@ iframe {
 
 .bottom-strip, .top-strip {
   position: absolute;
-  right: -5px;
+  right: 0px;
   left: -5px;
-  height: 45px;
+  height: 47px;
   background: black;
 }
 

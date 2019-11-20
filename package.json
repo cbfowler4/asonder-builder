@@ -6,7 +6,9 @@
     "react": "^16.8.3",
     "react-dom": "^16.8.3",
     "react-scripts": "2.1.5",
-    "sketchfab": "^0.1.2"
+    "sketchfab": "^0.1.2",
+    "zlib": "^1.0.5",
+    "zlibjs": "^0.3.1"
   },
   "scripts": {
     "start": "react-scripts start",
