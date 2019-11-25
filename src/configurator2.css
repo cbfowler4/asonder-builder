@@ -25,11 +25,11 @@ iframe {
   position: relative;
   flex-grow: 1;
   display: flex;
-  min-height: 690px;
+  min-height: 600px;
 }
 
 .selector {
-  margin: 45px 0;
+  margin: 0px 0;
   width: 150px;
   background: rgba(23, 103, 23);
   display: flex;
@@ -73,7 +73,7 @@ iframe {
 
 .selector .verions-options-list {
   position: absolute;
-  top: 45px;
+  top: 0px;
   bottom: 0;
   right: 150px;
   background: rgb(52, 122, 52);

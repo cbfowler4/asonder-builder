@@ -6,8 +6,6 @@ const {
   MATERIALS_CONFIG,
 } = require('./configs');
 
-
-
 export const Configurator = {
   api: null,
   config: null,

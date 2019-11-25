@@ -1,44 +1,20 @@
-import { Configurator } from './configurator';
+import Configurator from './configurator3';
 import { ATTR_ORDER, ATTR_DISPLAY_CONFIG, MATERIALS_CONFIG } from './configs';
 
 const { React } = window;
 const { useState } = React;
 
-export const Selector = ({ modelOpts, selectedMaterial }) => {
+export const Selector = ({ modelOpts, modelOptActions, selectedMaterial }) => {
   const [attrMenu, setAttrMenu] = useState('');
   const [text, setText] = useState('');
-
-
-  const getAvailableVersions = (attr) => {
-    let availableVersions = {};
-    if (attr === 'major') {
-      availableVersions = Object.keys(modelOpts)
-        .reduce((acc, key) => ({ ...acc, [key]: true }), {});
-    } else {
-      availableVersions = (modelOpts[Configurator.majorAttr] || {})[attr] || [];
-    }
-    if (!ATTR_DISPLAY_CONFIG[attr]) return [];
-    return ATTR_DISPLAY_CONFIG[attr].versions
-      .filter(version => (availableVersions[version.id]));
-  }
-
-  const getSelectedVersion = (attr) => {
-    if (!attr) return null;
-    if (attr === 'major') return Configurator.majorAttr;
-
-    const versions = modelOpts[Configurator.majorAttr][attr];
-    const selectedVersionId = Object.keys(versions).find((versionId) => versions[versionId].selected);
-    return ATTR_DISPLAY_CONFIG[attr].versions.find((version) => version.id === selectedVersionId);
-  };
   
   const OptionsList = () => {
     const optionsList = ATTR_ORDER.reduce((acc, attr) => {
       const attrDisplay = { ...ATTR_DISPLAY_CONFIG[attr] };
-      attrDisplay.versions = getAvailableVersions(attr);
+      attrDisplay.versions = modelOptActions.getAvailableVersions(attr);
       if (attrDisplay.versions.length < 2) return acc;
 
-      const selectedVersion = getSelectedVersion(attr);
-
+      const selectedVersion = modelOptActions.getSelectedVersion(attr) || {};
       acc.push(
         <div
           className={ `option-tile ${attrMenu === attr ? 'active' : ''}` }
@@ -146,8 +122,8 @@ export const Selector = ({ modelOpts, selectedMaterial }) => {
         );
         break;
       default:
-        const selectedVersion = getSelectedVersion(attrMenu);
-        const versions = getAvailableVersions(attrMenu);
+        const selectedVersion = modelOptActions.getSelectedVersion(attrMenu);
+        const versions = modelOptActions.getAvailableVersions(attrMenu);
         if (versions.length === 0) break;
 
         header = ATTR_DISPLAY_CONFIG[attrMenu].label;
@@ -157,7 +133,7 @@ export const Selector = ({ modelOpts, selectedMaterial }) => {
               className={ `option-tile ${el.id === selectedVersion.id ? 'active' : ''}` }
               key={ el.id }
               onClick={ () => {
-                Configurator.selectOption({ attr: attrMenu, newVersionId: el.id });
+                modelOptActions.selectVersion(attrMenu, el.id);
               }}
             >
               <h1 className='sel-attr-title'>{ el.text }</h1>
