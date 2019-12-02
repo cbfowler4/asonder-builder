@@ -1,4 +1,4 @@
-import Configurator from './configurator3';
+import Configurator from './configurator';
 
 import {
   DEFAULT_URLID,
@@ -18,6 +18,28 @@ export const getConfig = () => {
   return { urlid, prefix };
 }
 
+export const debounce = (func, wait, immediate) => {
+  var timeout;
+
+  return function executedFunction() {
+    var context = this;
+    var args = arguments;
+	    
+    var later = function() {
+      timeout = null;
+      if (!immediate) func.apply(context, args);
+    };
+
+    var callNow = immediate && !timeout;
+	
+    clearTimeout(timeout);
+
+    timeout = setTimeout(later, wait);
+	
+    if (callNow) func.apply(context, args);
+  };
+};
+
 
 export const useModelOpts = (initModelOptions) => {
   const [modelOptions, setModelOpts] = useState(initModelOptions || {});
@@ -25,6 +47,9 @@ export const useModelOpts = (initModelOptions) => {
   const actions = {
     setModelOpts: (newModelOptions) => {
       setModelOpts(newModelOptions);
+    },
+    selectMaterial: () => {
+      
     },
     selectVersion: (attr, versionId) => {
       if (!attr || !versionId) return;
@@ -50,7 +75,7 @@ export const useModelOpts = (initModelOptions) => {
           newModelOpts[majorAttr][attr][v].selected = v === versionId;
         })
       }
-      console.log(newModelOpts);
+
       setModelOpts(newModelOpts);
     },
     getAvailableVersions: (attr) => {

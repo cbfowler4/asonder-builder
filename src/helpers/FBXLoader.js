@@ -3295,11 +3295,7 @@ var FBXLoader = ( function () {
 
 			var reader = new BinaryReader( buffer );
 			reader.skip( 23 ); // skip magic 23 bytes
-
 			var version = reader.getUint32();
-
-			console.log( 'THREE.FBXLoader: FBX binary version: ' + version );
-
 			var allNodes = new FBXTree();
 
 			while ( ! this.endOfContent( reader ) ) {
@@ -3309,7 +3305,6 @@ var FBXLoader = ( function () {
 
 			}
 
-      console.log('ALL NODES', allNodes);
 			return allNodes;
 
 		},

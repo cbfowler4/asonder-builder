@@ -13,31 +13,14 @@
 
     <script crossorigin src="https://unpkg.com/react@16/umd/react.development.js"></script>
     <script crossorigin src="https://unpkg.com/react-dom@16/umd/react-dom.development.js"></script>
-    <script type="text/javascript" src="https://static.sketchfab.com/api/sketchfab-viewer-1.5.1.js"></script>
-    <!-- <script src="https://cdn.babylonjs.com/babylon.js"></script> -->
-    <!-- <script src="https://cdn.babylonjs.com/loaders/babylonjs.loaders.min.js"></script> -->
-    <!-- <script src="https://cdnjs.cloudflare.com/ajax/libs/three.js/92/three.min.js"></script> -->
-
-    <!-- <script src="https://cdn.jsdelivr.net/gh/mrdoob/three.js@r92/examples/js/loaders/GLTFLoader.js"></script> -->
-    <!-- <script src="https://cdn.jsdelivr.net/gh/mrdoob/three.js@r92/examples/js/loaders/FBXLoader.js"></script> -->
-    <!-- <script src="https://cdn.jsdelivr.net/npm/three-fbx-loader@1.0.3/index.min.js"></script> -->
-
+ 
     <script src="//threejs.org/build/three.js"></script>
     <script src="//threejs.org/examples/js/libs/inflate.min.js"></script>
     <script src="//threejs.org/examples/js/controls/OrbitControls.js"></script>
+    <script src="//threejs.org/examples/js/loaders/TTFLoader.js"></script>
     <script src="//threejs.org/examples/js/modifiers/BendModifier.js"></script>
     <script src="https://unpkg.com/@seregpie/three.text-texture"></script>
-
-
-    <!-- <script src="//cdn.rawgit.com/acidsound/three.js/patch-1/examples/js/loaders/FBXLoader.js"></script> -->
-
-
-
-    <!-- <script src="babylon.stlFileLoader.js"></script>
-    <script src="babylon.objFileLoader.js"></script> -->
-
-
-
+    <script src="https://cdn.jsdelivr.net/npm/opentype.js@latest/dist/opentype.min.js"></script>
 
 
     <title>UNCUT // BK</title>
@@ -47,76 +30,3 @@
   </body>
 </html>
 
-<!-- <!DOCTYPE html>
-<html xmlns="http://www.w3.org/1999/xhtml">
-
-    <head>
-        <meta http-equiv="Content-Type" content="text/html; charset=utf-8"/>
-        <title>Babylon Template</title>
-
-        <style>
-            html, body {
-                overflow: hidden;
-                width: 100%;
-                height: 100%;
-                margin: 0;
-                padding: 0;
-            }
-
-            #renderCanvas {
-                width: 100%;
-                height: 100%;
-                touch-action: none;
-            }
-        </style>
-
-        <script src="https://preview.babylonjs.com/babylon.js"></script>
-        <script src="https://preview.babylonjs.com/loaders/babylonjs.loaders.min.js"></script>
-        <script src="https://code.jquery.com/pep/0.4.3/pep.js"></script>
-    </head>
-
-   <body>
-
-    <canvas id="renderCanvas" touch-action="none"></canvas> //touch-action="none" for best results from PEP
-
-    <script>
-        var canvas = document.getElementById("renderCanvas"); // Get the canvas element 
-        var engine = new BABYLON.Engine(canvas, true); // Generate the BABYLON 3D engine
-
-        /******* Add the create scene function ******/
-        var createScene = function () {
-
-            // Create the scene space
-            var scene = new BABYLON.Scene(engine);
-
-            // Add a camera to the scene and attach it to the canvas
-            var camera = new BABYLON.ArcRotateCamera("Camera", Math.PI / 2, Math.PI / 2, 2, new BABYLON.Vector3(0,0,5), scene);
-            camera.attachControl(canvas, true);
-
-            // Add lights to the scene
-            var light1 = new BABYLON.HemisphericLight("light1", new BABYLON.Vector3(1, 1, 0), scene);
-            var light2 = new BABYLON.PointLight("light2", new BABYLON.Vector3(0, 1, -1), scene);
-
-            // Add and manipulate meshes in the scene
-            var sphere = BABYLON.MeshBuilder.CreateSphere("sphere", {diameter:2}, scene);
-
-            return scene;
-        };
-        /******* End of the create scene function ******/    
-
-        var scene = createScene(); //Call the createScene function
-
-        // Register a render loop to repeatedly render the scene
-        engine.runRenderLoop(function () { 
-                scene.render();
-        });
-
-        // Watch for browser/canvas resize events
-        window.addEventListener("resize", function () { 
-                engine.resize();
-        });
-    </script>
-
-   </body>
-
-</html> -->

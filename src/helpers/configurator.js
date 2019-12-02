@@ -1,7 +1,12 @@
 
-import { ATTR_DISPLAY_CONFIG } from './configs.js';
-import './bendModifier';
-import { FBXLoader } from './FBXLoader';
+import {
+  ATTR_DISPLAY_CONFIG,
+  SELECTOR_WIDTH,
+  MATERIALS_CONFIG,
+  CONFIGURATOR_MIN_WIDTH,
+} from '../helpers/configs';
+import '../helpers/bendModifier';
+import { FBXLoader } from '../helpers/FBXLoader';
 const { THREE } = window;
 
 const {
@@ -10,10 +15,8 @@ const {
   WebGLRenderer,
   DirectionalLight,
   AmbientLight,
-  GridHelper,
   OrbitControls,
 } = THREE;
-
 
 class Configurator {
   init(element) {
@@ -24,46 +27,59 @@ class Configurator {
     this.createCamera();
     this.createLighting();
     this.createControls();
-    this.createGrid();
+    // this.createGrid();
+    this.initMaterial();
     this.render();
+
+    window.addEventListener('resize', () => { this.onResizeWindow() })
   }
   
   createRenderer() {
     this.renderer = new WebGLRenderer();
-    this.renderer.setSize(835, 600);
-    this.element.appendChild( this.renderer.domElement );
-    this.renderer.setClearColor(0x00ffff, 1); 
+    this.width = window.innerWidth <= CONFIGURATOR_MIN_WIDTH ? window.innerWidth : window.innerWidth - SELECTOR_WIDTH;
+    this.height = window.innerHeight > 750 ? 600 : window.innerHeight - 175;
+
+    this.renderer.setSize(this.width, this.height);
+    this.element.appendChild(this.renderer.domElement);
+    this.renderer.setClearColor(0x7e827f, 1); 
     this.renderer.gammaOutput = true;
   }
 
   createCamera() {
-    this.camera = new PerspectiveCamera( 75, 835/600, 0.1, 1000 );
-    this.camera.position.z = 25; 
-    this.camera.position.y = 15;
+    this.camera = new PerspectiveCamera(75, this.width/this.height, 0.1, 1000 );
+    this.camera.position.z = 1; 
+    this.camera.position.y = 1;
+    this.camera.position.x = -4;
   }
 
   createLighting() {
     var light = new DirectionalLight("#c1582d", 1);
+    var light2 = new DirectionalLight("#c1582d", 1);
     var ambient = new AmbientLight("#85b2cd");
-    light.position.set( 0, -70, 100 ).normalize();
+    light.position.set(0, -70, 100).normalize();
+    light2.position.set(0, 70, 10).normalize();
     this.scene.add(light);
+    this.scene.add(light2);
     this.scene.add(ambient);
   }
 
-  createGrid() {
-    var grid = new GridHelper( 2000, 20, 0x000000, 0x000000 );
-    grid.material.opacity = 0.2;
-    grid.material.transparent = true;
-    this.scene.add( grid );
+  onResizeWindow() {
+    this.width = window.innerWidth <= CONFIGURATOR_MIN_WIDTH ? window.innerWidth : window.innerWidth - SELECTOR_WIDTH;
+    this.renderer.domElement.width = this.width;
+    this.camera.aspect = this.width / this.height;
+    this.renderer.setSize(this.width, this.height);
+    this.camera.updateProjectionMatrix();
+  }
 
+  createGrid() {
     // x red, y green, z blue
-    var axesHelper = new THREE.AxesHelper( 5 );
+    var axesHelper = new THREE.AxesHelper(5);
     this.scene.add( axesHelper );
   }
 
   createControls() {
     this.controls = new OrbitControls(this.camera, this.renderer.domElement);
-    this.controls.target.set( 0, 0, 0 );
+    this.controls.target.set(0, 0, 0);
     this.controls.update();
   }
 
@@ -74,7 +90,7 @@ class Configurator {
     this.controls.update();
   }
 
-  async loadModel(url) {
+  async loadModel(url, materialKey) {
     if (!this.loader) this.loader = new FBXLoader();
   
     return new Promise((resolve, reject) => {
@@ -88,6 +104,7 @@ class Configurator {
 
           this.initFont();
           this.centerControls();
+
           resolve(model);
         },
         (xhr) => {
@@ -101,21 +118,30 @@ class Configurator {
     })
   };
 
+  initMaterial() {
+    if (this.material) return;
+    this.material = new THREE.MeshPhongMaterial();
+  }
+
   initFont() {
     this.fontLoader = new THREE.FontLoader();
 
     this.bendModifier = new THREE.BendModifier();
+    
+    const direction = new THREE.Vector3( 0, 0, -1 );
+    const axis =  new THREE.Vector3( 1, 0, 0 );
+    const angle = .19 * Math.PI;
+    this.bendModifier.set( direction, axis, angle );
 
-    this.fontLoader.load( 'https://raw.githubusercontent.com/rollup/three-jsnext/master/examples/fonts/gentilis_bold.typeface.json', ( font ) => {
-      this.font = font;
-    })
+    const loader = new THREE.TTFLoader();
+    const fontLoader = new THREE.FontLoader();
+
+    loader.load('https://cbfowler4.s3.amazonaws.com/Roboto-Regular.ttf',
+     (font) => this.font = fontLoader.parse(font))
   }
 
   updateText(text) {
-    if (!this.font) {
-      console.log('ERROR: NO FONT LOADED');
-      return;
-    }
+    if (!this.font) { console.log('ERROR: NO FONT LOADED'); return; }
 
     var geometry = new THREE.TextGeometry(text, {
       font: this.font,
@@ -123,27 +149,17 @@ class Configurator {
       height: .03,
       curveSegments: 50,
     } );
+    
+    this.bendModifier.modify(geometry);
 
-    const material = new THREE.MeshPhongMaterial({ color: 0xdddddd });
-
-    // BEND TEXT
-    const direction = new THREE.Vector3( 0, 0, -1 );
-    const axis =  new THREE.Vector3( 1, 0, 0 );
-    const angle = .19 * Math.PI;
-    this.bendModifier.set( direction, axis, angle ).modify( geometry );
-
-
-    // REMOVE OLD TEXT
     if (this.textModel) this.model.remove(this.textModel);
 
-    // ADD NEW TEXT
-    this.textModel = new THREE.Mesh(geometry, material);
+    this.textModel = new THREE.Mesh(geometry, this.material);
     this.model.add(this.textModel)
 
-    // POSITION TEXT
     this.textModel.position.set(.25, 1, -.05);
-    this.textModel.rotateY(  Math.PI / 2 )
-    this.textModel.rotateZ(  Math.PI / 2 )
+    this.textModel.rotateY(Math.PI / 2)
+    this.textModel.rotateZ(Math.PI / 2)
   }
 
   generateModelOptions() {
@@ -196,7 +212,6 @@ class Configurator {
   }
 
   show(name) {
-    console.log('showing', name);
     if (!this.model) return;
     const obj = this.model.getObjectByName(name);
     if (!obj) return;
@@ -222,6 +237,24 @@ class Configurator {
         })
       })
     })
+  }
+
+  updateMaterial(materialKey) {
+    if (!this.model || !materialKey) return;
+    const material = MATERIALS_CONFIG[materialKey] && MATERIALS_CONFIG[materialKey].material;
+    
+    if (!material) {
+      console.log(`MATERIAL FOR KEY '${materialKey}' COULD NOT BE FOUND`);
+      return;
+    }
+
+    this.material.color = material.color;
+    
+    this.model.traverse((node) => {
+      if (node.type === 'Mesh') {
+        node.material.color = material.color;
+      }
+    });
   }
 }
 

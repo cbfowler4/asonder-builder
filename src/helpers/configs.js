@@ -1,8 +1,8 @@
 export const DEFAULT_URLID = 'fd82a3d61802402fb50684bf1199348f';
 export const DEFAULT_PREFIX = 'initial-launch-rev2';
 
-
-//  opt-<majorAttr>-<minorAttr>-<v#> 
+export const SELECTOR_WIDTH = 150;
+export const CONFIGURATOR_MIN_WIDTH = 750;
 
 export const ATTR_DISPLAY_CONFIG = {
   major: {
@@ -46,27 +46,15 @@ export const ATTR_DISPLAY_CONFIG = {
 export const MATERIALS_CONFIG = {
   black: {
     text: 'Black Matte',
-    color: 'black',
-    channels: [
-      {
-        propertyName: 'AlbedoPBR',
-        properties: [
-          { name: 'color', value: [0.0356, 0.0356, 0.0356] },
-        ],
-      },
-    ]
+    material: {
+      color: { r: .9, g: 0, b: 0 },
+    },
   },
   bronze: {
     text: 'Bronze-Silver',
-    color: 'yellow',
-    channels: [
-      {
-        propertyName: 'AlbedoPBR',
-        properties: [
-          { name: 'color', value: [0.10461648409110419, 0.08650046203654974, 0.04970656598412723] },
-        ],
-      },
-    ],
+    material: {
+      color: { r: 0, g: 0, b: .9 },
+    },
   }
 }
 
