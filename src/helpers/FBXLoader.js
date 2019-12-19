@@ -142,9 +142,6 @@ var FBXLoader = ( function () {
         fbxTree = new TextParser().parse( FBXText );
         
 			}
-      
-      console.log('FBX TREE', fbxTree);
-			// console.log( fbxTree );
 
 			var textureLoader = new TextureLoader( this.manager ).setPath( this.resourcePath || path ).setCrossOrigin( this.crossOrigin );
 

@@ -1,3 +1,5 @@
+const { THREE } = window;
+
 export const DEFAULT_URLID = 'fd82a3d61802402fb50684bf1199348f';
 export const DEFAULT_PREFIX = 'initial-launch-rev2';
 
@@ -44,18 +46,24 @@ export const ATTR_DISPLAY_CONFIG = {
 };
 
 export const MATERIALS_CONFIG = {
-  black: {
-    text: 'Black Matte',
-    material: {
-      color: { r: .9, g: 0, b: 0 },
-    },
-  },
   bronze: {
     text: 'Bronze-Silver',
     material: {
-      color: { r: 0, g: 0, b: .9 },
+      specular: new THREE.Color('rgb(110, 102, 63)'),
+      color: new THREE.Color('rgb(110, 102, 63)'),
+      shininess: 10,
     },
-  }
+  },
+  black: {
+    text: 'Black Matte',
+    material: {
+      color: new THREE.Color('rgb(8, 8, 8)'),
+      specular: new THREE.Color('rgb(40, 40, 40)'),
+      // emissive: new THREE.Color('rgb(5, 5, 5)'),
+      shininess: 10,
+    },
+  },
+  
 }
 
 export const ATTR_ORDER = [

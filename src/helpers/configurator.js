@@ -14,20 +14,19 @@ const {
   PerspectiveCamera,
   WebGLRenderer,
   DirectionalLight,
-  AmbientLight,
   OrbitControls,
 } = THREE;
 
 class Configurator {
-  init(element) {
-    this.element = element;
+  init(canvas) {
+    this.canvas = canvas;
     this.createRenderer();
 
     this.scene = new Scene();
     this.createCamera();
-    this.createLighting();
     this.createControls();
-    // this.createGrid();
+    this.createGrid();
+    this.createLighting();
     this.initMaterial();
     this.render();
 
@@ -35,32 +34,108 @@ class Configurator {
   }
   
   createRenderer() {
-    this.renderer = new WebGLRenderer();
+    this.renderer = new WebGLRenderer({
+      precision: "highp",
+      canvas: this.canvas,
+    });
+
+    this.renderer.shadowMap.enabled = true;
+    this.renderer.shadowMap.type = THREE.PCFSoftShadowMap;
+
     this.width = window.innerWidth <= CONFIGURATOR_MIN_WIDTH ? window.innerWidth : window.innerWidth - SELECTOR_WIDTH;
     this.height = window.innerHeight > 750 ? 600 : window.innerHeight - 175;
 
     this.renderer.setSize(this.width, this.height);
-    this.element.appendChild(this.renderer.domElement);
+
     this.renderer.setClearColor(0x7e827f, 1); 
     this.renderer.gammaOutput = true;
   }
 
   createCamera() {
-    this.camera = new PerspectiveCamera(75, this.width/this.height, 0.1, 1000 );
+    this.camera = new PerspectiveCamera(45, this.width/this.height, 0.1, 1000 );
     this.camera.position.z = 1; 
     this.camera.position.y = 1;
     this.camera.position.x = -4;
   }
 
   createLighting() {
-    var light = new DirectionalLight("#c1582d", 1);
-    var light2 = new DirectionalLight("#c1582d", 1);
-    var ambient = new AmbientLight("#85b2cd");
-    light.position.set(0, -70, 100).normalize();
-    light2.position.set(0, 70, 10).normalize();
-    this.scene.add(light);
+    var textLight = new DirectionalLight('#f7ebc0', .6);
+    var light2 = new DirectionalLight('#f7ebc0', .5);
+    var light3 = new DirectionalLight('#aedef5', .49);
+
+    textLight.position.set(-1.5, -2, 1);
+    light2.position.set(1, -.5, .25);
+    light3.position.set(0, 1.5, 2.5);
+    
+    textLight.castShadow = true;
+    light2.castShadow = true;
+    light3.castShadow = true;
+
+    debugger
+    light2.shadow.camera.far = 3;
+    var helper = new THREE.CameraHelper( light2.shadow.camera );
+    this.scene.add( helper );
+
+    this.scene.add(textLight);
     this.scene.add(light2);
-    this.scene.add(ambient);
+    this.scene.add(light3);    
+  }
+  
+  addPostProcessing() {
+    this.composer = new THREE.EffectComposer( this.renderer );
+
+    const renderPass = new THREE.RenderPass( this.scene, this.camera );
+    this.composer.addPass( renderPass );
+  
+    const ssaoPass = new THREE.SSAOPass( this.scene, this.camera, 10, 10 );
+    ssaoPass.kernelRadius = .05;
+    this.composer.addPass(ssaoPass);
+    
+    
+    const fxaaPass = new THREE.ShaderPass( THREE.FXAAShader );
+    var pixelRatio = this.renderer.getPixelRatio();
+    fxaaPass.material.uniforms[ 'resolution' ].value.x = 1 / ( this.canvas.offsetWidth * pixelRatio );
+    fxaaPass.material.uniforms[ 'resolution' ].value.y = 1 / ( this.canvas.offsetHeight * pixelRatio );
+    this.composer.addPass(fxaaPass);
+    
+    const bloomPass = new THREE.UnrealBloomPass( new THREE.Vector2( window.innerWidth, window.innerHeight ), 1.5, 0.4, 0.85 );
+    bloomPass.threshold = .8;
+    bloomPass.strength = .5;
+    bloomPass.radius = .2;
+    this.composer.addPass( bloomPass );
+    console.log(ssaoPass, bloomPass);
+
+    const vigPass = new THREE.ShaderPass(THREE.VignetteShader);
+    this.composer.addPass( vigPass );
+    
+    // // depth
+    
+    // var depthShader = THREE.ShaderLib.depth;
+    // var depthUniforms = THREE.UniformsUtils.clone( depthShader.uniforms );
+    
+    // let depthMaterial = new THREE.ShaderMaterial( { fragmentShader: depthShader.fragmentShader, vertexShader: depthShader.vertexShader, uniforms: depthUniforms } );
+    // depthMaterial.blending = THREE.NoBlending;
+    
+    // // postprocessing
+    // console.log(this.renderer.extensions.get('WEBGL_depth_texture'));
+    
+    // this.composer = new THREE.EffectComposer( this.renderer );
+    // this.composer.addPass( new THREE.RenderPass( this.scene, this.camera ) );
+    
+    // this.depthTarget = new THREE.WebGLRenderTarget( this.width, this.height, { minFilter: THREE.NearestFilter, magFilter: THREE.NearestFilter, format: THREE.RGBAFormat } );
+    
+    // var effect = new THREE.ShaderPass( THREE.SSAOShader );
+    // console.log(effect);
+    // effect.uniforms[ 'tDepth' ].value = this.depthTarget;
+    // effect.uniforms[ 'cameraNear' ].value = this.camera.near;
+    // effect.uniforms[ 'cameraFar' ].value = this.camera.far;
+    // effect.renderToScreen = true;
+    // this.composer.addPass( effect );
+    // this.composer.addPass( ssaoPass );
+
+  
+    // console.log(this.scene, this.composer);
+
   }
 
   onResizeWindow() {
@@ -83,14 +158,18 @@ class Configurator {
     this.controls.update();
   }
 
-  centerControls() {
-    const { x, y, z } = new THREE.Box3().setFromObject(this.model).getCenter();
-
-    this.controls.target.set(x, y, z);
-    this.controls.update();
+  centerModel() {
+    const { x, z } = new THREE.Box3().setFromObject(this.model).getCenter();
+    this.model.position.set(-1 * x, 0, -1 * z);
   }
 
-  async loadModel(url, materialKey) {
+  rotate({ x, y, z }) {
+    if (x) this.model.rotateX(x);
+    if (y) this.model.rotateY(y);
+    if (z) this.model.rotateZ(z);
+  }
+
+  async loadModel(url, progressCB) {
     if (!this.loader) this.loader = new FBXLoader();
   
     return new Promise((resolve, reject) => {
@@ -102,14 +181,16 @@ class Configurator {
           this.model.rotateY( Math.PI );
           this.majorAttr = ATTR_DISPLAY_CONFIG.major.versions[0].id;
 
+          this.model.castShadow = true; 
+          this.model.receiveShadow = true;
+
           this.initFont();
-          this.centerControls();
+          this.centerModel();
+          this.addPostProcessing();
 
           resolve(model);
         },
-        (xhr) => {
-            console.log((xhr.loaded / xhr.total * 100) + '% loaded' );
-        },
+        progressCB,
         (error) => {
           console.log( 'An error happened', error );
           reject();
@@ -160,6 +241,7 @@ class Configurator {
     this.textModel.position.set(.25, 1, -.05);
     this.textModel.rotateY(Math.PI / 2)
     this.textModel.rotateZ(Math.PI / 2)
+    this.textModel.castShadow = true;
   }
 
   generateModelOptions() {
@@ -208,7 +290,9 @@ class Configurator {
 
   render() {
     requestAnimationFrame(() => { this.render(); }); 
-    this.renderer.render(this.scene, this.camera);
+    if (this.composer) this.composer.render();
+    // else this.renderer.render(this.scene, this.camera);
+    // this.renderer.render(this.scene, this.camera);
   }
 
   show(name) {
@@ -248,11 +332,19 @@ class Configurator {
       return;
     }
 
-    this.material.color = material.color;
+    const iterateOverMaterialPropertiesAndUpdate = (materialToUpdate) => {
+      Object.keys(material).forEach((key) => {
+        materialToUpdate[key] = material[key];
+      })
+    }
+
+
+    iterateOverMaterialPropertiesAndUpdate(this.material);
     
     this.model.traverse((node) => {
       if (node.type === 'Mesh') {
-        node.material.color = material.color;
+        // node.material.color = material.color;
+        iterateOverMaterialPropertiesAndUpdate(node.material);
       }
     });
   }
