@@ -27,13 +27,20 @@ iframe {
   display: flex;
 }
 
+.iframe-container:hover {
+  cursor: grab;
+}
+
+.iframe-container.grabbing {
+  cursor: grabbing;
+}
+
 .selector {
   margin: 0px 0;
   width: 150px;
   background: rgba(23, 103, 23);
   display: flex;
   flex-direction: column;
-  border-left: 1px solid rgb(101, 121, 101);
   box-sizing: border-box;
   position: relative;
 }
@@ -50,6 +57,7 @@ iframe {
   justify-content: center;
   align-items: center;
   border-bottom: 1px solid rgb(101, 121, 101);
+  transition: all .2s;
 }
 
 .selector .option-tile:hover {

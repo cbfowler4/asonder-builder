@@ -25,23 +25,24 @@ class Configurator {
     this.scene = new Scene();
     this.createCamera();
     this.createControls();
-    this.createGrid();
+    this.createParent();
     this.createLighting();
     this.initMaterial();
     this.render();
 
     window.addEventListener('resize', () => { this.onResizeWindow() })
   }
-  
+
+
+
+  // ***************************************************** //
+  // ******************** SCENE SETUP ******************** //
+  // ***************************************************** //
+
   createRenderer() {
-    this.renderer = new WebGLRenderer({
-      precision: "highp",
-      canvas: this.canvas,
-    });
+    this.renderer = new WebGLRenderer({ canvas: this.canvas });
 
-    this.renderer.shadowMap.enabled = true;
-    this.renderer.shadowMap.type = THREE.PCFSoftShadowMap;
-
+    this.renderer.toneMappingExposure = 1.5;
     this.width = window.innerWidth <= CONFIGURATOR_MIN_WIDTH ? window.innerWidth : window.innerWidth - SELECTOR_WIDTH;
     this.height = window.innerHeight > 750 ? 600 : window.innerHeight - 175;
 
@@ -52,90 +53,53 @@ class Configurator {
   }
 
   createCamera() {
-    this.camera = new PerspectiveCamera(45, this.width/this.height, 0.1, 1000 );
+    this.camera = new PerspectiveCamera(45, this.width/this.height, .1, 100);
     this.camera.position.z = 1; 
     this.camera.position.y = 1;
     this.camera.position.x = -4;
   }
 
   createLighting() {
-    var textLight = new DirectionalLight('#f7ebc0', .6);
+    var textLight = new DirectionalLight('#f7ebc0', .5);
+    var textLight2 = new DirectionalLight('#f7ebc0', .3);
+    var textLight3 = new DirectionalLight('#f7ebc0', .5);
     var light2 = new DirectionalLight('#f7ebc0', .5);
-    var light3 = new DirectionalLight('#aedef5', .49);
+    var light3 = new DirectionalLight('#f7ebc0', .49);
 
     textLight.position.set(-1.5, -2, 1);
+    textLight2.position.set(-1.5, 2, 1);
+    textLight3.position.set(1.5, -2, 1);
     light2.position.set(1, -.5, .25);
     light3.position.set(0, 1.5, 2.5);
-    
-    textLight.castShadow = true;
-    light2.castShadow = true;
-    light3.castShadow = true;
-
-    debugger
-    light2.shadow.camera.far = 3;
-    var helper = new THREE.CameraHelper( light2.shadow.camera );
-    this.scene.add( helper );
 
     this.scene.add(textLight);
+    this.scene.add(textLight2);
+    this.scene.add(textLight3);
     this.scene.add(light2);
     this.scene.add(light3);    
   }
-  
-  addPostProcessing() {
-    this.composer = new THREE.EffectComposer( this.renderer );
 
-    const renderPass = new THREE.RenderPass( this.scene, this.camera );
-    this.composer.addPass( renderPass );
-  
-    const ssaoPass = new THREE.SSAOPass( this.scene, this.camera, 10, 10 );
-    ssaoPass.kernelRadius = .05;
-    this.composer.addPass(ssaoPass);
-    
-    
-    const fxaaPass = new THREE.ShaderPass( THREE.FXAAShader );
-    var pixelRatio = this.renderer.getPixelRatio();
-    fxaaPass.material.uniforms[ 'resolution' ].value.x = 1 / ( this.canvas.offsetWidth * pixelRatio );
-    fxaaPass.material.uniforms[ 'resolution' ].value.y = 1 / ( this.canvas.offsetHeight * pixelRatio );
-    this.composer.addPass(fxaaPass);
-    
-    const bloomPass = new THREE.UnrealBloomPass( new THREE.Vector2( window.innerWidth, window.innerHeight ), 1.5, 0.4, 0.85 );
-    bloomPass.threshold = .8;
-    bloomPass.strength = .5;
-    bloomPass.radius = .2;
-    this.composer.addPass( bloomPass );
-    console.log(ssaoPass, bloomPass);
+  createParent() {
+    this.parent = new THREE.Group();
+    this.parent.position.set(0, 0, 0);
+    this.scene.add(this.parent);
+  }
 
-    const vigPass = new THREE.ShaderPass(THREE.VignetteShader);
-    this.composer.addPass( vigPass );
-    
-    // // depth
-    
-    // var depthShader = THREE.ShaderLib.depth;
-    // var depthUniforms = THREE.UniformsUtils.clone( depthShader.uniforms );
-    
-    // let depthMaterial = new THREE.ShaderMaterial( { fragmentShader: depthShader.fragmentShader, vertexShader: depthShader.vertexShader, uniforms: depthUniforms } );
-    // depthMaterial.blending = THREE.NoBlending;
-    
-    // // postprocessing
-    // console.log(this.renderer.extensions.get('WEBGL_depth_texture'));
-    
-    // this.composer = new THREE.EffectComposer( this.renderer );
-    // this.composer.addPass( new THREE.RenderPass( this.scene, this.camera ) );
-    
-    // this.depthTarget = new THREE.WebGLRenderTarget( this.width, this.height, { minFilter: THREE.NearestFilter, magFilter: THREE.NearestFilter, format: THREE.RGBAFormat } );
-    
-    // var effect = new THREE.ShaderPass( THREE.SSAOShader );
-    // console.log(effect);
-    // effect.uniforms[ 'tDepth' ].value = this.depthTarget;
-    // effect.uniforms[ 'cameraNear' ].value = this.camera.near;
-    // effect.uniforms[ 'cameraFar' ].value = this.camera.far;
-    // effect.renderToScreen = true;
-    // this.composer.addPass( effect );
-    // this.composer.addPass( ssaoPass );
+  createControls() {
+    this.controls = new OrbitControls(this.camera, this.renderer.domElement);
+    this.controls.target.set(0, 0, 0);
+    this.controls.update();
+  }
 
-  
-    // console.log(this.scene, this.composer);
+  initMaterial() {
+    if (this.material) return;
+    this.material = new THREE.MeshPhongMaterial();
+  }
 
+  render() {
+    requestAnimationFrame(() => { this.render(); }); 
+    if (this.composer) this.composer.render();
+    else this.renderer.render(this.scene, this.camera);
   }
 
   onResizeWindow() {
@@ -146,16 +110,27 @@ class Configurator {
     this.camera.updateProjectionMatrix();
   }
 
-  createGrid() {
-    // x red, y green, z blue
-    var axesHelper = new THREE.AxesHelper(5);
-    this.scene.add( axesHelper );
-  }
 
-  createControls() {
-    this.controls = new OrbitControls(this.camera, this.renderer.domElement);
-    this.controls.target.set(0, 0, 0);
-    this.controls.update();
+
+  // ***************************************************** //
+  // ***************** SCENE MANIPULATION **************** //
+  // ***************************************************** //
+
+  initFont() {
+    this.fontLoader = new THREE.FontLoader();
+
+    this.bendModifier = new THREE.BendModifier();
+    
+    const direction = new THREE.Vector3(0, 0, -1);
+    const axis =  new THREE.Vector3(1, 0, 0);
+    const angle = .19 * Math.PI;
+    this.bendModifier.set(direction, axis, angle);
+
+    const loader = new THREE.TTFLoader();
+    const fontLoader = new THREE.FontLoader();
+
+    loader.load('https://cbfowler4.s3.amazonaws.com/Roboto-Regular.ttf',
+     (font) => this.font = fontLoader.parse(font))
   }
 
   centerModel() {
@@ -163,31 +138,25 @@ class Configurator {
     this.model.position.set(-1 * x, 0, -1 * z);
   }
 
-  rotate({ x, y, z }) {
-    if (x) this.model.rotateX(x);
-    if (y) this.model.rotateY(y);
-    if (z) this.model.rotateZ(z);
+  rotateOnYAxis(angle) {
+    this.parent.rotateY(angle);
   }
 
   async loadModel(url, progressCB) {
     if (!this.loader) this.loader = new FBXLoader();
-  
+
     return new Promise((resolve, reject) => {
       this.loader.load(url,
         (model) => {
-          this.scene.add(model);
+          this.parent.add(model);
           this.model = model;
           this.model.rotateX( Math.PI / 2 );
           this.model.rotateY( Math.PI );
           this.majorAttr = ATTR_DISPLAY_CONFIG.major.versions[0].id;
 
-          this.model.castShadow = true; 
-          this.model.receiveShadow = true;
-
           this.initFont();
           this.centerModel();
           this.addPostProcessing();
-
           resolve(model);
         },
         progressCB,
@@ -198,28 +167,6 @@ class Configurator {
       );
     })
   };
-
-  initMaterial() {
-    if (this.material) return;
-    this.material = new THREE.MeshPhongMaterial();
-  }
-
-  initFont() {
-    this.fontLoader = new THREE.FontLoader();
-
-    this.bendModifier = new THREE.BendModifier();
-    
-    const direction = new THREE.Vector3( 0, 0, -1 );
-    const axis =  new THREE.Vector3( 1, 0, 0 );
-    const angle = .19 * Math.PI;
-    this.bendModifier.set( direction, axis, angle );
-
-    const loader = new THREE.TTFLoader();
-    const fontLoader = new THREE.FontLoader();
-
-    loader.load('https://cbfowler4.s3.amazonaws.com/Roboto-Regular.ttf',
-     (font) => this.font = fontLoader.parse(font))
-  }
 
   updateText(text) {
     if (!this.font) { console.log('ERROR: NO FONT LOADED'); return; }
@@ -243,6 +190,42 @@ class Configurator {
     this.textModel.rotateZ(Math.PI / 2)
     this.textModel.castShadow = true;
   }
+
+  addPostProcessing() {
+    this.composer = new THREE.EffectComposer(this.renderer);
+
+    const renderPass = new THREE.RenderPass(this.scene, this.camera);
+    this.composer.addPass(renderPass);
+  
+    const ssaoPass = new THREE.SSAOPass(this.scene, this.camera, this.width, this.height);
+    ssaoPass.kernelRadius = .5;
+    ssaoPass.maxDistance = .1;
+    ssaoPass.minDistance = .003;
+    this.composer.addPass(ssaoPass);
+
+    
+    const fxaaPass = new THREE.ShaderPass( THREE.FXAAShader );
+    var pixelRatio = this.renderer.getPixelRatio();
+    fxaaPass.material.uniforms[ 'resolution' ].value.x = 1 / (this.canvas.offsetWidth * pixelRatio);
+    fxaaPass.material.uniforms[ 'resolution' ].value.y = 1 / (this.canvas.offsetHeight * pixelRatio);
+    this.composer.addPass(fxaaPass); 
+    
+    const bloomPass = new THREE.UnrealBloomPass( new THREE.Vector2(window.innerWidth, window.innerHeight), 1.5, 0.4, 0.85);
+    bloomPass.threshold = .8;
+    bloomPass.strength = .2;
+    bloomPass.radius = 1;
+    this.composer.addPass(bloomPass);
+
+    const vigPass = new THREE.ShaderPass(THREE.VignetteShader);
+    this.composer.addPass(vigPass);
+  }
+
+
+
+
+  // ***************************************************** //
+  // ***************** MODEL MANIPULATION **************** //
+  // ***************************************************** //
 
   generateModelOptions() {
     const modelOptions = {};
@@ -288,12 +271,7 @@ class Configurator {
     return modelOptions;
   }
 
-  render() {
-    requestAnimationFrame(() => { this.render(); }); 
-    if (this.composer) this.composer.render();
-    // else this.renderer.render(this.scene, this.camera);
-    // this.renderer.render(this.scene, this.camera);
-  }
+  
 
   show(name) {
     if (!this.model) return;
@@ -338,12 +316,10 @@ class Configurator {
       })
     }
 
-
     iterateOverMaterialPropertiesAndUpdate(this.material);
     
     this.model.traverse((node) => {
       if (node.type === 'Mesh') {
-        // node.material.color = material.color;
         iterateOverMaterialPropertiesAndUpdate(node.material);
       }
     });

@@ -1,19 +1,21 @@
 import Configurator from '../helpers/configurator';
-const { React } = window;
+const { React, moment } = window;
 
 const { useEffect, useState } = React;
 
+let rotateAt = moment();
+
 const rotateModel = () => {
-  console.log('here');
   window.setTimeout(() => {
-    Configurator.rotate({ z: .05 });
+    if (moment().isAfter(rotateAt)) Configurator.rotateOnYAxis(.015);
     rotateModel();
-  }, 30)
+  }, 35)
 }
 
 export const ConfiguratorContainer = ({ modelOpts, modelOptActions, materialKey }) => {
   const [ref, setRef] = useState(null);
   const [loading, setLoading] = useState(0);
+  const [grabbing, setGrabbing] = useState(false);
 
   useEffect(() => {
     if (!ref) return;
@@ -25,7 +27,7 @@ export const ConfiguratorContainer = ({ modelOpts, modelOptActions, materialKey 
         (xhr) => { setLoading(xhr.loaded / xhr.total * 100); });
 
       setLoading(0);
-      // rotateModel();
+      rotateModel();
       const modelOptions = Configurator.generateModelOptions();
       modelOptActions.setModelOpts(modelOptions);
     }
@@ -33,24 +35,24 @@ export const ConfiguratorContainer = ({ modelOpts, modelOptActions, materialKey 
     loadModel();
   }, [ref])
 
-  // useEffect(() => {
-  //   if (!ref) return;
-  //   let grd = ref.createLinearGradient(300.000, 242.000, 0.000, 58.000);
-      
-  //   // Add colors
-  //   grd.addColorStop(0.000, 'rgba(51, 51, 51, 1.000)');
-  //   grd.addColorStop(0.996, 'rgba(229, 229, 229, 1.000)');
-    
-  //   // Fill with gradient
-  //   ref.fillStyle = grd;
-  //   ref.fillRect(0, 0, 300.000, 300.000);
-  // }, [ref])
+  useEffect(() => {
+    if (!ref) return;
+    ref.addEventListener('mousedown', () => {
+      setGrabbing(true);
+      rotateAt = moment().add(1, 'y');
+    });
+
+    ref.addEventListener('mouseup', () => {
+      setGrabbing(false);
+      rotateAt = moment().add(4, 's');
+    });
+  }, [ref])
 
   Configurator.updateModel(modelOpts);
   Configurator.updateMaterial(materialKey);
 
   return (
-    <div className='iframe-container'>
+    <div className={ `iframe-container ${grabbing ? 'grabbing' : ''}` }>
       <canvas ref={ node => setRef(node) } />
       { Boolean(loading) &&
         <div className='loading-overlay'>
