@@ -7,9 +7,9 @@ let rotateAt = moment();
 
 const rotateModel = () => {
   window.setTimeout(() => {
-    if (moment().isAfter(rotateAt)) Configurator.rotateOnYAxis(.015);
+    if (moment().isAfter(rotateAt)) Configurator.rotateOnYAxis(.005);
     rotateModel();
-  }, 35)
+  }, 12)
 }
 
 export const ConfiguratorContainer = ({ modelOpts, modelOptActions, materialKey }) => {
@@ -24,29 +24,32 @@ export const ConfiguratorContainer = ({ modelOpts, modelOptActions, materialKey 
     const loadModel = async () => {
       await Configurator.loadModel(
         'https://cbfowler4.s3.amazonaws.com/Initial+Launch+Rev2.fbx',
-        (xhr) => { setLoading(xhr.loaded / xhr.total * 100); });
+        (xhr) => { setLoading(xhr.loaded / xhr.total * 100); }
+      );
 
-      setLoading(0);
-      rotateModel();
       const modelOptions = Configurator.generateModelOptions();
       modelOptActions.setModelOpts(modelOptions);
+      console.log('here')
+      setLoading(0);
+      rotateModel();
     }
 
     loadModel();
   }, [ref])
 
   useEffect(() => {
+    // HANDLE GRABBING BASED ON EVENTS
     if (!ref) return;
-    ref.addEventListener('mousedown', () => {
-      setGrabbing(true);
-      rotateAt = moment().add(1, 'y');
-    });
-
-    ref.addEventListener('mouseup', () => {
-      setGrabbing(false);
-      rotateAt = moment().add(4, 's');
-    });
+    ref.addEventListener('mousedown', () => { setGrabbing(true); });
+    ref.addEventListener('mouseout', () => { setGrabbing(false); });
+    ref.addEventListener('mouseup', () => { setGrabbing(false); });
   }, [ref])
+
+  useEffect(() => {
+    // HANDLE ROTATION BASED ON GRABBING
+    if (!grabbing) rotateAt = moment().add(4, 's');
+    else rotateAt = moment().add(1, 'y');
+  }, [grabbing])
 
   Configurator.updateModel(modelOpts);
   Configurator.updateMaterial(materialKey);

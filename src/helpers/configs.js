@@ -49,8 +49,8 @@ export const MATERIALS_CONFIG = {
   bronze: {
     text: 'Bronze-Silver',
     material: {
-      color: new THREE.Color('rgb(110, 102, 63)'),
-      specular: new THREE.Color('rgb(110, 102, 63)'),
+      color: new THREE.Color('rgb(96, 91, 63)'),
+      specular: new THREE.Color('rgb(80, 80, 80)'),
       shininess: 10,
     },
   },

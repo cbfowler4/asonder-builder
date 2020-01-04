@@ -170,7 +170,13 @@ export const Selector = ({ modelOptActions, setMaterialKey, materialKey }) => {
   }
 
   return (
-    <div className='selector'>
+    <div
+      className='selector'
+      onClick={ (e) => {
+        e.stopPropagation();
+        console.log('here')
+      }
+    }>
       <OptionsList />
       <VersionOptionsList />
       <HiddenSelect />
