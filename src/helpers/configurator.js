@@ -1,4 +1,3 @@
-
 import {
   ATTR_DISPLAY_CONFIG,
   SELECTOR_WIDTH,
@@ -17,8 +16,8 @@ class Configurator {
 
     this.scene = new THREE.Scene();
 
-    var axesHelper = new THREE.AxesHelper( 5 );
-    this.scene.add( axesHelper );
+    // var axesHelper = new THREE.AxesHelper( 5 );
+    // this.scene.add( axesHelper );
   
     this.createCamera();
     this.createControls();
@@ -149,7 +148,7 @@ class Configurator {
   }
 
   rotateOnYAxis(angle) {
-    // this.parent.rotateY(angle);
+    this.parent.rotateY(angle);
     this.render();
   }
 
@@ -211,8 +210,8 @@ class Configurator {
   
     const ssaoPass = new THREE.SSAOPass(this.scene, this.camera, this.width, this.height);
     // ssaoPass.output = THREE.SSAOPass.OUTPUT.Depth;
-    ssaoPass.kernelRadius = .01;
-    ssaoPass.maxDistance = .05;
+    ssaoPass.kernelRadius = .1;
+    ssaoPass.maxDistance = .2;
     ssaoPass.minDistance = .001;
     this.composer.addPass(ssaoPass);
 

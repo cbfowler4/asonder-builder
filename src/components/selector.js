@@ -11,7 +11,9 @@ export const Selector = ({ modelOptActions, setMaterialKey, materialKey }) => {
   const [attrMenu, setAttrMenu] = useState('');
   const [text, setText] = useState('');
   
-  useEffect(() => { updateConfiguratorText(text); }, [text]);
+  useEffect(() => {
+    // updateConfiguratorText(text);
+  }, [text]);
 
   const OptionsList = () => {
     const optionsList = ATTR_ORDER.reduce((acc, attr) => {
@@ -170,13 +172,7 @@ export const Selector = ({ modelOptActions, setMaterialKey, materialKey }) => {
   }
 
   return (
-    <div
-      className='selector'
-      onClick={ (e) => {
-        e.stopPropagation();
-        console.log('here')
-      }
-    }>
+    <div className='selector'>
       <OptionsList />
       <VersionOptionsList />
       <HiddenSelect />
