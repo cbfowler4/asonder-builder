@@ -43,7 +43,7 @@ class Configurator {
 
     this.renderer.toneMappingExposure = 1.5;
     this.width = window.innerWidth <= CONFIGURATOR_MIN_WIDTH ? window.innerWidth : window.innerWidth - SELECTOR_WIDTH;
-    this.height = window.innerHeight > 750 ? 600 : window.innerHeight - 175;
+    this.height = window.innerHeight > 700 ? 600 : window.innerHeight - 175;
 
     this.renderer.setSize(this.width, this.height);
 
@@ -56,7 +56,7 @@ class Configurator {
     this.camera = new THREE.PerspectiveCamera(45, this.width/this.height, 1, 150);
     this.camera.position.z = 1; 
     this.camera.position.y = 1;
-    this.camera.position.x = -4;
+    this.camera.position.x = this.width <= CONFIGURATOR_MIN_WIDTH ? -8 : -4;
   }
 
   createLighting() {
