@@ -4,7 +4,6 @@ import Configurator from './helpers/configurator';
 import { useModelOpts } from './helpers/helpers';
 import { MATERIALS_CONFIG } from './helpers/configs';
 
-import './loader.css';
 import './components/configurator.css';
 import './index.css';
 

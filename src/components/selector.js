@@ -33,6 +33,7 @@ export const Selector = ({ modelOptActions, setMaterialKey, materialKey }) => {
         >
           <h2 className='attr-label'>{ attrDisplay.label }</h2>
           <h1 className='sel-attr-title'>{ selectedVersion.text }</h1>
+          <img src='./assets/pent.svg' ></img>
         </div>
       );
       return acc;
