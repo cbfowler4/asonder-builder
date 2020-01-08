@@ -73,7 +73,7 @@ iframe {
   text-align: right;
 }
 
-.selector .sel-attr-title {
+.selector .sel-attr-title, #message-display {
   font-size: 16px;
   text-align: center;
   width: 100%;
@@ -111,6 +111,9 @@ iframe {
   border-bottom: none;
 }
 
+.option-tile input[type="radio"] {
+  display: none;
+}
 
 .selector .verions-options-list .option-tile.active {
   background: rgb(81, 141, 81);
@@ -151,6 +154,15 @@ iframe {
 #custom-message:focus {
   /* outline: thick double rgb(20, 90, 20); */
   outline: none;
+}
+
+#message-display {
+  background-color: transparent;
+  font-style: normal;
+  text-transform: none;
+  color: white;
+  border: none;
+  font-weight: 400;
 }
 
 canvas:focus {
@@ -260,6 +272,10 @@ canvas:focus {
   text-align: center;
 }
 
+.option-tile.small #message-display {
+  font-size: 11px;
+}
+
 @media (max-width: 750px) {
   .configurator-root {
     flex-direction: column;
@@ -276,6 +292,7 @@ canvas:focus {
   .selector .verions-options-list {
     top: -150px;
     display: flex;
+    flex-direction: row;
     left: 0;
     right: 0;
     width: 100%;
@@ -298,7 +315,7 @@ canvas:focus {
     padding: 10px;
   }
 
-  .selector .sel-attr-title {
+  .selector .sel-attr-title, #message-display {
     font-size: 11px;
   }
 }

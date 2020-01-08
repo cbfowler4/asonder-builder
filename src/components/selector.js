@@ -33,7 +33,12 @@ export const Selector = ({ modelOptActions, setMaterialKey, materialKey }) => {
         >
           <h2 className='attr-label'>{ attrDisplay.label }</h2>
           <h1 className='sel-attr-title'>{ selectedVersion.text }</h1>
-          {/* <img src='./assets/pent.svg' ></img> */}
+          <input
+            type='radio'
+            name={ `properties[${attrDisplay.label}]` }
+            value={ selectedVersion.text }
+            checked
+          />
         </div>
       );
       return acc;
@@ -56,6 +61,12 @@ export const Selector = ({ modelOptActions, setMaterialKey, materialKey }) => {
           } }
         >
           <h2 className='attr-label'>Material</h2>
+          <input
+            type='radio'
+            name={ `properties[Material]` }
+            value={ materialDisplay.text }
+            checked
+          />
           <h1 className='sel-attr-title'>{ materialDisplay.text }</h1>
         </div>
       );
@@ -66,20 +77,33 @@ export const Selector = ({ modelOptActions, setMaterialKey, materialKey }) => {
 
       return (
         <div
-          className={ `option-tile ${attrMenu === 'text' ? 'active' : ''}` }
-          key='material-selector'
+          className={
+            `option-tile
+            ${attrMenu === 'text' ? 'active' : ''}
+            ${text && text.length > 18 ? 'small' : ''}
+            `
+          }
           onClick={ () => {
             if (attr === attrMenu) setAttrMenu(''); 
             else setAttrMenu(attr);
           } }
         >
           <h2 className='attr-label'>Custom Text</h2>
-          <h1
-            className='sel-attr-title'
-            style={ { textTransform: 'none' } }
-          >
-            { text ? `"${text}"` : '(No Custom Text)' }
-          </h1>
+          { text ?
+            <input
+              id='message-display'
+              type='text'
+              name='properties[Custom Message]'
+              onChange={ (e) => { } }
+              value={ text }
+              autoFocus
+              disabled
+            />
+          :
+            <h1 className='sel-attr-title' style={ { textTransform: 'none' } }>
+              (No Custom Text)
+            </h1>
+          }
         </div>
       )
     }
@@ -97,13 +121,13 @@ export const Selector = ({ modelOptActions, setMaterialKey, materialKey }) => {
         content = Object.keys(MATERIALS_CONFIG).reduce((acc, key) => {
           const material = MATERIALS_CONFIG[key];
           const optionTile = (
-            <div
+            <label
               className={ `option-tile ${key === materialKey ? 'active' : ''}` }
               key={ key }
               onClick={ () => { setMaterialKey(key); } }
             >
               <h1 className='sel-attr-title'>{ material.text }</h1>
-            </div>
+            </label>
           );
           return acc.concat(optionTile);
         }, []);
@@ -116,8 +140,8 @@ export const Selector = ({ modelOptActions, setMaterialKey, materialKey }) => {
               id='custom-message'
               type='text'
               name='properties[Custom Message]'
-              maxLength='25'
-              placeholder='25 character limit'
+              maxLength='22'
+              placeholder='22 character limit'
               onChange={ (e) => { setText(e.target.value); } }
               value={ text }
               autoFocus
@@ -133,7 +157,7 @@ export const Selector = ({ modelOptActions, setMaterialKey, materialKey }) => {
         header = ATTR_DISPLAY_CONFIG[attrMenu].label;
         content = versions.reduce((acc, el) => {
           const optionTile = (
-            <div
+            <label
               className={ `option-tile ${el.id === selectedVersion.id ? 'active' : ''}` }
               key={ el.id }
               onClick={ () => {
@@ -141,7 +165,7 @@ export const Selector = ({ modelOptActions, setMaterialKey, materialKey }) => {
               }}
             >
               <h1 className='sel-attr-title'>{ el.text }</h1>
-            </div>
+            </label>
           );
           return acc.concat(optionTile);
         }, []);
