@@ -29,8 +29,9 @@ export const ConfiguratorContainer = ({ modelOpts, modelOptActions, materialKey 
 
       const modelOptions = Configurator.generateModelOptions();
       modelOptActions.setModelOpts(modelOptions);
-      console.log('here')
+
       setLoading(0);
+      rotateAt = moment();
       rotateModel();
     }
 
