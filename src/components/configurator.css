@@ -93,11 +93,17 @@ iframe {
   border-bottom-left-radius: 6px;
   transition: all 1s;
   box-sizing: border-box;
+  overflow: hidden;
 }
 
-.selector .verions-options-list.closed {
+.selector.closed .verions-options-list {
   width: 0px;
   transition: all 1s;
+  border: none;
+}
+
+.selector.closed {
+  border-left: 1px solid rgb(101, 121, 101);
 }
 
 .verions-options-list .header {
@@ -302,6 +308,11 @@ canvas:focus {
     border-top-right-radius: 6px;
   }
 
+  .selector.closed {
+    border-top: 1px solid rgb(101, 121, 101);
+    border-left: none;
+  }
+
   .verions-options-list .header {
     display: none;
   }
@@ -309,6 +320,7 @@ canvas:focus {
   .selector {
     width: 100%;
     flex-direction: row;
+    border-left: none;
   }
 
   .option-tile {

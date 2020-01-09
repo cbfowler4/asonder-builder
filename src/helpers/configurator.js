@@ -42,8 +42,7 @@ class Configurator {
     });
 
     this.renderer.toneMappingExposure = 1.5;
-    this.width = window.innerWidth <= CONFIGURATOR_MIN_WIDTH ? window.innerWidth : window.innerWidth - SELECTOR_WIDTH;
-    this.height = window.innerHeight > 700 ? 600 : window.innerHeight - 175;
+    this.setSize();
 
     this.renderer.setSize(this.width, this.height);
 
@@ -111,8 +110,19 @@ class Configurator {
     else this.renderer.render(this.scene, this.camera);
   }
 
+  setSize() {
+    if (window.innerWidth <= CONFIGURATOR_MIN_WIDTH) {
+      this.width = window.innerWidth;
+      this.height = window.innerHeight - 175;
+    }  else {
+      this.width = window.innerWidth - SELECTOR_WIDTH;
+      this.height = 600;
+    } 
+  }
+  
+
   onResizeWindow() {
-    this.width = window.innerWidth <= CONFIGURATOR_MIN_WIDTH ? window.innerWidth : window.innerWidth - SELECTOR_WIDTH;
+    this.setSize();
     this.renderer.domElement.width = this.width;
     this.camera.aspect = this.width / this.height;
     this.renderer.setSize(this.width, this.height);

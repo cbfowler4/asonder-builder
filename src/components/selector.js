@@ -173,7 +173,7 @@ export const Selector = ({ modelOptActions, setMaterialKey, materialKey }) => {
     }
 
     return (
-      <div className={ `verions-options-list ${!content ? 'closed' : ''}` }>
+      <div className='verions-options-list'>
         <h2 className='header'>{ header }</h2>
         { content }
       </div>
@@ -197,7 +197,7 @@ export const Selector = ({ modelOptActions, setMaterialKey, materialKey }) => {
   }
 
   return (
-    <div className='selector'>
+    <div className={ `selector ${attrMenu ? '' : 'closed'}` }>
       <OptionsList />
       <VersionOptionsList />
       <HiddenSelect />
