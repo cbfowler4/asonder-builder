@@ -3,14 +3,20 @@ import {
   SELECTOR_WIDTH,
   MATERIALS_CONFIG,
   CONFIGURATOR_MIN_WIDTH,
+  CONFIGURATOR_MARGIN,
 } from '../helpers/configs';
 import '../helpers/bendModifier';
 
 import { FBXLoader } from '../helpers/FBXLoader';
 const { THREE } = window;
 
+const isMobile = () => {
+  return /iPhone|iPad|iPod|Android/i.test(navigator.userAgent);
+}
+
 class Configurator {
-  init(canvas) {
+  init(canvas, container) {
+    this.container = container;
     this.canvas = canvas;
     this.createRenderer();
 
@@ -26,7 +32,15 @@ class Configurator {
     this.initMaterial();
     this.render();
 
-    window.addEventListener('resize', () => { this.onResizeWindow() })
+    window.addEventListener('resize', () => {
+      if (isMobile()) return;
+      this.onResizeWindow();
+    })
+
+    window.addEventListener("orientationchange", () => {
+      this.onResizeWindow();
+    });
+  
   }
 
 
@@ -111,13 +125,14 @@ class Configurator {
   }
 
   setSize() {
-    if (window.innerWidth <= CONFIGURATOR_MIN_WIDTH) {
-      this.width = window.innerWidth;
-      this.height = window.innerHeight - 175;
-    }  else {
-      this.width = window.innerWidth - SELECTOR_WIDTH;
-      this.height = 600;
-    } 
+
+    this.canvas.style.width ='100%';
+    this.width  = this.canvas.offsetWidth;
+
+    this.canvas.style.height = this.width <= CONFIGURATOR_MIN_WIDTH ?
+      `${window.innerHeight - 200}px` :
+      '600px';
+    this.height = this.canvas.offsetHeight;
   }
   
 
@@ -128,8 +143,6 @@ class Configurator {
     this.renderer.setSize(this.width, this.height);
     this.camera.updateProjectionMatrix();
   }
-
-
 
   // ***************************************************** //
   // ***************** SCENE MANIPULATION **************** //
@@ -226,7 +239,7 @@ class Configurator {
     this.composer.addPass(ssaoPass);
 
     
-    const bloomPass = new THREE.UnrealBloomPass( new THREE.Vector2(window.innerWidth, window.innerHeight), 1.5, 0.4, 0.85);
+    const bloomPass = new THREE.UnrealBloomPass( new THREE.Vector2(this.container.innerWidth, window.innerHeight), 1.5, 0.4, 0.85);
     bloomPass.threshold = .75;
     bloomPass.strength = .4;
     bloomPass.radius = .01;

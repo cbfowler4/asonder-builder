@@ -9,6 +9,7 @@ module.exports = {
     path: path.resolve(__dirname, 'dist'),
     filename: 'uncutbk.bundle.js'
   },
+  sourcemap: true,
   devServer: {
     contentBase: path.join(__dirname, 'dist'),
     compress: true,

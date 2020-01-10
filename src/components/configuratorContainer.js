@@ -13,13 +13,14 @@ const rotateModel = () => {
 }
 
 export const ConfiguratorContainer = ({ modelOpts, modelOptActions, materialKey }) => {
-  const [ref, setRef] = useState(null);
+  const [canvasRef, setCanvasRef] = useState(null);
+  const [containerRef, setContainerRef] = useState(null);
   const [loading, setLoading] = useState(0);
   const [grabbing, setGrabbing] = useState(false);
 
   useEffect(() => {
-    if (!ref) return;
-    Configurator.init(ref);
+    if (!canvasRef) return;
+    Configurator.init(canvasRef, containerRef);
 
     const loadModel = async () => {
       await Configurator.loadModel(
@@ -36,15 +37,15 @@ export const ConfiguratorContainer = ({ modelOpts, modelOptActions, materialKey 
     }
 
     loadModel();
-  }, [ref])
+  }, [canvasRef])
 
   useEffect(() => {
     // HANDLE GRABBING BASED ON EVENTS
-    if (!ref) return;
-    ref.addEventListener('mousedown', () => { setGrabbing(true); });
-    ref.addEventListener('mouseout', () => { setGrabbing(false); });
-    ref.addEventListener('mouseup', () => { setGrabbing(false); });
-  }, [ref])
+    if (!canvasRef) return;
+    canvasRef.addEventListener('mousedown', () => { setGrabbing(true); });
+    canvasRef.addEventListener('mouseout', () => { setGrabbing(false); });
+    canvasRef.addEventListener('mouseup', () => { setGrabbing(false); });
+  }, [canvasRef])
 
   useEffect(() => {
     // HANDLE ROTATION BASED ON GRABBING
@@ -56,8 +57,11 @@ export const ConfiguratorContainer = ({ modelOpts, modelOptActions, materialKey 
   Configurator.updateMaterial(materialKey);
 
   return (
-    <div className={ `iframe-container ${grabbing ? 'grabbing' : ''}` }>
-      <canvas ref={ node => setRef(node) } />
+    <div
+      ref={ node => setContainerRef(node) }
+      className={ `iframe-container ${grabbing ? 'grabbing' : ''}` }
+    >
+      <canvas ref={ node => setCanvasRef(node) } />
       { Boolean(loading) &&
         <div className='loading-overlay'>
           <div className='loading-bar-container'>
