@@ -43,8 +43,10 @@ export const ConfiguratorContainer = ({ modelOpts, modelOptActions, materialKey 
     // HANDLE GRABBING BASED ON EVENTS
     if (!canvasRef) return;
     canvasRef.addEventListener('mousedown', () => { setGrabbing(true); });
+    canvasRef.addEventListener('touchstart', () => { setGrabbing(true); });
     canvasRef.addEventListener('mouseout', () => { setGrabbing(false); });
     canvasRef.addEventListener('mouseup', () => { setGrabbing(false); });
+    canvasRef.addEventListener('touchend', () => { setGrabbing(false); });
   }, [canvasRef])
 
   useEffect(() => {

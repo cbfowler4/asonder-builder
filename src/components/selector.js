@@ -1,5 +1,5 @@
 import Configurator from '../helpers/configurator';
-import { ATTR_ORDER, ATTR_DISPLAY_CONFIG, MATERIALS_CONFIG } from '../helpers/configs';
+import { ATTR_ORDER, ATTR_DISPLAY_CONFIG, MATERIALS_CONFIG, S3_PATH } from '../helpers/configs';
 import { debounce } from '../helpers/helpers';
 
 const { React } = window;
@@ -22,6 +22,7 @@ export const Selector = ({ modelOptActions, setMaterialKey, materialKey }) => {
       if (attrDisplay.versions.length < 2) return acc;
 
       const selectedVersion = modelOptActions.getSelectedVersion(attr) || {};
+
       acc.push(
         <div
           className={ `option-tile ${attrMenu === attr ? 'active' : ''}` }
@@ -32,6 +33,9 @@ export const Selector = ({ modelOptActions, setMaterialKey, materialKey }) => {
           }}
         >
           <h2 className='attr-label'>{ attrDisplay.label }</h2>
+          { selectedVersion.img &&
+            <img className='major-img' src={ `${S3_PATH}${selectedVersion.img}.png` } />
+          }
           <h1 className='sel-attr-title'>{ selectedVersion.text }</h1>
           <input
             type='radio'
@@ -67,6 +71,7 @@ export const Selector = ({ modelOptActions, setMaterialKey, materialKey }) => {
             value={ materialDisplay.text }
             checked
           />
+          <div className='material-icon' style={ { background: materialDisplay.color } }/>
           <h1 className='sel-attr-title'>{ materialDisplay.text }</h1>
         </div>
       );
@@ -89,9 +94,9 @@ export const Selector = ({ modelOptActions, setMaterialKey, materialKey }) => {
           } }
         >
           <h2 className='attr-label'>Custom Text</h2>
-          { text ?
+          { text &&
             <input
-              id='message-display'
+              id='hidden-text'
               type='text'
               name='properties[Custom Message]'
               onChange={ (e) => { } }
@@ -99,11 +104,10 @@ export const Selector = ({ modelOptActions, setMaterialKey, materialKey }) => {
               autoFocus
               disabled
             />
-          :
-            <h1 className='sel-attr-title' style={ { textTransform: 'none' } }>
-              (No Custom Text)
-            </h1>
           }
+          <h1 className='sel-attr-title' style={ { textTransform: 'none' } }>
+            { text ? text : '(No Custom Text)' }
+          </h1>
         </div>
       )
     }
@@ -122,10 +126,11 @@ export const Selector = ({ modelOptActions, setMaterialKey, materialKey }) => {
           const material = MATERIALS_CONFIG[key];
           const optionTile = (
             <label
-              className={ `option-tile ${key === materialKey ? 'active' : ''}` }
+              className={ `version-tile ${key === materialKey ? 'active' : ''}` }
               key={ key }
               onClick={ () => { setMaterialKey(key); } }
             >
+              <div className='material-icon' style={ { background: material.color } }/>
               <h1 className='sel-attr-title'>{ material.text }</h1>
             </label>
           );
@@ -157,15 +162,16 @@ export const Selector = ({ modelOptActions, setMaterialKey, materialKey }) => {
         header = ATTR_DISPLAY_CONFIG[attrMenu].label;
         content = versions.reduce((acc, el) => {
           const optionTile = (
-            <label
-              className={ `option-tile ${el.id === selectedVersion.id ? 'active' : ''}` }
+            <div
+              className={ `version-tile ${el.id === selectedVersion.id ? 'active' : ''}` }
               key={ el.id }
               onClick={ () => {
                 modelOptActions.selectVersion(attrMenu, el.id);
               }}
             >
+              { el.img && <img src={ `${S3_PATH}${el.img}.png` } /> }
               <h1 className='sel-attr-title'>{ el.text }</h1>
-            </label>
+            </div>
           );
           return acc.concat(optionTile);
         }, []);
@@ -173,7 +179,7 @@ export const Selector = ({ modelOptActions, setMaterialKey, materialKey }) => {
     }
 
     return (
-      <div className='verions-options-list'>
+      <div className='versions-options-list'>
         <h2 className='header'>{ header }</h2>
         { content }
       </div>

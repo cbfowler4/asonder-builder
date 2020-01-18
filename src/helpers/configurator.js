@@ -129,7 +129,7 @@ class Configurator {
     this.canvas.style.width ='100%';
     this.width  = this.canvas.offsetWidth;
 
-    this.canvas.style.height = this.width <= CONFIGURATOR_MIN_WIDTH ?
+    this.canvas.style.height = window.innerWidth <= CONFIGURATOR_MIN_WIDTH ?
       `${window.innerHeight - 200}px` :
       '600px';
     this.height = this.canvas.offsetHeight;
