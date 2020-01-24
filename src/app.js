@@ -4,7 +4,8 @@ import Configurator from './helpers/configurator';
 import { useModelOpts } from './helpers/helpers';
 import { MATERIALS_CONFIG } from './helpers/configs';
 
-import './components/configurator.css';
+import './components/configurator.scss';
+import './components/selector.scss';
 import './index.css';
 
 
@@ -25,12 +26,12 @@ export const App = () => {
         modelOpts={ modelOpts }
         modelOptActions={ modelOptActions }
         materialKey={ materialKey }
-      />
+        />
       <Selector
         modelOptActions={ modelOptActions }
         setMaterialKey={ setMaterialKey }
         materialKey={ materialKey }
-      />
+        />
     </div>
   )
 }

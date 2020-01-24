@@ -3,7 +3,6 @@ const { THREE } = window;
 export const DEFAULT_URLID = 'fd82a3d61802402fb50684bf1199348f';
 export const DEFAULT_PREFIX = 'initial-launch-rev2';
 
-export const SELECTOR_WIDTH = 150;
 export const CONFIGURATOR_MIN_WIDTH = 750;
 export const S3_PATH = 'https://cbfowler4.s3.amazonaws.com/uncut_assets/'
 

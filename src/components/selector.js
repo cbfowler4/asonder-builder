@@ -7,8 +7,32 @@ const { useState, useEffect } = React;
 
 const updateConfiguratorText = debounce((text) => { Configurator.updateText(text); }, 1000);
 
+const HiddenSelect = () => {
+  const majorAttrDisp = ATTR_DISPLAY_CONFIG.major;
+
+  const options = majorAttrDisp.versions.reduce((acc, el) => {
+    const selected = el.id === Configurator.majorAttr;
+    const element = <option key={ el.id } selected={ selected ? true : false } value={ el.variant } />;
+    return acc.concat(element);
+  }, []);
+
+  return (
+    <select name='id' id='ProductSelect' className='product-single__variants no-js'>
+      {options}
+    </select>
+  );
+}
+
+const BackArrow = () => (
+  <svg style={ { height: 15 } } viewBox="0 0 477.175 477.175">
+      <path fill='white' stroke-width='20' d="M360.731,229.075l-225.1-225.1c-5.3-5.3-13.8-5.3-19.1,0s-5.3,13.8,0,19.1l215.5,215.5l-215.5,215.5
+        c-5.3,5.3-5.3,13.8,0,19.1c2.6,2.6,6.1,4,9.5,4c3.4,0,6.9-1.3,9.5-4l225.1-225.1C365.931,242.875,365.931,234.275,360.731,229.075z
+        "/>
+  </svg>
+)
+
 export const Selector = ({ modelOptActions, setMaterialKey, materialKey }) => {
-  const [attrMenu, setAttrMenu] = useState('');
+  const [selectedAttr, setSelectedAttr] = useState('');
   const [text, setText] = useState('');
   
   useEffect(() => {
@@ -25,12 +49,9 @@ export const Selector = ({ modelOptActions, setMaterialKey, materialKey }) => {
 
       acc.push(
         <div
-          className={ `option-tile ${attrMenu === attr ? 'active' : ''}` }
+          className={ `option-tile ${selectedAttr === attr ? 'active' : ''}` }
           key={ `${attrDisplay.label}-${selectedVersion.text}`}
-          onClick={ () => {
-            if (attr === attrMenu) setAttrMenu(''); 
-            else setAttrMenu(attr);
-          }}
+          onClick={ () => { setSelectedAttr(attr); }}
         >
           <h2 className='attr-label'>{ attrDisplay.label }</h2>
           { selectedVersion.img &&
@@ -57,11 +78,11 @@ export const Selector = ({ modelOptActions, setMaterialKey, materialKey }) => {
 
       return (
         <div
-          className={ `option-tile ${attrMenu === 'material' ? 'active' : ''}` }
+          className={ `option-tile ${selectedAttr === 'material' ? 'active' : ''}` }
           key='material-selector'
           onClick={ () => {
-            if (attr === attrMenu) setAttrMenu(''); 
-            else setAttrMenu(attr);
+            if (attr === selectedAttr) setSelectedAttr(''); 
+            else setSelectedAttr(attr);
           } }
         >
           <h2 className='attr-label'>Material</h2>
@@ -84,13 +105,13 @@ export const Selector = ({ modelOptActions, setMaterialKey, materialKey }) => {
         <div
           className={
             `option-tile
-            ${attrMenu === 'text' ? 'active' : ''}
+            ${selectedAttr === 'text' ? 'active' : ''}
             ${text && text.length > 18 ? 'small' : ''}
             `
           }
           onClick={ () => {
-            if (attr === attrMenu) setAttrMenu(''); 
-            else setAttrMenu(attr);
+            if (attr === selectedAttr) setSelectedAttr(''); 
+            else setSelectedAttr(attr);
           } }
         >
           <h2 className='attr-label'>Custom Text</h2>
@@ -102,7 +123,6 @@ export const Selector = ({ modelOptActions, setMaterialKey, materialKey }) => {
               onChange={ (e) => { } }
               value={ text }
               autoFocus
-              disabled
             />
           }
           <h1 className='sel-attr-title' style={ { textTransform: 'none' } }>
@@ -112,14 +132,20 @@ export const Selector = ({ modelOptActions, setMaterialKey, materialKey }) => {
       )
     }
 
-    return optionsList.concat(<MaterialSelector />).concat(<CustomTextSelector />);
+    return (
+      <div className='option-list'>
+        { optionsList }
+        <MaterialSelector />
+        <CustomTextSelector />
+      </div>
+    );
   }
 
   const VersionOptionsList = () => {
     let content = null;
     let header = '';
 
-    switch (attrMenu) {
+    switch (selectedAttr) {
       case 'material':
         header = 'Material';
         content = Object.keys(MATERIALS_CONFIG).reduce((acc, key) => {
@@ -131,7 +157,7 @@ export const Selector = ({ modelOptActions, setMaterialKey, materialKey }) => {
               onClick={ () => { setMaterialKey(key); } }
             >
               <div className='material-icon' style={ { background: material.color } }/>
-              <h1 className='sel-attr-title'>{ material.text }</h1>
+              <h1 className='sel-attr-title sel-material'>{ material.text }</h1>
             </label>
           );
           return acc.concat(optionTile);
@@ -155,18 +181,18 @@ export const Selector = ({ modelOptActions, setMaterialKey, materialKey }) => {
         );
         break;
       default:
-        const selectedVersion = modelOptActions.getSelectedVersion(attrMenu);
-        const versions = modelOptActions.getAvailableVersions(attrMenu);
+        const selectedVersion = modelOptActions.getSelectedVersion(selectedAttr);
+        const versions = modelOptActions.getAvailableVersions(selectedAttr);
         if (versions.length === 0) break;
 
-        header = ATTR_DISPLAY_CONFIG[attrMenu].label;
+        header = ATTR_DISPLAY_CONFIG[selectedAttr].label;
         content = versions.reduce((acc, el) => {
           const optionTile = (
             <div
               className={ `version-tile ${el.id === selectedVersion.id ? 'active' : ''}` }
               key={ el.id }
               onClick={ () => {
-                modelOptActions.selectVersion(attrMenu, el.id);
+                modelOptActions.selectVersion(selectedAttr, el.id);
               }}
             >
               { el.img && <img src={ `${S3_PATH}${el.img}.png` } /> }
@@ -179,31 +205,24 @@ export const Selector = ({ modelOptActions, setMaterialKey, materialKey }) => {
     }
 
     return (
-      <div className='versions-options-list'>
-        <h2 className='header'>{ header }</h2>
-        { content }
+      <div className='version-list'>
+        <div className='top-container'>
+          <h2 className='header'>{ header }</h2>
+          { content }
+        </div>
+        <div
+          className='version-back-btn'
+          onClick={ () => { setSelectedAttr(''); } }
+        >
+          <span>BACK</span>
+          <BackArrow />
+        </div>
       </div>
     )
   }
 
-  const HiddenSelect = () => {
-    const majorAttrDisp = ATTR_DISPLAY_CONFIG.major;
-
-    const options = majorAttrDisp.versions.reduce((acc, el) => {
-      const selected = el.id === Configurator.majorAttr;
-      const element = <option key={ el.id } selected={ selected ? true : false } value={ el.variant } />;
-      return acc.concat(element);
-    }, []);
-
-    return (
-      <select name='id' id='ProductSelect' className='product-single__variants no-js'>
-        ${options}
-      </select>
-    );
-  }
-
   return (
-    <div className={ `selector ${attrMenu ? '' : 'closed'}` }>
+    <div className={ `selector ${selectedAttr ? 'show-versions' : ''}` }>
       <OptionsList />
       <VersionOptionsList />
       <HiddenSelect />

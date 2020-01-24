@@ -1,9 +1,7 @@
 import {
   ATTR_DISPLAY_CONFIG,
-  SELECTOR_WIDTH,
   MATERIALS_CONFIG,
   CONFIGURATOR_MIN_WIDTH,
-  CONFIGURATOR_MARGIN,
 } from '../helpers/configs';
 import '../helpers/bendModifier';
 
