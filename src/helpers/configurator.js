@@ -29,6 +29,7 @@ class Configurator {
     this.createLighting();
     this.initMaterial();
     this.render();
+    // this.createStats();
 
     window.addEventListener('resize', () => {
       if (isMobile()) return;
@@ -41,8 +42,6 @@ class Configurator {
   
   }
 
-
-
   // ***************************************************** //
   // ******************** SCENE SETUP ******************** //
   // ***************************************************** //
@@ -51,6 +50,7 @@ class Configurator {
     this.renderer = new THREE.WebGLRenderer({
       canvas: this.canvas,
       powerPreference: 'high-performance',
+      antialias: false,
     });
 
     this.renderer.toneMappingExposure = 1.5;
@@ -67,7 +67,7 @@ class Configurator {
     this.camera = new THREE.PerspectiveCamera(45, this.width/this.height, 1, 150);
     this.camera.position.z = 1; 
     this.camera.position.y = 1;
-    this.camera.position.x = this.width <= CONFIGURATOR_MIN_WIDTH ? -8 : -4;
+    this.camera.position.x = this.width <= CONFIGURATOR_MIN_WIDTH ? -7 : -4;
   }
 
   createLighting() {
@@ -110,6 +110,12 @@ class Configurator {
     this.controls.addEventListener('change', () => this.render());
   }
 
+  createStats() {
+    this.stats = new Stats();
+    this.stats.showPanel(1); // 0: fps, 1: ms, 2: mb, 3+: custom
+    this.container.appendChild(this.stats.domElement);
+  }
+
   initMaterial() {
     if (this.material) return;
     this.material = new THREE.MeshStandardMaterial();
@@ -118,8 +124,13 @@ class Configurator {
   render() {
     if (!this.renderer) return;
 
+    if (this.stats) this.stats.begin();
+
     if (this.composer) this.composer.render();
     else this.renderer.render(this.scene, this.camera);
+
+
+    if (this.stats) this.stats.end();
   }
 
   setSize() {
@@ -228,14 +239,22 @@ class Configurator {
 
     const renderPass = new THREE.RenderPass(this.scene, this.camera);
     this.composer.addPass(renderPass);
-  
-    const ssaoPass = new THREE.SSAOPass(this.scene, this.camera, this.width, this.height);
-    // ssaoPass.output = THREE.SSAOPass.OUTPUT.Depth;
-    ssaoPass.kernelRadius = .1;
-    ssaoPass.maxDistance = .2;
-    ssaoPass.minDistance = .001;
-    this.composer.addPass(ssaoPass);
-
+    
+    const saoPass = new THREE.SAOPass(this.scene, this.camera, this.width, this.height);
+    saoPass.params = {
+      output: 0,
+      saoBias: 6,
+      saoIntensity: .2,
+      saoScale: 12,
+      saoKernelRadius: 6,
+      saoMinResolution: 0,
+      saoBlur: true,
+      saoBlurRadius: 200,
+      saoBlurStdDev: .4,
+      saoBlurDepthCutoff: 0.01,
+    };
+    
+    this.composer.addPass(saoPass);
     
     const bloomPass = new THREE.UnrealBloomPass( new THREE.Vector2(this.container.innerWidth, window.innerHeight), 1.5, 0.4, 0.85);
     bloomPass.threshold = .75;

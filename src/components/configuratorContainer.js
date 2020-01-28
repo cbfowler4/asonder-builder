@@ -7,9 +7,9 @@ let rotateAt = moment();
 
 const rotateModel = () => {
   window.setTimeout(() => {
-    if (moment().isAfter(rotateAt)) Configurator.rotateOnYAxis(.005);
+    if (moment().isAfter(rotateAt)) Configurator.rotateOnYAxis(.007);
     rotateModel();
-  }, 12)
+  }, 25)
 }
 
 export const ConfiguratorContainer = ({ modelOpts, modelOptActions, materialKey }) => {
@@ -24,8 +24,8 @@ export const ConfiguratorContainer = ({ modelOpts, modelOptActions, materialKey 
 
     const loadModel = async () => {
       await Configurator.loadModel(
-        'https://uncut-pipes.s3.amazonaws.com/Initial+Launch+Rev2.fbx',
-        // 'https://cbfowler4.s3.amazonaws.com/Initial+Launch+Rev2.fbx',
+        // 'https://uncut-pipes.s3.amazonaws.com/Initial+Launch+Rev2.fbx',
+        'https://cbfowler4.s3.amazonaws.com/Initial+Launch+Rev2.fbx',
         (xhr) => { setLoading(xhr.loaded / xhr.total * 100); }
       );
 

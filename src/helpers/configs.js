@@ -46,21 +46,21 @@ export const ATTR_DISPLAY_CONFIG = {
 };
 
 export const MATERIALS_CONFIG = {
-  bronze: {
-    text: 'Bronze-Silver',
-    color: 'rgb(146, 137, 85)',
-    material: {
-      color: new THREE.Color('rgb(100, 98, 98)'),
-      specular: new THREE.Color('rgb(100, 100, 100)'),
-      shininess: 11,
-    },
-  },  
   black: {
     text: 'Black Matte',
     color: 'rgb(0, 0, 0)',
     material: {
       color: new THREE.Color('rgb(35, 35, 35)'),
       specular: new THREE.Color('rgb(80, 80, 80)'),
+      shininess: 11,
+    },
+  },
+  bronze: {
+    text: 'Bronze-Silver',
+    color: 'rgb(146, 137, 85)',
+    material: {
+      color: new THREE.Color('rgb(100, 98, 98)'),
+      specular: new THREE.Color('rgb(100, 100, 100)'),
       shininess: 11,
     },
   },
