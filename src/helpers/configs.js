@@ -73,3 +73,6 @@ export const ATTR_ORDER = [
   'bowl',
   'stand',
 ];
+
+export const FONT_FILE_PATH = 'https://cbfowler4.s3.amazonaws.com/Roboto-Regular-edited.otf';
+// export const FONT_FILE_PATH = 'https://cbfowler4.s3.amazonaws.com/Roboto-Regular.ttf';

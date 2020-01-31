@@ -42,11 +42,13 @@
   border-bottom: none;
 }
 
-.option-tile:hover,
-.version-tile:hover,
-.version-back-btn:hover {
-  background: rgb(20, 90, 20);
-  cursor: pointer;
+.selector.not-mobile {
+  .option-tile:hover,
+  .version-tile:hover,
+  .version-back-btn:hover {
+    background: rgb(20, 90, 20);
+    cursor: pointer;
+  }
 }
 
 .selector .attr-label {

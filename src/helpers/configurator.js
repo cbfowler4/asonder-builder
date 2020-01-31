@@ -2,15 +2,13 @@ import {
   ATTR_DISPLAY_CONFIG,
   MATERIALS_CONFIG,
   CONFIGURATOR_MIN_WIDTH,
+  FONT_FILE_PATH,
 } from '../helpers/configs';
 import '../helpers/bendModifier';
 
 import { FBXLoader } from '../helpers/FBXLoader';
+import { isMobile } from '../helpers/helpers';
 const { THREE } = window;
-
-const isMobile = () => {
-  return /iPhone|iPad|iPod|Android/i.test(navigator.userAgent);
-}
 
 class Configurator {
   init(canvas, container) {
@@ -64,7 +62,7 @@ class Configurator {
   }
 
   createCamera() {
-    this.camera = new THREE.PerspectiveCamera(45, this.width/this.height, 1, 150);
+    this.camera = new THREE.PerspectiveCamera(45, this.width/this.height, 2, 150);
     this.camera.position.z = 1; 
     this.camera.position.y = 1;
     this.camera.position.x = this.width <= CONFIGURATOR_MIN_WIDTH ? -7 : -4;
@@ -104,8 +102,9 @@ class Configurator {
     this.controls.target.set(0, 0, 0);
 
     this.controls.maxDistance = 10;
-    this.controls.minDistance = 3;
+    this.controls.minDistance = 4.5;
     this.controls.rotateSpeed = .5;
+    this.controls.panSpeed = 0;
     this.controls.update();
     this.controls.addEventListener('change', () => this.render());
   }
@@ -170,8 +169,7 @@ class Configurator {
     const loader = new THREE.TTFLoader();
     const fontLoader = new THREE.FontLoader();
 
-    loader.load('https://cbfowler4.s3.amazonaws.com/Roboto-Regular.ttf',
-     (font) => this.font = fontLoader.parse(font))
+    loader.load(FONT_FILE_PATH, (font) => this.font = fontLoader.parse(font));
   }
 
   centerModel() {
@@ -231,7 +229,6 @@ class Configurator {
     this.textModel.position.set(.25, 1, -.05);
     this.textModel.rotateY(Math.PI / 2)
     this.textModel.rotateZ(Math.PI / 2)
-    this.textModel.castShadow = true;
   }
 
   addPostProcessing() {
@@ -243,14 +240,14 @@ class Configurator {
     const saoPass = new THREE.SAOPass(this.scene, this.camera, this.width, this.height);
     saoPass.params = {
       output: 0,
-      saoBias: 6,
-      saoIntensity: .2,
+      saoBias: 8,
+      saoIntensity: .5,
       saoScale: 12,
-      saoKernelRadius: 6,
+      saoKernelRadius: 5,
       saoMinResolution: 0,
       saoBlur: true,
-      saoBlurRadius: 200,
-      saoBlurStdDev: .4,
+      saoBlurRadius: 300,
+      saoBlurStdDev: .2,
       saoBlurDepthCutoff: 0.01,
     };
     

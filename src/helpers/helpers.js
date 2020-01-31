@@ -105,3 +105,7 @@ export const useModelOpts = (initModelOptions) => {
     actions
   ]
 }
+
+export const isMobile = () => {
+  return /iPhone|iPad|iPod|Android/i.test(navigator.userAgent);
+}

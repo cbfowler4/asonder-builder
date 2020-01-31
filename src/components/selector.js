@@ -1,6 +1,6 @@
 import Configurator from '../helpers/configurator';
 import { ATTR_ORDER, ATTR_DISPLAY_CONFIG, MATERIALS_CONFIG, S3_PATH } from '../helpers/configs';
-import { debounce } from '../helpers/helpers';
+import { debounce, isMobile } from '../helpers/helpers';
 
 const { React } = window;
 const { useState, useEffect } = React;
@@ -222,7 +222,13 @@ export const Selector = ({ modelOptActions, setMaterialKey, materialKey }) => {
   }
 
   return (
-    <div className={ `selector ${selectedAttr ? 'show-versions' : ''}` }>
+    <div
+      className={
+        `selector
+        ${selectedAttr ? 'show-versions' : ''}
+        ${isMobile() ? '' : 'not-mobile'}`
+      }
+    >
       <OptionsList />
       <VersionOptionsList />
       <HiddenSelect />
