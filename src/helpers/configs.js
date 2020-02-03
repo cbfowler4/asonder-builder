@@ -50,8 +50,8 @@ export const MATERIALS_CONFIG = {
     text: 'Black Matte',
     color: 'rgb(0, 0, 0)',
     material: {
-      color: new THREE.Color('rgb(35, 35, 35)'),
-      specular: new THREE.Color('rgb(80, 80, 80)'),
+      color: new THREE.Color('rgb(30, 30, 30)'),
+      specular: new THREE.Color('rgb(70, 70, 70)'),
       shininess: 11,
     },
   },

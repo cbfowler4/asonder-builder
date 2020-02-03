@@ -10,6 +10,7 @@ import { FBXLoader } from '../helpers/FBXLoader';
 import { isMobile } from '../helpers/helpers';
 const { THREE } = window;
 
+
 class Configurator {
   init(canvas, container) {
     this.container = container;
@@ -17,9 +18,6 @@ class Configurator {
     this.createRenderer();
 
     this.scene = new THREE.Scene();
-
-    // var axesHelper = new THREE.AxesHelper( 5 );
-    // this.scene.add( axesHelper );
   
     this.createCamera();
     this.createControls();
@@ -37,7 +35,6 @@ class Configurator {
     window.addEventListener("orientationchange", () => {
       this.onResizeWindow();
     });
-  
   }
 
   // ***************************************************** //
@@ -47,8 +44,8 @@ class Configurator {
   createRenderer() {
     this.renderer = new THREE.WebGLRenderer({
       canvas: this.canvas,
-      powerPreference: 'high-performance',
       antialias: false,
+      precision: 'mediump',
     });
 
     this.renderer.toneMappingExposure = 1.5;
@@ -62,7 +59,7 @@ class Configurator {
   }
 
   createCamera() {
-    this.camera = new THREE.PerspectiveCamera(45, this.width/this.height, 2, 150);
+    this.camera = new THREE.PerspectiveCamera(45, this.width/this.height, 1, 150);
     this.camera.position.z = 1; 
     this.camera.position.y = 1;
     this.camera.position.x = this.width <= CONFIGURATOR_MIN_WIDTH ? -7 : -4;
@@ -72,7 +69,7 @@ class Configurator {
     var textLight = new THREE.DirectionalLight('#f7ebc0', .3);
     var textLight2 = new THREE.DirectionalLight('#f7ebc0', .3);
     var textLight3 = new THREE.DirectionalLight('#f7ebc0', .4);
-    var light2 = new THREE.DirectionalLight('#f7ebc0', .7);
+    var light2 = new THREE.DirectionalLight('#f7ebc0', .5);
     var light3 = new THREE.DirectionalLight('#f7ebc0', .49);
 
     textLight.position.set(-1, -1, 0);
@@ -80,9 +77,6 @@ class Configurator {
     textLight3.position.set(1, 1, -1);
     light2.position.set(-1, 1, -1);
     light3.position.set(0, 1.5, 2.5);
-
-    // var helper = new THREE.DirectionalLightHelper(light3, 1);
-    // this.scene.add( helper );
   
     this.scene.add(textLight);
     this.scene.add(textLight2);
@@ -102,7 +96,7 @@ class Configurator {
     this.controls.target.set(0, 0, 0);
 
     this.controls.maxDistance = 10;
-    this.controls.minDistance = 4.5;
+    this.controls.minDistance = 3.5;
     this.controls.rotateSpeed = .5;
     this.controls.panSpeed = 0;
     this.controls.update();
@@ -237,17 +231,22 @@ class Configurator {
     const renderPass = new THREE.RenderPass(this.scene, this.camera);
     this.composer.addPass(renderPass);
     
-    const saoPass = new THREE.SAOPass(this.scene, this.camera, this.width, this.height);
+    const saoPass = new THREE.SAOPass(
+      this.scene,
+      this.camera,
+      true,
+      false,
+    );
     saoPass.params = {
       output: 0,
-      saoBias: 8,
-      saoIntensity: .5,
+      saoBias: 5,
+      saoIntensity: .3,
       saoScale: 12,
-      saoKernelRadius: 5,
+      saoKernelRadius: 8,
       saoMinResolution: 0,
-      saoBlur: true,
+      saoBlur: false,
       saoBlurRadius: 300,
-      saoBlurStdDev: .2,
+      saoBlurStdDev: 0.05,
       saoBlurDepthCutoff: 0.01,
     };
     
@@ -255,7 +254,7 @@ class Configurator {
     
     const bloomPass = new THREE.UnrealBloomPass( new THREE.Vector2(this.container.innerWidth, window.innerHeight), 1.5, 0.4, 0.85);
     bloomPass.threshold = .75;
-    bloomPass.strength = .4;
+    bloomPass.strength = .3;
     bloomPass.radius = .01;
     this.composer.addPass(bloomPass);
     
@@ -263,10 +262,11 @@ class Configurator {
     this.composer.addPass(vigPass);
 
 
-    const fxaaPass = new THREE.ShaderPass( THREE.FXAAShader );
+    const fxaaPass = new THREE.ShaderPass(THREE.FXAAShader);
     var pixelRatio = this.renderer.getPixelRatio();
     fxaaPass.material.uniforms[ 'resolution' ].value.x = 1 / (this.canvas.offsetWidth * pixelRatio);
     fxaaPass.material.uniforms[ 'resolution' ].value.y = 1 / (this.canvas.offsetHeight * pixelRatio);
+
     this.composer.addPass(fxaaPass); 
   }
 
