@@ -45,7 +45,7 @@ class Configurator {
     this.renderer = new THREE.WebGLRenderer({
       canvas: this.canvas,
       antialias: false,
-      precision: 'mediump',
+      precision: 'highp',
     });
 
     this.renderer.toneMappingExposure = 1.5;
@@ -239,8 +239,8 @@ class Configurator {
     );
     saoPass.params = {
       output: 0,
-      saoBias: 5,
-      saoIntensity: .3,
+      saoBias: 7,
+      saoIntensity: .2,
       saoScale: 12,
       saoKernelRadius: 8,
       saoMinResolution: 0,
@@ -251,6 +251,7 @@ class Configurator {
     };
     
     this.composer.addPass(saoPass);
+
     
     const bloomPass = new THREE.UnrealBloomPass( new THREE.Vector2(this.container.innerWidth, window.innerHeight), 1.5, 0.4, 0.85);
     bloomPass.threshold = .75;
