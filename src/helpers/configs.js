@@ -30,8 +30,8 @@ export const ATTR_DISPLAY_CONFIG = {
   bowl: {
     label: 'Bowl',
     versions: [
-      { id: 'v0', text: 'Standard', img: 'standard' },
       { id: 'v1', text: 'Spiral', img: 'spiral' },
+      { id: 'v0', text: 'Standard', img: 'standard' },
       { id: 'v2', text: 'Cauldron', img: 'cauldron' },
     ]
   },
@@ -68,9 +68,9 @@ export const MATERIALS_CONFIG = {
 
 export const ATTR_ORDER = [
   'major',
-  'stem',
-  'mouth',
   'bowl',
+  'mouth',
+  'stem',
   'stand',
 ];
 

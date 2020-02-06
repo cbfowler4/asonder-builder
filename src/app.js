@@ -4,9 +4,9 @@ import Configurator from './helpers/configurator';
 import { useModelOpts } from './helpers/helpers';
 import { MATERIALS_CONFIG } from './helpers/configs';
 
-import './components/configurator.scss';
-import './components/selector.scss';
-import './index.css';
+import './styles/configurator.scss';
+import './styles/selector.scss';
+import './styles/index.css';
 
 
 
