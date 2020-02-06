@@ -95,10 +95,16 @@ class Configurator {
     this.controls = new THREE.OrbitControls(this.camera, this.renderer.domElement);
     this.controls.target.set(0, 0, 0);
 
-    this.controls.maxDistance = 10;
-    this.controls.minDistance = 3.5;
+    if (isMobile()) {
+      this.controls.maxDistance = 6;
+    } else {
+      this.controls.maxDistance = 8;
+    }
+    
+    this.controls.minDistance = 3;
     this.controls.rotateSpeed = .5;
     this.controls.panSpeed = 0;
+
     this.controls.update();
     this.controls.addEventListener('change', () => this.render());
   }
