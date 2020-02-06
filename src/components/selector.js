@@ -53,11 +53,10 @@ export const Selector = ({ modelOptActions, setMaterialKey, materialKey }) => {
           key={ `${attrDisplay.label}-${selectedVersion.text}`}
           onClick={ () => { setSelectedAttr(attr); }}
         >
-          <h2 className='attr-label'>{ attrDisplay.label }</h2>
           { selectedVersion.img &&
             <img className='major-img' src={ `${S3_PATH}${selectedVersion.img}.png` } />
           }
-          <h1 className='sel-attr-title'>{ selectedVersion.text }</h1>
+          <h1 className='sel-attr-title'>{ attrDisplay.label }</h1>
           <input
             type='radio'
             name={ `properties[${attrDisplay.label}]` }
@@ -85,7 +84,6 @@ export const Selector = ({ modelOptActions, setMaterialKey, materialKey }) => {
             else setSelectedAttr(attr);
           } }
         >
-          <h2 className='attr-label'>Material</h2>
           <input
             type='radio'
             name={ `properties[Material]` }
@@ -93,7 +91,7 @@ export const Selector = ({ modelOptActions, setMaterialKey, materialKey }) => {
             checked
           />
           <div className='material-icon' style={ { background: materialDisplay.color } }/>
-          <h1 className='sel-attr-title'>{ materialDisplay.text }</h1>
+          <h1 className='sel-attr-title'>Material</h1>
         </div>
       );
     }
@@ -114,7 +112,6 @@ export const Selector = ({ modelOptActions, setMaterialKey, materialKey }) => {
             else setSelectedAttr(attr);
           } }
         >
-          <h2 className='attr-label'>Custom Text</h2>
           { text &&
             <input
               id='hidden-text'
@@ -125,9 +122,7 @@ export const Selector = ({ modelOptActions, setMaterialKey, materialKey }) => {
               autoFocus
             />
           }
-          <h1 className='sel-attr-title' style={ { textTransform: 'none' } }>
-            { text ? text : '(No Custom Text)' }
-          </h1>
+          <h1 className='sel-attr-title' style={ { textTransform: 'none' } }>Custom Text</h1>
         </div>
       )
     }
