@@ -62,7 +62,7 @@ class Configurator {
     this.camera = new THREE.PerspectiveCamera(45, this.width/this.height, 1, 150);
     this.camera.position.z = 1; 
     this.camera.position.y = 1;
-    this.camera.position.x = this.width <= CONFIGURATOR_MIN_WIDTH ? -7 : -4;
+    this.camera.position.x = -4;
   }
 
   createLighting() {
@@ -95,12 +95,8 @@ class Configurator {
     this.controls = new THREE.OrbitControls(this.camera, this.renderer.domElement);
     this.controls.target.set(0, 0, 0);
 
-    if (isMobile()) {
-      this.controls.maxDistance = 6;
-    } else {
-      this.controls.maxDistance = 8;
-    }
     
+    this.controls.maxDistance = 6;
     this.controls.minDistance = 3;
     this.controls.rotateSpeed = .5;
     this.controls.panSpeed = 0;
@@ -244,8 +240,8 @@ class Configurator {
     );
     saoPass.params = {
       output: 0,
-      saoBias: 7,
-      saoIntensity: .2,
+      saoBias: 6.5,
+      saoIntensity: .3,
       saoScale: 12,
       saoKernelRadius: 8,
       saoMinResolution: 0,
