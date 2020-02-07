@@ -1,6 +1,6 @@
 import {
-  ATTR_DISPLAY_CONFIG,
-  MATERIALS_CONFIG,
+  ATTRIBUTE_CONFIG,
+  SPECIAL_ATTRIBUTE_CONFIG,
   CONFIGURATOR_MIN_WIDTH,
   FONT_FILE_PATH,
 } from '../helpers/configs';
@@ -192,7 +192,7 @@ class Configurator {
           this.model = model;
           this.model.rotateX( Math.PI / 2 );
           this.model.rotateY( Math.PI );
-          this.majorAttr = ATTR_DISPLAY_CONFIG.major.versions[0].id;
+          this.majorAttr = ATTRIBUTE_CONFIG.major.versions[0].id;
           
           this.initFont();
           this.centerModel();
@@ -289,9 +289,9 @@ class Configurator {
       if (!versionFull || opt !== 'opt') return;
       const version = versionFull.split('_')[0];
       
-      const dispAttributes = ATTR_DISPLAY_CONFIG[name];
+      const dispAttributes = ATTRIBUTE_CONFIG[name];
 
-      if (!ATTR_DISPLAY_CONFIG[name]) return;
+      if (!ATTRIBUTE_CONFIG[name]) return;
       const defaultVersion = dispAttributes.versions[0];
       
       // TEMP TRANSLATION TO GET PARENT GROUP //
@@ -304,29 +304,16 @@ class Configurator {
         name: node.name,
         selected,
       }
-      // END OF TEMP TRANSLATION
-      
-      // OLD WAY TO GET NEW OPTION
-      // const selected = defaultVersion.id === version && majorAttr === size;
-      // const newOption = {
-      //   id: node.ID,
-      //   name: node.name,
-      //   selected,
-      // }
-      // END OF OLD WAY TO GET NEW OPTION
 
       if (!size || !name || !version) return;
       if (!modelOptions[size]) modelOptions[size] = {};
       if (!modelOptions[size][name]) modelOptions[size][name] = {};
 
-      // modelOptions[size][name][version] = newOption; // OLD WAY TO SET OPTION
       modelOptions[size][name][translatedVersion] = newOption; // TEMP TRANSLATION VERSION TO SET OPTION
     });
 
     return modelOptions;
   }
-
-  
 
   show(name) {
     if (!this.model) return;
@@ -358,18 +345,15 @@ class Configurator {
     this.render(); // call render on updating of model
   }
 
-  updateMaterial(materialKey) {
-    if (!this.model || !materialKey) return;
-    const material = MATERIALS_CONFIG[materialKey] && MATERIALS_CONFIG[materialKey].material;
-    
-    if (!material) {
-      console.log(`MATERIAL FOR KEY '${materialKey}' COULD NOT BE FOUND`);
+  updateMaterial(materialProperties) {
+    if (!this.model || !materialProperties) {
+      console.log(`NO MODEL OR MATERIAL PROPERTIES COULD NOT BE FOUND`);
       return;
     }
 
     const iterateOverMaterialPropertiesAndUpdate = (materialToUpdate) => {
-      Object.keys(material).forEach((key) => {
-        materialToUpdate[key] = material[key];
+      Object.keys(materialProperties).forEach((key) => {
+        materialToUpdate[key] = materialProperties[key];
       })
     }
 

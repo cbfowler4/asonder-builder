@@ -12,7 +12,7 @@ const rotateModel = () => {
   }, 25)
 }
 
-export const ConfiguratorContainer = ({ modelOpts, modelOptActions, materialKey }) => {
+export const CanvasContainer = ({ controllerActions }) => {
   const [canvasRef, setCanvasRef] = useState(null);
   const [containerRef, setContainerRef] = useState(null);
   const [loading, setLoading] = useState(0);
@@ -29,8 +29,9 @@ export const ConfiguratorContainer = ({ modelOpts, modelOptActions, materialKey 
         (xhr) => { setLoading(xhr.loaded / xhr.total * 100); }
       );
 
-      const modelOptions = Configurator.generateModelOptions();
-      modelOptActions.setModelOpts(modelOptions);
+      const initModelOptions = Configurator.generateModelOptions();
+      const initSpecialOptions = controllerActions.Special.generateSpecialOptions();
+      controllerActions.Action.reinitialize(initModelOptions, initSpecialOptions);
 
       setLoading(0);
       rotateAt = moment();
@@ -55,9 +56,6 @@ export const ConfiguratorContainer = ({ modelOpts, modelOptActions, materialKey 
     if (!grabbing) rotateAt = moment().add(4, 's');
     else rotateAt = moment().add(1, 'y');
   }, [grabbing])
-
-  Configurator.updateModel(modelOpts);
-  Configurator.updateMaterial(materialKey);
 
   return (
     <div

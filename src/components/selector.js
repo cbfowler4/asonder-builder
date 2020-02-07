@@ -1,20 +1,13 @@
-import Configurator from '../helpers/configurator';
-import { debounce, isMobile } from '../helpers/helpers';
-import { OptionList } from './optionList';
+import { isMobile } from '../helpers/helpers';
+import { AttributeList } from './attributeList';
 import { VersionList } from './versionList';
 
 const { React } = window;
-const { useState, useEffect } = React;
+const { useState } = React;
 
-const updateConfiguratorText = debounce((text) => { Configurator.updateText(text); }, 1000);
 
-export const Selector = ({ modelOptActions, setMaterialKey, materialKey }) => {
+export const Selector = ({ controllerActions }) => {
   const [selectedAttr, setSelectedAttr] = useState('');
-  const [text, setText] = useState('');
-  
-  useEffect(() => {
-    // updateConfiguratorText(text);
-  }, [text]);
 
   return (
     <div
@@ -24,20 +17,14 @@ export const Selector = ({ modelOptActions, setMaterialKey, materialKey }) => {
         ${isMobile() ? '' : 'not-mobile'}`
       }
     >
-      <OptionList
+      <AttributeList
         setSelectedAttr={ setSelectedAttr }
-        modelOptActions={ modelOptActions }
-        materialKey={ materialKey }
-        text={ text }
+        controllerActions={ controllerActions }
       />
       <VersionList
         selectedAttr={ selectedAttr }
         setSelectedAttr={ setSelectedAttr }
-        modelOptActions={ modelOptActions }
-        materialKey={ materialKey }
-        setMaterialKey={ setMaterialKey }
-        text={ text }
-        setText={ setText }
+        controllerActions={ controllerActions }
       />
     </div>
   );

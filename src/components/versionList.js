@@ -1,4 +1,4 @@
-import { ATTR_DISPLAY_CONFIG, MATERIALS_CONFIG, S3_PATH } from '../helpers/configs';
+import { ATTRIBUTE_CONFIG, S3_PATH } from '../helpers/configs';
 const { React } = window;
 
 
@@ -10,30 +10,32 @@ const BackArrow = () => (
   </svg>
 )
 
-export const VersionList = ({ materialKey, setText, setSelectedAttr, modelOptActions, selectedAttr, setMaterialKey, text }) => {
+export const VersionList = ({ materialKey, setText, setSelectedAttr, controllerActions, selectedAttr, setMaterialKey, text }) => {
   let content = null;
-  let header = '';
+  let header = controllerActions.Info.getSelectedAttribute(selectedAttr).label || '';
 
   switch (selectedAttr) {
     case 'material':
-      header = 'Material';
-      content = Object.keys(MATERIALS_CONFIG).reduce((acc, key) => {
-        const material = MATERIALS_CONFIG[key];
+      const selectedMaterial = controllerActions.Special.getSelectedMaterial() || {};
+      content = controllerActions.Special.getAvailableMaterials().reduce((acc, material) => {
+        const { color, text, id } = material;
         const optionTile = (
           <label
-            className={ `version-tile ${key === materialKey ? 'active' : ''}` }
-            key={ key }
-            onClick={ () => { setMaterialKey(key); } }
+            className={ `version-tile ${selectedMaterial.id === id ? 'active' : ''}` }
+            key={ id }
+            onClick={ () => {
+              controllerActions.Special.selectMaterial(id);
+            } }
           >
-            <div className='material-icon' style={ { background: material.color } }/>
-            <h1 className='sel-attr-title sel-material'>{ material.text }</h1>
+            <div className='material-icon' style={ { background: color } }/>
+            <h1 className='sel-attr-title sel-material'>{ text }</h1>
           </label>
         );
         return acc.concat(optionTile);
       }, []);
       break;
     case 'text':
-      header = 'Custom Text'
+      const text = controllerActions.Special.getCustomText();
       content = (
         <div className='custom-message-container'>
           <input
@@ -42,7 +44,7 @@ export const VersionList = ({ materialKey, setText, setSelectedAttr, modelOptAct
             name='properties[Custom Message]'
             maxLength='22'
             placeholder='22 character limit'
-            onChange={ (e) => { setText(e.target.value); } }
+            onChange={ (e) => { controllerActions.Special.setCustomText(e.target.value); } }
             value={ text }
             autoFocus
           />
@@ -50,25 +52,21 @@ export const VersionList = ({ materialKey, setText, setSelectedAttr, modelOptAct
       );
       break;
     default:
-      const selectedVersion = modelOptActions.getSelectedVersion(selectedAttr);
-      const versions = modelOptActions.getAvailableVersions(selectedAttr);
-      if (versions.length === 0) break;
-
-      header = ATTR_DISPLAY_CONFIG[selectedAttr].label;
-      content = versions.reduce((acc, el) => {
-        const optionTile = (
-          <div
-            className={ `version-tile ${el.id === selectedVersion.id ? 'active' : ''}` }
-            key={ el.id }
-            onClick={ () => {
-              modelOptActions.selectVersion(selectedAttr, el.id);
-            }}
-          >
-            { el.img && <img src={ `${S3_PATH}${el.img}.png` } /> }
-            <h1 className='sel-attr-title'>{ el.text }</h1>
-          </div>
-        );
-        return acc.concat(optionTile);
+      const selectedVersion = controllerActions.Info.getSelectedVersion(selectedAttr);
+      content = controllerActions.Info.getAvailableVersions(selectedAttr)
+        .reduce((acc, version) => {
+          const { id, text, img } = version;
+          const optionTile = (
+            <div
+              className={ `version-tile ${id === selectedVersion.id ? 'active' : ''}` }
+              key={ id }
+              onClick={ () => { controllerActions.Action.selectVersion(selectedAttr, id); } }
+            >
+              { img && <img src={ `${S3_PATH}${img}.png` } /> }
+              <h1 className='sel-attr-title'>{ text }</h1>
+            </div>
+          );
+          return acc.concat(optionTile);
       }, []);
       break;
   }

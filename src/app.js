@@ -1,37 +1,20 @@
-import { ConfiguratorContainer } from './components/configuratorContainer';
+import { CanvasContainer } from './components/canvasContainer';
 import { Selector } from './components/selector';
-import Configurator from './helpers/configurator';
-import { useModelOpts } from './helpers/helpers';
-import { MATERIALS_CONFIG } from './helpers/configs';
+import { useModelController } from './helpers/modelController';
 
 import './styles/configurator.scss';
 import './styles/selector.scss';
 import './styles/index.css';
 
-
-
 const React = window.React;
-const { useEffect, useState } = React;
 
 export const App = () => {
-  const [modelOpts, modelOptActions] = useModelOpts();
-
-  const [materialKey, setMaterialKey] = useState(Object.keys(MATERIALS_CONFIG)[0]);
-
-  useEffect(() => { Configurator.modelOpts = modelOpts; }, [modelOpts]);
+  const { controllerActions } = useModelController();
 
   return (
     <div className='configurator-root'>
-      <ConfiguratorContainer
-        modelOpts={ modelOpts }
-        modelOptActions={ modelOptActions }
-        materialKey={ materialKey }
-        />
-      <Selector
-        modelOptActions={ modelOptActions }
-        setMaterialKey={ setMaterialKey }
-        materialKey={ materialKey }
-        />
+      <CanvasContainer controllerActions={ controllerActions } />
+      <Selector controllerActions={ controllerActions } />
     </div>
   )
 }
