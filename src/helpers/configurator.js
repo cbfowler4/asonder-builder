@@ -133,7 +133,6 @@ class Configurator {
   }
 
   setSize() {
-
     this.canvas.style.width ='100%';
     this.width  = this.canvas.offsetWidth;
 
@@ -197,7 +196,7 @@ class Configurator {
           this.initFont();
           this.centerModel();
           this.addPostProcessing();
-          this.render();
+          this.updateMaterial(SPECIAL_ATTRIBUTE_CONFIG.material.versions[0].materialProperties);
           resolve(model);
         },
         progressCB,
