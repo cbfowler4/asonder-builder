@@ -1,41 +1,41 @@
+@import './keyframes.scss';
+
 .selector {
   margin: 0px 0;
   width: 150px;
-  background: rgb(23, 103, 23);
+  background: transparent;
   box-sizing: border-box;
-  position: relative;
-  border-left: 1px solid rgb(101, 121, 101);
+  position: absolute;
+  bottom: 0;
 }
 
 .option-list {
   display: flex;
   flex-direction: column;
+  flex-wrap: wrap;
 }
 
 .version-list {
-  display: none;
   flex-direction: column;
   justify-content: space-between;
-  background: rgb(23, 103, 23);
   width: 150px;
   height: 600px;
-  transition: all 1s;
   box-sizing: border-box;
-  overflow: hidden;
 }
 
 .option-tile {
-  padding: 15px;
-  height: 150px;
-  width: 100%;
+  margin: 10px;
+  padding: 10px;
+  height: 120px;
+  width: 120px;
+  border-radius: 10px;
   box-sizing: border-box;
   position: relative;
   display: flex;
   flex-direction: column;
   justify-content: center;
   align-items: center;
-  border-bottom: 1px solid rgb(101, 121, 101);
-  transition: all .2s;
+  background: $green1;
 }
 
 .option-tile:last-of-type {
@@ -46,7 +46,6 @@
   .option-tile:hover,
   .version-tile:hover,
   .version-back-btn:hover {
-    background: rgb(20, 90, 20);
     cursor: pointer;
   }
 }
@@ -68,12 +67,24 @@
 }
 
 .selector.show-versions {
-  .option-list {
-    display: none;
+  .version-list {
+    animation-delay: .1s;
+    @include slideup;
+  }
+  
+  .option-tile {
+    animation-delay: .1s;
+    @include slidedown
+  }
+}
+
+.selector {
+  .version-list {
+    @include slidedown;
   }
 
-  .version-list {
-    display: flex;
+  .option-tile {
+    @include slideup;
   }
 }
 
@@ -92,6 +103,7 @@
 
 .version-back-btn {
   border-top: 1px solid rgb(101, 121, 101);
+  background: $green1;
   padding: 12px 20px;
   display: flex;
   align-items: center;
@@ -105,7 +117,7 @@
 
 
 .selector .option-tile.active, .version-tile.active {
-  background: rgb(20, 90, 20);
+  background: $green2;
 }
 
 #ProductSelect {
@@ -155,8 +167,8 @@
 }
 
 .major-img {
-  height: 45px;
-  padding: 15px;
+  height: 35px;
+  padding: 10px;
   box-sizing: content-box;
 }
 
@@ -169,14 +181,13 @@
 .version-tile {
   height: 100px;
   width: 100px;
-  background: rgb(23, 103, 23);
+  background: $green1;
   margin: 20px auto;
   display: flex;
   flex-direction: column;
   align-items: center;
   justify-content: center;
   border-radius: 10px;
-  transition: all .2s;
   padding: 5px;
 }
 
@@ -200,26 +211,17 @@
 @media (max-width: 750px) {
   .selector {
     width: 100%;
-    overflow: scroll;
-    border-left: none;
-    border-top: 1px solid rgb(101, 121, 101);
-    border-bottom: 1px solid rgb(101, 121, 101);
-    height: 142px;
-    transition: all .2s ease-in-out;
   }
 
   .option-list {  
     flex-direction: row;
-    width: fit-content;
-  }
-
-  .selector.show-versions {
-    height: 172px;
+    flex-wrap: wrap;
+    justify-content: center;
   }
 
   .option-tile {
-    height: 140px;
-    width: 130px;
+    height: 90px;
+    width: 90px;
   }
 
   .option-tile {
@@ -230,7 +232,8 @@
     flex-direction: column;
     width: 100%;
     height: unset;
-    
+    position: absolute;
+    bottom: 0;
 
     .top-container {
       display: flex;
@@ -246,10 +249,23 @@
   }
 
   .selector .sel-attr-title, .selector .attr-label, #message-display {
-    font-size: 11px;
+    font-size: 10px;
   }
 
   #custom-message {
     width: 170px;
   }
+}
+
+.version-tile, .option-tile {
+  transition: background 0.5s;
+}
+
+.version-tile:hover, .option-tile:hover {
+  background: $green2 radial-gradient(circle, transparent 1%, $green2 1%) center/15000%;
+}
+
+.version-tile:active, .option-tile:active {
+  background-color: $green1;
+  background-size: 100%;
 }

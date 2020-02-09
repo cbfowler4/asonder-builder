@@ -61,8 +61,8 @@ class Configurator {
   createCamera() {
     this.camera = new THREE.PerspectiveCamera(45, this.width/this.height, 1, 150);
     this.camera.position.z = 1; 
-    this.camera.position.y = 1;
-    this.camera.position.x = isMobile() ? -6 : -4;
+    this.camera.position.y = 0;
+    this.camera.position.x = isMobile() ? -7 : -4;
   }
 
   createLighting() {
@@ -96,7 +96,7 @@ class Configurator {
     this.controls.target.set(0, 0, 0);
 
     
-    this.controls.maxDistance = 8;
+    this.controls.maxDistance = 10;
     this.controls.minDistance = 3;
     this.controls.rotateSpeed = .5;
     this.controls.panSpeed = 0;
@@ -132,9 +132,9 @@ class Configurator {
     this.canvas.style.width ='100%';
     this.width  = this.canvas.offsetWidth;
 
-    this.canvas.style.height = window.innerWidth <= CONFIGURATOR_MIN_WIDTH ?
-      `${window.innerHeight - 200}px` :
-      '600px';
+    // this.canvas.style.height = window.innerWidth <= CONFIGURATOR_MIN_WIDTH ?
+    //   `${window.innerHeight}px` :
+    //   '600px';
     this.height = this.canvas.offsetHeight;
   }
   
@@ -173,8 +173,8 @@ class Configurator {
   }
 
   rotateOnYAxis(angle) {
-    this.parent.rotateY(angle);
-    this.render();
+    // this.parent.rotateY(angle);
+    // this.render();
   }
 
   async loadModel(url, progressCB) {

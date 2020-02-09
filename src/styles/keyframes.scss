@@ -1,0 +1,38 @@
+@keyframes slidedown {
+  from {
+    transform: translateY(0%);
+    visibility: visible;
+  }
+  to {
+    transform: translateY(250%);
+    visibility: hidden;
+  }
+}
+
+@keyframes slideup {
+  from {
+    transform: translateY(250%);
+    visibility: hidden;
+  }
+  to {
+    transform: translateY(0%);
+    visibility: visible;
+  }
+}
+
+@mixin slidedown {
+  animation-duration: .3s;
+  animation-fill-mode: both;
+  animation-timing-function: ease-out;
+  animation-name: slidedown;
+}
+
+@mixin slideup {
+  animation-duration: .3s;
+  animation-fill-mode: both;
+  animation-timing-function: ease-out;
+  animation-name: slideup;
+}
+
+$green1: rgb(23, 103, 23);
+$green2: rgb(20, 90, 20);

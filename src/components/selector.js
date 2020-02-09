@@ -18,6 +18,7 @@ export const Selector = ({ controllerActions }) => {
       }
     >
       <AttributeList
+        selectedAttr={ selectedAttr }
         setSelectedAttr={ setSelectedAttr }
         controllerActions={ controllerActions }
       />

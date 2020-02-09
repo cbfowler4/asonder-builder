@@ -81,7 +81,7 @@ export const VersionList = ({ materialKey, setText, setSelectedAttr, controllerA
         className='version-back-btn'
         onClick={ () => { setSelectedAttr(''); } }
       >
-        <span>BACK</span>
+        <span>MENU</span>
         <BackArrow />
       </div>
     </div>

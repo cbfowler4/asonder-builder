@@ -12,6 +12,17 @@ const rotateModel = () => {
   }, 25)
 }
 
+const LoadingBarOverlay = ({ loading }) => (
+  <div className='loading-overlay'>
+    <div className='loading-bar-container'>
+      <h2>Loading Model...</h2>
+      <div className='loading-bar-total'>
+        <div className='loading-bar' style={ { width: `${loading}%`} } />
+      </div>
+    </div>
+  </div>
+)
+
 export const CanvasContainer = ({ controllerActions }) => {
   const [canvasRef, setCanvasRef] = useState(null);
   const [containerRef, setContainerRef] = useState(null);
@@ -64,14 +75,7 @@ export const CanvasContainer = ({ controllerActions }) => {
     >
       <canvas ref={ node => setCanvasRef(node) } />
       { Boolean(loading) &&
-        <div className='loading-overlay'>
-          <div className='loading-bar-container'>
-            <h2>Loading Model...</h2>
-            <div className='loading-bar-total'>
-              <div className='loading-bar' style={ { width: `${loading}%`} } />
-            </div>
-          </div>
-        </div>
+        <LoadingBarOverlay loading={ loading } />
       }
     </div>
   );
