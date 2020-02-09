@@ -62,7 +62,7 @@ class Configurator {
     this.camera = new THREE.PerspectiveCamera(45, this.width/this.height, 1, 150);
     this.camera.position.z = 1; 
     this.camera.position.y = 1;
-    this.camera.position.x = -4;
+    this.camera.position.x = isMobile() ? -6 : -4;
   }
 
   createLighting() {
@@ -96,7 +96,7 @@ class Configurator {
     this.controls.target.set(0, 0, 0);
 
     
-    this.controls.maxDistance = 6;
+    this.controls.maxDistance = 8;
     this.controls.minDistance = 3;
     this.controls.rotateSpeed = .5;
     this.controls.panSpeed = 0;
