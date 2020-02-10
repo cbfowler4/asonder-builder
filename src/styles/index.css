@@ -4,6 +4,13 @@ html, body {
   color: white;
 }
 
+html, body {
+  overflow-x: hidden;
+}
+body {
+  position: relative
+}
+
 body {
   margin: 0;
   padding: 0;

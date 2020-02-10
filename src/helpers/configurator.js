@@ -59,7 +59,7 @@ class Configurator {
   }
 
   createCamera() {
-    this.camera = new THREE.PerspectiveCamera(45, this.width/this.height, 1, 150);
+    this.camera = new THREE.PerspectiveCamera(35, this.width/this.height, 1, 150);
     this.camera.position.z = 1; 
     this.camera.position.y = 0;
     this.camera.position.x = isMobile() ? -7 : -4;
