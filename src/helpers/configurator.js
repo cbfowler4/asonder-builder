@@ -173,8 +173,8 @@ class Configurator {
   }
 
   rotateOnYAxis(angle) {
-    // this.parent.rotateY(angle);
-    // this.render();
+    this.parent.rotateY(angle);
+    this.render();
   }
 
   async loadModel(url, progressCB) {
