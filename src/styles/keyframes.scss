@@ -21,14 +21,14 @@
 }
 
 @mixin slidedown {
-  animation-duration: .3s;
+  animation-duration: .2s;
   animation-fill-mode: both;
   animation-timing-function: ease-out;
   animation-name: slidedown;
 }
 
 @mixin slideup {
-  animation-duration: .3s;
+  animation-duration: .2s;
   animation-fill-mode: both;
   animation-timing-function: ease-out;
   animation-name: slideup;
