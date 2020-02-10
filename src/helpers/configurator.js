@@ -337,7 +337,7 @@ class Configurator {
       })
     })
 
-    this.render(); // call render on updating of model
+    this.render();
   }
 
   updateMaterial(materialProperties) {
@@ -359,6 +359,8 @@ class Configurator {
         iterateOverMaterialPropertiesAndUpdate(node.material);
       }
     });
+
+    this.render();
   }
 }
 

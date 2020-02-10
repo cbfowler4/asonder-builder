@@ -67,7 +67,7 @@ export const AttributeList = ({ controllerActions, setSelectedAttr }) => {
         return acc.concat(
           <div
             className='option-tile'
-            key={ `${label}-${selectedVersion.text}`}
+            key={ label }
             onClick={ () => { setSelectedAttr(name); }}
           >
             { selectedVersion.imgPath &&

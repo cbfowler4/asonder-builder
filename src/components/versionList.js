@@ -10,9 +10,8 @@ const BackArrow = () => (
   </svg>
 )
 
-export const VersionList = ({ materialKey, setText, setSelectedAttr, controllerActions, selectedAttr, setMaterialKey, text }) => {
+export const VersionList = ({ setSelectedAttr, controllerActions, selectedAttr }) => {
   let content = null;
-  let header = controllerActions.Info.getSelectedAttribute(selectedAttr).label || '';
 
   switch (selectedAttr) {
     case 'material':
@@ -74,15 +73,13 @@ export const VersionList = ({ materialKey, setText, setSelectedAttr, controllerA
   return (
     <div className='version-list'>
       <div className='top-container'>
-        <h2 className='header'>{ header }</h2>
         { content }
       </div>
       <div
         className='version-back-btn'
         onClick={ () => { setSelectedAttr(''); } }
       >
-        <span>MENU</span>
-        <BackArrow />
+        <span>BACK TO MENU</span>
       </div>
     </div>
   )

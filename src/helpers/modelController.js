@@ -125,7 +125,6 @@ export const useModelController = (initModelOptions, initSpecialOptions) => {
           })
         }
   
-        console.log(newModelOpts, attr, versionId);
         setModelOptions(newModelOpts);
       },
     },
