@@ -59,7 +59,7 @@ class Configurator {
   }
 
   createCamera() {
-    this.camera = new THREE.PerspectiveCamera(35, this.width/this.height, 1, 300);
+    this.camera = new THREE.PerspectiveCamera(35, this.width/this.height, 1, 40);
     this.camera.position.z = 1; 
     this.camera.position.y = 0;
     this.camera.position.x = isMobile() ? -7 : -4;
@@ -113,7 +113,7 @@ class Configurator {
 
   initMaterial() {
     if (this.material) return;
-    this.material = new THREE.MeshStandardMaterial();
+    this.material = new THREE.MeshLambertMaterial();
   }
 
   render() {
@@ -240,15 +240,15 @@ class Configurator {
     );
     saoPass.params = {
       output: 0,
-      saoBias: 10,
-      saoIntensity: 1.8,
+      saoBias: 1.5,
+      saoIntensity: 1,
       saoScale: 15,
       saoKernelRadius: 6,
       saoMinResolution: 0,
       saoBlur: false,
       saoBlurRadius: 300,
-      saoBlurStdDev: 0.05,
-      saoBlurDepthCutoff: 0.1,
+      saoBlurStdDev: 0.1,
+      saoBlurDepthCutoff: 0,
     };
     
     this.composer.addPass(saoPass);
@@ -269,7 +269,17 @@ class Configurator {
     fxaaPass.material.uniforms[ 'resolution' ].value.x = 1 / (this.canvas.offsetWidth * pixelRatio);
     fxaaPass.material.uniforms[ 'resolution' ].value.y = 1 / (this.canvas.offsetHeight * pixelRatio);
 
-    this.composer.addPass(fxaaPass); 
+    // this.composer.addPass(fxaaPass); 
+    
+
+    const smaaPass = new THREE.SMAAPass(this.width * pixelRatio, this.height * pixelRatio );
+    // this.composer.addPass(smaaPass);
+
+    // const taaPass = new THREE.TAARenderPass(this.scene, this.camera);
+    // // taaPass.unbiased = false;
+    // taaPass.sampleLevel = 3;
+    // this.composer.addPass(taaPass);
+
   }
 
 
