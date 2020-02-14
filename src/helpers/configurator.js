@@ -59,7 +59,7 @@ class Configurator {
   }
 
   createCamera() {
-    this.camera = new THREE.PerspectiveCamera(35, this.width/this.height, 1, 150);
+    this.camera = new THREE.PerspectiveCamera(35, this.width/this.height, 1, 300);
     this.camera.position.z = 1; 
     this.camera.position.y = 0;
     this.camera.position.x = isMobile() ? -7 : -4;
@@ -97,7 +97,7 @@ class Configurator {
 
     
     this.controls.maxDistance = 10;
-    this.controls.minDistance = 3;
+    this.controls.minDistance = 4;
     this.controls.rotateSpeed = .5;
     this.controls.panSpeed = 0;
 
@@ -240,15 +240,15 @@ class Configurator {
     );
     saoPass.params = {
       output: 0,
-      saoBias: 6.5,
-      saoIntensity: .3,
-      saoScale: 12,
-      saoKernelRadius: 8,
+      saoBias: 10,
+      saoIntensity: 1.8,
+      saoScale: 15,
+      saoKernelRadius: 6,
       saoMinResolution: 0,
       saoBlur: false,
       saoBlurRadius: 300,
       saoBlurStdDev: 0.05,
-      saoBlurDepthCutoff: 0.01,
+      saoBlurDepthCutoff: 0.1,
     };
     
     this.composer.addPass(saoPass);
