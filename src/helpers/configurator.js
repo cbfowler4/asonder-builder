@@ -1,7 +1,6 @@
 import {
   ATTRIBUTE_CONFIG,
   SPECIAL_ATTRIBUTE_CONFIG,
-  CONFIGURATOR_MIN_WIDTH,
   FONT_FILE_PATH,
 } from '../helpers/configs';
 import '../helpers/bendModifier';
@@ -59,15 +58,15 @@ class Configurator {
   }
 
   createCamera() {
-    this.camera = new THREE.PerspectiveCamera(35, this.width/this.height, 2, 10);
+    this.camera = new THREE.PerspectiveCamera(35, this.width/this.height, 2, 11);
     this.camera.position.z = 1; 
     this.camera.position.y = 0;
     this.camera.position.x = isMobile() ? -7 : -4;
   }
 
   createLighting() {
-    var textLight = new THREE.DirectionalLight('#f7ebc0', .3);
-    var textLight2 = new THREE.DirectionalLight('#f7ebc0', .3);
+    var textLight = new THREE.DirectionalLight('#f7ebc0', .4);
+    var textLight2 = new THREE.DirectionalLight('#f7ebc0', .4);
     var textLight3 = new THREE.DirectionalLight('#f7ebc0', .4);
     var light2 = new THREE.DirectionalLight('#f7ebc0', .5);
     var light3 = new THREE.DirectionalLight('#f7ebc0', .49);
@@ -96,9 +95,9 @@ class Configurator {
     this.controls.target.set(0, 0, 0);
 
     
-    this.controls.maxDistance = 8;
+    this.controls.maxDistance = 9;
     this.controls.minDistance = 4.5;
-    this.controls.rotateSpeed = .5;
+    this.controls.rotateSpeed = .4;
     this.controls.panSpeed = 0;
 
     this.controls.update();
@@ -109,6 +108,7 @@ class Configurator {
     this.stats = new Stats();
     this.stats.showPanel(1); // 0: fps, 1: ms, 2: mb, 3+: custom
     this.container.appendChild(this.stats.domElement);
+    this.stats.domElement.style.position = 'absolute';
   }
 
   initMaterial() {
@@ -131,10 +131,6 @@ class Configurator {
   setSize() {
     this.canvas.style.width ='100%';
     this.width  = this.canvas.offsetWidth;
-
-    // this.canvas.style.height = window.innerWidth <= CONFIGURATOR_MIN_WIDTH ?
-    //   `${window.innerHeight}px` :
-    //   '600px';
     this.height = this.canvas.offsetHeight;
   }
   
@@ -229,69 +225,53 @@ class Configurator {
   addPostProcessing() {
     this.composer = new THREE.EffectComposer(this.renderer);
 
+    const copyPass = new THREE.ShaderPass(THREE.CopyShader);
+
     const renderPass = new THREE.RenderPass(this.scene, this.camera);
-    this.composer.addPass(renderPass);
+    renderPass.enabled = false;
     
-    const saoPass = new THREE.SAOPass(
-      this.scene,
-      this.camera,
-      true,
-      false,
-    );
-    saoPass.params = {
-      output: 0,
-      saoBias: 2.5,
-      saoIntensity: .5,
-      saoScale: 2.7,
-      saoKernelRadius: 4,
-      saoMinResolution: 0,
-      saoBlur: false,
-      saoBlurRadius: 300,
-      saoBlurStdDev: 0.05,
-      saoBlurDepthCutoff: 0.01,
-    };;
+    const taaRenderPass = new THREE.TAARenderPass(this.scene, this.camera );
+    taaRenderPass.unbiased = true;
+    taaRenderPass.sampleLevel = 3;
+    taaRenderPass.renderToScreen = true;
+    taaRenderPass.clearColor = 0x7e827f;
+    taaRenderPass.clearAlpha = 1;
     
-    this.composer.addPass(saoPass);
+    const saoPass = new THREE.SAOPass(this.scene, this.camera, true, false);
+      saoPass.params = {
+        output: 0,
+        saoBias: 2.5,
+        saoIntensity: .5,
+        saoScale: 3.5,
+        saoKernelRadius: 4,
+        saoMinResolution: 0,
+      };
 
-    // const ssaoPass = new THREE.SSAOPass( this.scene, this.camera, this.width, this.height );
-    // ssaoPass.kernelRadius = .01;
-    // // debugger
-    // ssaoPass.minDistance = 0;
-    // ssaoPass.maxDistance = .1;
+      const bloomPass = new THREE.UnrealBloomPass( new THREE.Vector2(this.container.innerWidth, window.innerHeight), 1.5, 0.4, 0.85);
+      bloomPass.threshold = .6;
+      bloomPass.strength = .3;
+      bloomPass.radius = .01;
 
-    // this.composer.addPass( ssaoPass );
+      const vigPass = new THREE.ShaderPass(THREE.VignetteShader);
+      this.composer.addPass(vigPass);
+      
+      const fxaaPass = new THREE.ShaderPass(THREE.FXAAShader);
+      var pixelRatio = this.renderer.getPixelRatio();
+      fxaaPass.material.uniforms[ 'resolution' ].value.x = 1 / (this.canvas.offsetWidth * pixelRatio);
+      fxaaPass.material.uniforms[ 'resolution' ].value.y = 1 / (this.canvas.offsetHeight * pixelRatio);
 
+
+      this.composer.addPass(taaRenderPass);
+      this.composer.addPass(renderPass);
+      this.composer.addPass(copyPass);
+      this.composer.addPass(fxaaPass); 
+      this.composer.addPass(bloomPass);
+      this.composer.addPass(vigPass);
+      this.composer.addPass(saoPass);
+    }
     
-    const bloomPass = new THREE.UnrealBloomPass( new THREE.Vector2(this.container.innerWidth, window.innerHeight), 1.5, 0.4, 0.85);
-    bloomPass.threshold = .75;
-    bloomPass.strength = .3;
-    bloomPass.radius = .01;
-    this.composer.addPass(bloomPass);
     
-    const vigPass = new THREE.ShaderPass(THREE.VignetteShader);
-    this.composer.addPass(vigPass);
-
-
-    const fxaaPass = new THREE.ShaderPass(THREE.FXAAShader);
-    var pixelRatio = this.renderer.getPixelRatio();
-    fxaaPass.material.uniforms[ 'resolution' ].value.x = 1 / (this.canvas.offsetWidth * pixelRatio);
-    fxaaPass.material.uniforms[ 'resolution' ].value.y = 1 / (this.canvas.offsetHeight * pixelRatio);
-
-    this.composer.addPass(fxaaPass); 
-    
-
-    // const smaaPass = new THREE.SMAAPass(this.width * pixelRatio, this.height * pixelRatio );
-    // this.composer.addPass(smaaPass);
-
-    // const taaPass = new THREE.TAARenderPass(this.scene, this.camera);
-    // // taaPass.unbiased = false;
-    // taaPass.sampleLevel = 3;
-    // this.composer.addPass(taaPass);
-
-  }
-
-
-  // ***************************************************** //
+    // ***************************************************** //
   // ***************** MODEL MANIPULATION **************** //
   // ***************************************************** //
 
