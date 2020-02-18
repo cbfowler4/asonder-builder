@@ -240,11 +240,11 @@ class Configurator {
     );
     saoPass.params = {
       output: 0,
-      saoBias: 1.5,
+      saoBias: 5,
       saoIntensity: 1,
-      saoScale: 15,
-      saoKernelRadius: 6,
-      saoMinResolution: 0,
+      saoScale: 6,
+      saoKernelRadius: 8,
+      saoMinResolution: .01,
       saoBlur: false,
       saoBlurRadius: 300,
       saoBlurStdDev: 0.1,
@@ -252,6 +252,14 @@ class Configurator {
     };
     
     this.composer.addPass(saoPass);
+
+    // const ssaoPass = new THREE.SSAOPass( this.scene, this.camera, this.width, this.height );
+    // ssaoPass.kernelRadius = .01;
+    // // debugger
+    // ssaoPass.minDistance = 0;
+    // ssaoPass.maxDistance = .1;
+
+    // this.composer.addPass( ssaoPass );
 
     
     const bloomPass = new THREE.UnrealBloomPass( new THREE.Vector2(this.container.innerWidth, window.innerHeight), 1.5, 0.4, 0.85);
@@ -269,10 +277,10 @@ class Configurator {
     fxaaPass.material.uniforms[ 'resolution' ].value.x = 1 / (this.canvas.offsetWidth * pixelRatio);
     fxaaPass.material.uniforms[ 'resolution' ].value.y = 1 / (this.canvas.offsetHeight * pixelRatio);
 
-    // this.composer.addPass(fxaaPass); 
+    this.composer.addPass(fxaaPass); 
     
 
-    const smaaPass = new THREE.SMAAPass(this.width * pixelRatio, this.height * pixelRatio );
+    // const smaaPass = new THREE.SMAAPass(this.width * pixelRatio, this.height * pixelRatio );
     // this.composer.addPass(smaaPass);
 
     // const taaPass = new THREE.TAARenderPass(this.scene, this.camera);
