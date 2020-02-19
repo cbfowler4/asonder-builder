@@ -2,6 +2,8 @@ import {
   ATTRIBUTE_CONFIG,
   SPECIAL_ATTRIBUTE_CONFIG,
   FONT_FILE_PATH,
+  BG_COLOR,
+  BG_ALPHA,
 } from '../helpers/configs';
 import '../helpers/bendModifier';
 
@@ -45,16 +47,16 @@ class Configurator {
       canvas: this.canvas,
       antialias: false,
       precision: 'highp',
+      alpha: true,
     });
 
     this.renderer.toneMappingExposure = 1.5;
+    this.renderer.gammaFactor = 2.2;
+    this.renderer.gammaOutput = true;
+    this.renderer.setClearColor(BG_COLOR, BG_ALPHA);
     this.setSize();
 
     this.renderer.setSize(this.width, this.height);
-
-    this.renderer.setClearColor(0x7e827f, 1); 
-    this.renderer.gammaFactor = 2.2;
-    this.renderer.gammaOutput = true;
   }
 
   createCamera() {
@@ -234,8 +236,8 @@ class Configurator {
     taaRenderPass.unbiased = true;
     taaRenderPass.sampleLevel = 3;
     taaRenderPass.renderToScreen = true;
-    taaRenderPass.clearColor = 0x7e827f;
-    taaRenderPass.clearAlpha = 1;
+    taaRenderPass.clearColor = BG_COLOR;
+    taaRenderPass.clearAlpha = BG_ALPHA;
     
     const saoPass = new THREE.SAOPass(this.scene, this.camera, true, false);
       saoPass.params = {
@@ -247,25 +249,20 @@ class Configurator {
         saoMinResolution: 0,
       };
 
-      const bloomPass = new THREE.UnrealBloomPass( new THREE.Vector2(this.container.innerWidth, window.innerHeight), 1.5, 0.4, 0.85);
-      bloomPass.threshold = .6;
-      bloomPass.strength = .3;
-      bloomPass.radius = .01;
-
       const vigPass = new THREE.ShaderPass(THREE.VignetteShader);
-      this.composer.addPass(vigPass);
-      
+      vigPass.uniforms.darkness.value = .8;
+      vigPass.uniforms.offset.value = 1;
+      vigPass.uniforms.tDiffuse.value = 10;
+
       const fxaaPass = new THREE.ShaderPass(THREE.FXAAShader);
       var pixelRatio = this.renderer.getPixelRatio();
       fxaaPass.material.uniforms[ 'resolution' ].value.x = 1 / (this.canvas.offsetWidth * pixelRatio);
       fxaaPass.material.uniforms[ 'resolution' ].value.y = 1 / (this.canvas.offsetHeight * pixelRatio);
 
-
       this.composer.addPass(taaRenderPass);
       this.composer.addPass(renderPass);
       this.composer.addPass(copyPass);
       this.composer.addPass(fxaaPass); 
-      this.composer.addPass(bloomPass);
       this.composer.addPass(vigPass);
       this.composer.addPass(saoPass);
     }

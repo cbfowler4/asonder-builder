@@ -4,7 +4,9 @@ export const DEFAULT_URLID = 'fd82a3d61802402fb50684bf1199348f';
 export const DEFAULT_PREFIX = 'initial-launch-rev2';
 
 export const CONFIGURATOR_MIN_WIDTH = 750;
-export const S3_PATH = 'https://cbfowler4.s3.amazonaws.com/uncut_assets/'
+export const S3_PATH = 'https://cbfowler4.s3.amazonaws.com/uncut_assets/';
+export const BG_COLOR = 0x898c8a;
+export const BG_ALPHA = .2;
 
 export const ATTRIBUTE_CONFIG = {
   major: {
@@ -36,25 +38,26 @@ export const SPECIAL_ATTRIBUTE_CONFIG = {
     label: 'Material',
     versions: [
       {
-        id: 'black',
-        text: 'Black Matte',
-        color: 'rgb(0, 0, 0)',
-        materialProperties: {
-          color: new THREE.Color('rgb(30, 30, 30)'),
-          specular: new THREE.Color('rgb(70, 70, 70)'),
-          shininess: 11,
-        }
-      },
-      {
         id: 'bronze',
         text: 'Bronze-Silver',
         color: 'rgb(146, 137, 85)',
         materialProperties: {
-          color: new THREE.Color('rgb(100, 98, 98)'),
-          specular: new THREE.Color('rgb(100, 100, 100)'),
-          shininess: 11,
+          color: new THREE.Color('rgb(72, 70, 70)'),
+          specular: new THREE.Color('rgb(110, 110, 110)'),
+          shininess: 13,
         },
       },
+      {
+        id: 'black',
+        text: 'Black Matte',
+        color: 'rgb(0, 0, 0)',
+        materialProperties: {
+          color: new THREE.Color('rgb(14, 14, 14)'),
+          specular: new THREE.Color('rgb(40, 40, 40)'),
+          shininess: 13,
+        }
+      },
+      
     ]
   },
   text: {

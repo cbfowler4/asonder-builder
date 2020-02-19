@@ -30,6 +30,9 @@ iframe {
   position: relative;
   flex-grow: 1;
   display: flex;
+
+  background: rgb(105,106,104);
+  background: linear-gradient(12deg, rgba(105,106,104,1) 0%, rgba(179,180,179,1) 69%, rgba(128,131,127,1) 100%);
 }
 
 .iframe-container:hover {
