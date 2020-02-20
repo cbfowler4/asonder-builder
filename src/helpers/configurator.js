@@ -67,21 +67,18 @@ class Configurator {
   }
 
   createLighting() {
-    var textLight = new THREE.DirectionalLight('#f7ebc0', .4);
-    var textLight2 = new THREE.DirectionalLight('#f7ebc0', .4);
-    var textLight3 = new THREE.DirectionalLight('#f7ebc0', .4);
-    var light2 = new THREE.DirectionalLight('#f7ebc0', .5);
-    var light3 = new THREE.DirectionalLight('#f7ebc0', .49);
+    var textLight = new THREE.DirectionalLight('#edece4', .35);
+    var textLight2 = new THREE.DirectionalLight('#edece4', .5);
+    var light2 = new THREE.DirectionalLight('#edece4', .5);
+    var light3 = new THREE.DirectionalLight('#edece4', .5);
 
-    textLight.position.set(-1, -1, 0);
-    textLight2.position.set(1, -1, 0);
-    textLight3.position.set(1, 1, -1);
+    textLight.position.set(-1, -.4, 0);
+    textLight2.position.set(1, .5, 0);
     light2.position.set(-1, 1, -1);
     light3.position.set(0, 1.5, 2.5);
   
     this.scene.add(textLight);
     this.scene.add(textLight2);
-    this.scene.add(textLight3);
     this.scene.add(light2);
     this.scene.add(light3);    
   }
@@ -242,10 +239,10 @@ class Configurator {
     const saoPass = new THREE.SAOPass(this.scene, this.camera, true, false);
       saoPass.params = {
         output: 0,
-        saoBias: 2.5,
-        saoIntensity: .5,
-        saoScale: 3.5,
-        saoKernelRadius: 4,
+        saoBias: 3,
+        saoIntensity: .8,
+        saoScale: 3,
+        saoKernelRadius: 10,
         saoMinResolution: 0,
       };
 

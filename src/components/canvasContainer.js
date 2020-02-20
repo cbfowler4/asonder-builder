@@ -46,7 +46,7 @@ export const CanvasContainer = ({ controllerActions }) => {
 
       setLoading(0);
       rotateAt = moment();
-      rotateModel();
+      // rotateModel();
     }
 
     loadModel();
