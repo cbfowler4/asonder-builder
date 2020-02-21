@@ -10,13 +10,6 @@ export const BG_ALPHA = .2;
 export const MIN_CAMERA_DISTANCE = 1;
 
 export const ATTRIBUTE_CONFIG = {
-  major: {
-    label: 'Size',
-    versions: [
-      { id: 'solo', text: 'Solo', variant: '14621554311223', price: 85 },
-      { id: 'comm', text: 'Communal', variant: '14621554442295', price: 95 },
-    ]
-  },
   mouth: {
     label: 'Mouthpiece',
     versions: [
@@ -30,6 +23,7 @@ export const ATTRIBUTE_CONFIG = {
       { id: 'v1', text: 'Spiral', img: 'spiral' },
       { id: 'v0', text: 'Standard', img: 'standard' },
       { id: 'v2', text: 'Cauldron', img: 'cauldron' },
+      { id: 'v3', text: 'Rose', img: 'cauldron' },
     ]
   }
 };
@@ -67,7 +61,6 @@ export const SPECIAL_ATTRIBUTE_CONFIG = {
 
 
 export const ATTRIBUTE_ORDER = [
-  'major',
   'bowl',
   'mouth',
   'material',

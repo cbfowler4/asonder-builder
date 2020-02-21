@@ -3,11 +3,9 @@ import Configurator from '../helpers/configurator';
 const { React } = window;
 
 const HiddenSelect = () => {
-  const majorAttrDisp = ATTRIBUTE_CONFIG.major;
-
-  const options = majorAttrDisp.versions.reduce((acc, el) => {
-    const selected = el.id === Configurator.majorAttr;
-    const element = <option key={ el.id } selected={ selected ? true : false } value={ el.variant } />;
+  //select the element's id for Shopify. Shopify will select the variant that corresponds to the value.
+  const options = ['14621554311223'].reduce((acc, el) => {
+    const element = <option key={ el } selected value={ el } />;
     return acc.concat(element);
   }, []);
 

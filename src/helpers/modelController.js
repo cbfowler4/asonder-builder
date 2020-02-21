@@ -21,7 +21,7 @@ export const useModelController = (initModelOptions, initSpecialOptions) => {
   }, [specialOptions.material]);
 
   useEffect(() => {
-    updateConfiguratorText(specialOptions.text);
+    // updateConfiguratorText(specialOptions.text);
   }, [specialOptions.text]);
 
   const controllerActions = {
@@ -60,7 +60,7 @@ export const useModelController = (initModelOptions, initSpecialOptions) => {
         return (
           ATTRIBUTE_ORDER.reduce((acc, name) => {
             if (ATTRIBUTE_CONFIG[name]) {
-              const { label } = ATTRIBUTE_CONFIG[name] || {}; 
+              const { label } = ATTRIBUTE_CONFIG[name] || {};
               if (controllerActions.Info.getAvailableVersions(name).length < 2) return acc; // if less than 2 versions are provided it is no configurable
               return acc.concat({ name, label });  
             } else if (SPECIAL_ATTRIBUTE_CONFIG[name]) {
@@ -71,13 +71,7 @@ export const useModelController = (initModelOptions, initSpecialOptions) => {
         );
       },
       getAvailableVersions: (attr) => {
-        let availableVersions = {};
-        if (attr === 'major') {
-          availableVersions = Object.keys(modelOptions)
-            .reduce((acc, key) => ({ ...acc, [key]: true }), {});
-        } else {
-          availableVersions = (modelOptions[Configurator.majorAttr] || {})[attr] || [];
-        }
+        const availableVersions = (modelOptions|| {})[attr] || [];
         if (!ATTRIBUTE_CONFIG[attr]) return [];
         return ATTRIBUTE_CONFIG[attr].versions
           .filter(version => (availableVersions[version.id]));
@@ -85,9 +79,8 @@ export const useModelController = (initModelOptions, initSpecialOptions) => {
       getSelectedAttribute: (attr) => (ATTRIBUTE_CONFIG[attr] || {}),
       getSelectedVersion: (attr) => {
         if (!attr) return null;
-        if (attr === 'major') return Configurator.majorAttr;
     
-        const versions = modelOptions[Configurator.majorAttr][attr];
+        const versions = modelOptions[attr];
         const selectedVersionId = Object.keys(versions).find((versionId) => versions[versionId].selected);
         const version = ATTRIBUTE_CONFIG[attr].versions.find((version) => version.id === selectedVersionId);
         if (version.img) version.imgPath = `${S3_PATH}${version.img}.png`;
@@ -103,25 +96,23 @@ export const useModelController = (initModelOptions, initSpecialOptions) => {
       selectVersion: (attr, versionId) => {
         if (!attr || !versionId) return;
   
-        const majorAttr = Configurator.majorAttr;
         const newModelOpts = { ...modelOptions };
   
-        if (!newModelOpts[majorAttr][attr]) {
+        if (!newModelOpts[attr]) {
           console.log(`WARNING: Minor attribute ${attr} does not exist`);
           return;
         }
   
-        if (!newModelOpts[majorAttr][attr][versionId]) {
-          console.log(`WARNING: versionId ${versionId} does not exist on minor attributue ${attr} from major attribute version ${majorAttr}
-          Selecting default version`)
+        if (!newModelOpts[attr][versionId]) {
+          console.log(`WARNING: versionId ${versionId} does not exist on minor attributue ${attr}. Selecting default version`)
           const defaultVersion = ATTRIBUTE_CONFIG[attr].versions[0];
           if (!defaultVersion) throw new Error('No default version to select');
-          Object.keys(newModelOpts[majorAttr][attr]).forEach((v) => {
-            newModelOpts[majorAttr][attr][v] = v === defaultVersion.id;
+          Object.keys(newModelOpts[attr]).forEach((v) => {
+            newModelOpts[attr][v] = v === defaultVersion.id;
           })
         } else {
-          Object.keys(newModelOpts[majorAttr][attr]).forEach((v) => {
-            newModelOpts[majorAttr][attr][v].selected = v === versionId;
+          Object.keys(newModelOpts[attr]).forEach((v) => {
+            newModelOpts[attr][v].selected = v === versionId;
           })
         }
   

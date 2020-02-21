@@ -1,6 +1,7 @@
 import {
   ATTRIBUTE_CONFIG,
   SPECIAL_ATTRIBUTE_CONFIG,
+  CONFIGURATOR_MIN_WIDTH,
   FONT_FILE_PATH,
   BG_COLOR,
   BG_ALPHA,
@@ -27,7 +28,7 @@ class Configurator {
     this.createLighting();
     this.initMaterial();
     this.render();
-    // this.createStats();
+    this.createStats();
 
     window.addEventListener('resize', () => {
       if (isMobile()) return;
@@ -61,10 +62,10 @@ class Configurator {
   }
 
   createCamera() {
-    this.camera = new THREE.PerspectiveCamera(35, this.width/this.height, 0.1, 11);
+    this.camera = new THREE.PerspectiveCamera(35, this.width/this.height, 0.1, 15);
     this.camera.position.z = 1; 
     this.camera.position.y = 0;
-    this.camera.position.x = isMobile() ? -7 : -4;
+    this.camera.position.x = isMobile() ? -10 : -6;
   }
 
   createLighting() {
@@ -95,7 +96,7 @@ class Configurator {
     this.controls.target.set(0, 0, 0);
 
     
-    this.controls.maxDistance = 9;
+    this.controls.maxDistance = 13;
     this.controls.minDistance = MIN_CAMERA_DISTANCE;
     this.controls.rotateSpeed = .4;
     this.controls.panSpeed = 0;
@@ -131,7 +132,10 @@ class Configurator {
   setSize() {
     this.canvas.style.width ='100%';
     this.width  = this.canvas.offsetWidth;
-    this.height = this.canvas.offsetHeight;
+    this.height = this.width <= CONFIGURATOR_MIN_WIDTH ?
+      .85 * window.innerHeight :
+      this.canvas.offsetHeight;
+
   }
   
 
@@ -140,7 +144,10 @@ class Configurator {
     this.renderer.domElement.width = this.width;
     this.camera.aspect = this.width / this.height;
     this.renderer.setSize(this.width, this.height);
+    this.composer.setSize(this.width, this.height);
+
     this.camera.updateProjectionMatrix();
+    this.render();
   }
 
   // ***************************************************** //
@@ -184,7 +191,6 @@ class Configurator {
           this.model = model;
           this.model.rotateX( Math.PI / 2 );
           this.model.rotateY( Math.PI );
-          this.majorAttr = ATTRIBUTE_CONFIG.major.versions[0].id;
           
           this.initFont();
           this.centerModel();
@@ -244,7 +250,7 @@ class Configurator {
         output: 0,
         saoBias: 3,
         saoIntensity: .8,
-        saoScale: 3,
+        saoScale: 4,
         saoKernelRadius: 10,
         saoMinResolution: 0,
       };
@@ -275,7 +281,7 @@ class Configurator {
   generateModelOptions() {
     const modelOptions = {};
     this.model.traverse((node) => {
-      const [opt, size, name, versionFull] = node.name.split('-');
+      const [opt, name, versionFull] = node.name.split('-');
       if (!versionFull || opt !== 'opt') return;
       const version = versionFull.split('_')[0];
       
@@ -288,18 +294,17 @@ class Configurator {
       const translatedVersion = version.length === 3 ? version.slice(0, 2) : '';
       if (!translatedVersion) return;
 
-      const selected = defaultVersion.id === translatedVersion && this.majorAttr === size;
+      const selected = defaultVersion.id === translatedVersion;
       const newOption = {
         id: node.ID,
         name: node.name,
         selected,
       }
 
-      if (!size || !name || !version) return;
-      if (!modelOptions[size]) modelOptions[size] = {};
-      if (!modelOptions[size][name]) modelOptions[size][name] = {};
+      if (!name || !version) return;
+      if (!modelOptions[name]) modelOptions[name] = {};
 
-      modelOptions[size][name][translatedVersion] = newOption; // TEMP TRANSLATION VERSION TO SET OPTION
+      modelOptions[name][translatedVersion] = newOption; // TEMP TRANSLATION VERSION TO SET OPTION
     });
 
     return modelOptions;
@@ -320,15 +325,13 @@ class Configurator {
   }
 
   updateModel(modelOptions) {
-    Object.values(modelOptions).forEach((minorAttrs) => {
-      Object.values(minorAttrs).forEach((versions) => {
-        Object.values(versions).forEach((version) => {
-          if (version.selected) {
-            this.show(version.name);
-          } else {
-            this.hide(version.name);
-          }
-        })
+    Object.values(modelOptions).forEach((versions) => {
+      Object.values(versions).forEach((version) => {
+        if (version.selected) {
+          this.show(version.name);
+        } else {
+          this.hide(version.name);
+        }
       })
     })
 
