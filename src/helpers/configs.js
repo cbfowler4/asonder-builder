@@ -7,6 +7,7 @@ export const CONFIGURATOR_MIN_WIDTH = 750;
 export const S3_PATH = 'https://cbfowler4.s3.amazonaws.com/uncut_assets/';
 export const BG_COLOR = 0x898c8a;
 export const BG_ALPHA = .2;
+export const MIN_CAMERA_DISTANCE = 1;
 
 export const ATTRIBUTE_CONFIG = {
   major: {
@@ -73,5 +74,6 @@ export const ATTRIBUTE_ORDER = [
   'text',
 ];
 
-export const FONT_FILE_PATH = 'https://cbfowler4.s3.amazonaws.com/Roboto-Regular-edited.otf';
-// export const FONT_FILE_PATH = 'https://cbfowler4.s3.amazonaws.com/Roboto-Regular.ttf';
+// export const FONT_FILE_PATH = 'https://cbfowler4.s3.amazonaws.com/fonts/My+Font_Regular-edited.json';
+export const FONT_FILE_PATH = 'https://cbfowler4.s3.amazonaws.com/fonts/My+Font_Regular+(9).json';
+

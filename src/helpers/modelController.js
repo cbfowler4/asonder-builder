@@ -21,7 +21,7 @@ export const useModelController = (initModelOptions, initSpecialOptions) => {
   }, [specialOptions.material]);
 
   useEffect(() => {
-    // updateConfiguratorText(text);
+    updateConfiguratorText(specialOptions.text);
   }, [specialOptions.text]);
 
   const controllerActions = {

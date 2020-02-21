@@ -4,6 +4,7 @@ import {
   FONT_FILE_PATH,
   BG_COLOR,
   BG_ALPHA,
+  MIN_CAMERA_DISTANCE,
 } from '../helpers/configs';
 import '../helpers/bendModifier';
 
@@ -60,7 +61,7 @@ class Configurator {
   }
 
   createCamera() {
-    this.camera = new THREE.PerspectiveCamera(35, this.width/this.height, 2, 11);
+    this.camera = new THREE.PerspectiveCamera(35, this.width/this.height, 0.1, 11);
     this.camera.position.z = 1; 
     this.camera.position.y = 0;
     this.camera.position.x = isMobile() ? -7 : -4;
@@ -95,7 +96,7 @@ class Configurator {
 
     
     this.controls.maxDistance = 9;
-    this.controls.minDistance = 4.5;
+    this.controls.minDistance = MIN_CAMERA_DISTANCE;
     this.controls.rotateSpeed = .4;
     this.controls.panSpeed = 0;
 
@@ -112,7 +113,7 @@ class Configurator {
 
   initMaterial() {
     if (this.material) return;
-    this.material = new THREE.MeshLambertMaterial();
+    this.material = new THREE.MeshLambertMaterial({ wireframe: false });
   }
 
   render() {
@@ -159,7 +160,8 @@ class Configurator {
     const loader = new THREE.TTFLoader();
     const fontLoader = new THREE.FontLoader();
 
-    loader.load(FONT_FILE_PATH, (font) => this.font = fontLoader.parse(font));
+    // loader.load(FONT_FILE_PATH, (font) => this.font = fontLoader.parse(font));
+    fontLoader.load(FONT_FILE_PATH, (font) => this.font = font);
   }
 
   centerModel() {
@@ -219,6 +221,7 @@ class Configurator {
     this.textModel.position.set(.25, 1, -.05);
     this.textModel.rotateY(Math.PI / 2)
     this.textModel.rotateZ(Math.PI / 2)
+    this.render();
   }
 
   addPostProcessing() {
