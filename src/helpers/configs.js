@@ -33,25 +33,26 @@ export const SPECIAL_ATTRIBUTE_CONFIG = {
     label: 'Material',
     versions: [
       {
-        id: 'bronze',
-        text: 'Bronze-Silver',
-        color: 'rgb(140, 137, 110)',
-        materialProperties: {
-          color: new THREE.Color('rgb(83, 79, 75)'),
-          specular: new THREE.Color('rgb(70, 70, 70)'),
-          shininess: 23,
-        },
-      },
-      {
         id: 'black',
         text: 'Black Matte',
         color: 'rgb(0, 0, 0)',
         materialProperties: {
-          color: new THREE.Color('rgb(16, 16, 16)'),
-          specular: new THREE.Color('rgb(40, 40, 40)'),
-          shininess: 23,
+          color: new THREE.Color('rgb(30, 30, 30)'),
+          specular: new THREE.Color('rgb(45, 45, 45)'),
+          shininess: 30,
         }
       },
+      {
+        id: 'bronze',
+        text: 'Bronze-Silver',
+        color: 'rgb(140, 137, 110)',
+        materialProperties: {
+          color: new THREE.Color('rgb(160, 158, 151)'),
+          specular: new THREE.Color('rgb(45, 45, 45)'),
+          shininess: 40,
+        },
+      },
+      
     ]
   },
   text: {

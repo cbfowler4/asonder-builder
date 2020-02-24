@@ -9,7 +9,6 @@ import {
 } from '../helpers/configs';
 import '../helpers/bendModifier';
 
-import { FBXLoader } from '../helpers/FBXLoader';
 import { isMobile } from '../helpers/helpers';
 const { THREE } = window;
 
@@ -114,7 +113,7 @@ class Configurator {
 
   initMaterial() {
     if (this.material) return;
-    this.material = new THREE.MeshLambertMaterial({ wireframe: false });
+    this.material = new THREE.MeshPhongMaterial({ wireframe: false });
   }
 
   render() {
@@ -157,6 +156,7 @@ class Configurator {
   initFont() {
     this.fontLoader = new THREE.FontLoader();
 
+    this.tessellate = new THREE.TessellateModifier(20);
     this.bendModifier = new THREE.BendModifier();
     
     const direction = new THREE.Vector3(0, 0, -1);
@@ -176,26 +176,43 @@ class Configurator {
     this.model.position.set(-1 * x, 0, -1 * z);
   }
 
+  setMaterial() {
+    this.model.traverse((node) => {
+      if (node.type === 'Mesh') node.material = this.material;
+    });
+  }
+
   rotateOnYAxis(angle) {
     this.parent.rotateY(angle);
     this.render();
   }
 
   async loadModel(url, progressCB) {
-    if (!this.loader) this.loader = new FBXLoader();
+    if (!this.loader) {
+      this.loader = new THREE.GLTFLoader();
+      const dracoLoader = new THREE.DRACOLoader();
+      dracoLoader.setDecoderPath('https://uncut-pipes.s3.amazonaws.com/js/draco/');
+      dracoLoader.preload();
+      this.loader.setDRACOLoader(dracoLoader);
+    }
+
 
     return new Promise((resolve, reject) => {
       this.loader.load(url,
-        (model) => {
+        (gltf) => {
+          const model = gltf.scene.children[0];
           this.parent.add(model);
           this.model = model;
+          this.model.scale.set(45, 45, 45);
           this.model.rotateX( Math.PI / 2 );
           this.model.rotateY( Math.PI );
-          
+
           this.initFont();
           this.centerModel();
+          this.setMaterial();
           this.addPostProcessing();
           this.updateMaterial(SPECIAL_ATTRIBUTE_CONFIG.material.versions[0].materialProperties);
+
           resolve(model);
         },
         progressCB,
@@ -214,9 +231,9 @@ class Configurator {
       font: this.font,
       size: .15,
       height: .03,
-      curveSegments: 50,
     } );
     
+    // this.tessellate.modify(geometry)
     this.bendModifier.modify(geometry);
 
     if (this.textModel) this.model.remove(this.textModel);
@@ -351,13 +368,7 @@ class Configurator {
     }
 
     iterateOverMaterialPropertiesAndUpdate(this.material);
-    
-    this.model.traverse((node) => {
-      if (node.type === 'Mesh') {
-        iterateOverMaterialPropertiesAndUpdate(node.material);
-      }
-    });
-
+  
     this.render();
   }
 }
