@@ -7,7 +7,7 @@ export const CONFIGURATOR_MIN_WIDTH = 750;
 export const S3_PATH = 'https://cbfowler4.s3.amazonaws.com/uncut_assets/';
 export const BG_COLOR = 0x898c8a;
 export const BG_ALPHA = .2;
-export const MIN_CAMERA_DISTANCE = 1;
+export const MIN_CAMERA_DISTANCE = 4;
 
 export const ATTRIBUTE_CONFIG = {
   mouth: {
@@ -21,9 +21,9 @@ export const ATTRIBUTE_CONFIG = {
     label: 'Bowl',
     versions: [
       { id: 'v1', text: 'Spiral', img: 'spiral' },
+      { id: 'v3', text: 'Rose', img: 'rose' },
       { id: 'v0', text: 'Standard', img: 'standard' },
       { id: 'v2', text: 'Cauldron', img: 'cauldron' },
-      { id: 'v3', text: 'Rose', img: 'cauldron' },
     ]
   }
 };
@@ -37,8 +37,8 @@ export const SPECIAL_ATTRIBUTE_CONFIG = {
         text: 'Black Matte',
         color: 'rgb(0, 0, 0)',
         materialProperties: {
-          color: new THREE.Color('rgb(30, 30, 30)'),
-          specular: new THREE.Color('rgb(45, 45, 45)'),
+          color: new THREE.Color('rgb(20, 20, 20)'),
+          specular: new THREE.Color('rgb(40, 40, 40)'),
           shininess: 30,
         }
       },

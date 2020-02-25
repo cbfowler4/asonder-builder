@@ -27,7 +27,7 @@ class Configurator {
     this.createLighting();
     this.initMaterial();
     this.render();
-    this.createStats();
+    // this.createStats();
 
     window.addEventListener('resize', () => {
       if (isMobile()) return;
@@ -61,7 +61,7 @@ class Configurator {
   }
 
   createCamera() {
-    this.camera = new THREE.PerspectiveCamera(35, this.width/this.height, 0.1, 15);
+    this.camera = new THREE.PerspectiveCamera(35, this.width/this.height, 0.5, 15);
     this.camera.position.z = 1; 
     this.camera.position.y = 0;
     this.camera.position.x = isMobile() ? -10 : -6;
@@ -156,7 +156,6 @@ class Configurator {
   initFont() {
     this.fontLoader = new THREE.FontLoader();
 
-    this.tessellate = new THREE.TessellateModifier(20);
     this.bendModifier = new THREE.BendModifier();
     
     const direction = new THREE.Vector3(0, 0, -1);
@@ -232,8 +231,7 @@ class Configurator {
       size: .15,
       height: .03,
     } );
-    
-    // this.tessellate.modify(geometry)
+  
     this.bendModifier.modify(geometry);
 
     if (this.textModel) this.model.remove(this.textModel);
