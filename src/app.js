@@ -4,6 +4,7 @@ import { useModelController } from './helpers/modelController';
 
 import './styles/configurator.scss';
 import './styles/selector.scss';
+import './styles/loader.scss';
 import './styles/index.css';
 
 const React = window.React;

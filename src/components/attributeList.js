@@ -69,7 +69,7 @@ export const AttributeList = ({ controllerActions, setSelectedAttr }) => {
             onClick={ () => { setSelectedAttr(name); }}
           >
             { selectedVersion.imgPath &&
-              <img className='major-img' src={ selectedVersion.imgPath } />
+              <img className='tile-img' src={ selectedVersion.imgPath } />
             }
             <h1 className='sel-attr-title'>{ label }</h1>
             <input

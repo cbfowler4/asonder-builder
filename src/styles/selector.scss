@@ -2,25 +2,18 @@
 
 .selector {
   margin: 0px 0;
-  width: 150px;
   background: transparent;
   box-sizing: border-box;
   position: absolute;
   bottom: 0;
+  width: 100%;
 }
 
-.option-list {
+.option-list, .version-list .top-container {  
   display: flex;
-  flex-direction: column;
+  flex-direction: row;
   flex-wrap: wrap;
-}
-
-.version-list {
-  flex-direction: column;
-  justify-content: space-between;
-  width: 150px;
-  height: 600px;
-  box-sizing: border-box;
+  justify-content: center;
 }
 
 .option-tile, .version-tile {
@@ -31,13 +24,10 @@
   overflow: hidden;
   transform: translate3d(0, 0, 0);
   transition: background .15s ease-in;
-}
-
-.option-tile {
   margin: 8px;
   padding: 10px;
-  height: 120px;
-  width: 120px;
+  height: $tile-size;
+  width: $tile-size;
   border-radius: 10px;
   box-sizing: border-box;
   position: relative;
@@ -48,10 +38,6 @@
   background: $green1;
 }
 
-.option-tile:last-of-type {
-  border-bottom: none;
-}
-
 .selector.not-mobile {
   .option-tile:hover,
   .version-tile:hover,
@@ -60,17 +46,81 @@
   }
 }
 
-.selector .attr-label {
+.tile-img {
+  height: 35px;
+  padding: 10px;
+  box-sizing: content-box;
+}
+
+// .version-tile img {
+//   height: 30px;
+//   padding: 10px;
+//   box-sizing: content-box;
+// }
+
+// .version-tile {
+//   height: $tile-size;
+//   width: $tile-size;
+//   background: $green1;
+//   margin: 10px;
+//   display: flex;
+//   flex-direction: column;
+//   align-items: center;
+//   justify-content: center;
+//   border-radius: 10px;
+//   padding: 5px;
+//   overflow: hidden;
+// }
+
+.material-icon {
+  height: 30px;
+  width: 30px;
+  border: 1px solid rgba(256, 256, 256, .5);
+  border-radius: 50%;
+  margin: 10px;
+}
+
+.sel-attr-title.sel-material {
+  font-size: 13px;
+}
+
+.version-list {
+  flex-direction: column;
+  width: 100%;
+  height: unset;
   position: absolute;
-  top: 10px;
-  right: 10px;
-  font-weight: lighter;
-  font-size: 12px;
-  text-align: right;
+  bottom: 0;
+
+  .top-container {
+    display: flex;
+    justify-content: center;
+  }
+
+  .header {
+    display: none;
+  }
 }
 
 .selector .sel-attr-title, #message-display {
-  font-size: 16px;
+  font-size: 10px;
+}
+
+#custom-message {
+  width: 170px;
+}
+
+
+.option-tile:hover, .version-tile:hover {
+  background: $green3;
+}
+
+.version-back-btn:hover {
+  background: $green3;
+}
+
+
+.selector .sel-attr-title, #message-display {
+  font-size: 10px;
   text-align: center;
   width: 100%;
   word-break: break-word;
@@ -98,19 +148,6 @@
   }
 }
 
-.version-list {
-  .header {
-    text-align: center;
-    padding: 15px;
-    font-weight: 100;
-    font-size: 16px;
-  }
-
-  .option-tile {
-    border-bottom: none;
-  }
-}
-
 .version-back-btn {
   border-top: 1px solid rgb(101, 121, 101);
   background: $green1;
@@ -125,8 +162,6 @@
 .option-tile input[type="radio"] {
   display: none;
 }
-
-
 
 .selector .version-tile.active {
   background: $green2;
@@ -156,7 +191,6 @@
 }
 
 #custom-message:focus {
-  /* outline: thick double rgb(20, 90, 20); */
   outline: none;
 }
 
@@ -174,98 +208,3 @@
   color: white;
 }
 
-.option-tile.small #message-display {
-  font-size: 11px;
-}
-
-.major-img {
-  height: 35px;
-  padding: 10px;
-  box-sizing: content-box;
-}
-
-.version-tile img {
-  height: 30px;
-  padding: 10px;
-  box-sizing: content-box;
-}
-
-.version-tile {
-  height: $tile-size;
-  width: $tile-size;
-  background: $green1;
-  margin: 10px;
-  display: flex;
-  flex-direction: column;
-  align-items: center;
-  justify-content: center;
-  border-radius: 10px;
-  padding: 5px;
-  overflow: hidden;
-}
-
-.material-icon {
-  height: 30px;
-  width: 30px;
-  border: 1px solid rgba(256, 256, 256, .5);
-  border-radius: 50%;
-  margin: 10px;
-}
-
-.sel-attr-title.sel-material {
-  font-size: 13px;
-}
-
-// @media (max-width: 750px) {
-  .selector {
-    width: 100%;
-  }
-
-  .option-list {  
-    flex-direction: row;
-    flex-wrap: wrap;
-    justify-content: center;
-  }
-
-  .option-tile {
-    height: $tile-size;
-    width: $tile-size;
-  }
-
-  .option-tile {
-    border-bottom: none;
-  }
-
-  .version-list {
-    flex-direction: column;
-    width: 100%;
-    height: unset;
-    position: absolute;
-    bottom: 0;
-
-    .top-container {
-      display: flex;
-      justify-content: center;
-    }
-
-    .header {
-      display: none;
-    }
-  }
-
-  .selector .sel-attr-title, .selector .attr-label, #message-display {
-    font-size: 10px;
-  }
-
-  #custom-message {
-    width: 170px;
-  }
-
-
-.option-tile:hover, .version-tile:hover {
-  background: $green3;
-}
-
-.version-back-btn:hover {
-  background: $green3;
-}

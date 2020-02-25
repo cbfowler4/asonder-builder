@@ -1,0 +1,44 @@
+.loading-overlay {
+  background: rgba(0, 0, 0, .5);
+  position: absolute;
+  width: 100%;
+  height: 100%;
+  display: flex;
+  justify-content: center;
+  align-items: center;
+}
+
+.loading-bar-container {
+  width: 250px;
+  height: 100px;
+  display: flex;
+  flex-direction: column;
+  justify-content: center;
+  align-items: center;
+}
+
+.loading-bar-container h2 {
+  color: white;
+  font-size: 18px;
+}
+
+.loading-bar-total {
+  width: 250px;
+  height: 10px;
+  margin-top: 20px;
+  border-radius: 5px;
+  background: rgb(110, 110, 110);
+  position: relative;
+  box-shadow: inset 0px 2px 5px 0px rgba(0,0,0,0.3);
+}
+
+.loading-bar {
+  position: absolute;
+  top: 0;
+  bottom: 0;
+  left: 0;
+  border-radius: 5px;
+  background: rgb(52, 122, 52);
+  width: 50%;
+  box-shadow: inset 0px 2px 5px 0px rgba(0,0,0,0.3);
+}

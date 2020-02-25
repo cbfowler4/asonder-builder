@@ -26,11 +26,6 @@ code {
     monospace;
 }
 
-fieldset {
-  padding: 0;
-  margin: 0;
-}
-
 .root-container {
   padding: 0 30px;
 }

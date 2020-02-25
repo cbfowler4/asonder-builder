@@ -52,7 +52,7 @@ export const VersionList = ({ setSelectedAttr, controllerActions, selectedAttr }
               key={ id }
               onClick={ () => { controllerActions.Action.selectVersion(selectedAttr, id); } }
             >
-              { img && <img src={ `${S3_PATH}${img}.png` } /> }
+              { img && <img className='tile-img' src={ `${S3_PATH}${img}.png` } /> }
               <h1 className='sel-attr-title'>{ text }</h1>
             </div>
           );
