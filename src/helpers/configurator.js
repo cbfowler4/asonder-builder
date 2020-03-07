@@ -160,7 +160,7 @@ class Configurator {
     
     const direction = new THREE.Vector3(0, 0, -1);
     const axis =  new THREE.Vector3(1, 0, 0);
-    const angle = .19 * Math.PI;
+    const angle = .18 * Math.PI;
     this.bendModifier.set(direction, axis, angle);
 
     const loader = new THREE.TTFLoader();
@@ -226,23 +226,45 @@ class Configurator {
   updateText(text) {
     if (!this.font) { console.log('ERROR: NO FONT LOADED'); return; }
 
-    var geometry = new THREE.TextGeometry(text, {
+    const geometry = new THREE.TextGeometry(text, {
       font: this.font,
       size: .15,
-      height: .03,
+      height: .05,
     } );
   
     this.bendModifier.modify(geometry);
 
-    if (this.textModel) this.model.remove(this.textModel);
+    if (this.textModel) this.scene.remove(this.textModel);
 
     this.textModel = new THREE.Mesh(geometry, this.material);
-    this.model.add(this.textModel)
+    this.scene.add(this.textModel);
 
-    this.textModel.position.set(.25, 1, -.05);
-    this.textModel.rotateY(Math.PI / 2)
-    this.textModel.rotateZ(Math.PI / 2)
+    this.setTextPosition();
+
     this.render();
+  }
+
+  setTextPosition() {
+    // Rotate first to ensure coordinate similarity
+    this.textModel.rotateY(-Math.PI / 2);
+  
+    const stem = this.model.getObjectById(this.stemId);
+    const stemBox = new THREE.Box3().setFromObject(stem);
+    const stemCenter = stemBox.getCenter();
+    const textSize = new THREE.Box3().setFromObject(this.textModel).getSize();
+
+
+    const x = stemBox.min.x + .05;
+    const y = stemCenter.y - textSize.y / 2 + .05;
+    const z = stemCenter.z - textSize.z / 2 + .1;
+
+
+    this.textModel.position.set(x, y, z);
+
+    // const axesHelper = new THREE.AxesHelper(2);
+    // const stemBoxHelper = new THREE.BoxHelper().setFromObject(stem);
+    // this.scene.add(stemBoxHelper);
+    // this.scene.add( axesHelper );
   }
 
   addPostProcessing() {
@@ -289,7 +311,7 @@ class Configurator {
     }
     
     
-    // ***************************************************** //
+  // ***************************************************** //
   // ***************** MODEL MANIPULATION **************** //
   // ***************************************************** //
 
@@ -299,8 +321,10 @@ class Configurator {
       const [opt, name, versionFull] = node.name.split('-');
       if (!versionFull || opt !== 'opt') return;
       const version = versionFull.split('_')[0];
-      
+
       const dispAttributes = ATTRIBUTE_CONFIG[name];
+
+      if (name === 'stem') this.stemId = node.id;
 
       if (!ATTRIBUTE_CONFIG[name]) return;
       const defaultVersion = dispAttributes.versions[0];
