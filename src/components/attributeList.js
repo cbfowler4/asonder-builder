@@ -1,5 +1,3 @@
-import { ATTRIBUTE_CONFIG } from '../helpers/configs';
-import Configurator from '../helpers/configurator';
 const { React } = window;
 
 const HiddenSelect = () => {

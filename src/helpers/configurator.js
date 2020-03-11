@@ -21,17 +21,12 @@ class Configurator {
     this.createRenderer();
 
     this.scene = new THREE.Scene();
-  
-    const axesHelper = new THREE.AxesHelper(2);
-    this.scene.add( axesHelper );
 
     this.createCamera();
     this.createControls();
     this.createParent();
     this.createLighting();
     this.initMaterial();
-    this.render();
-    // this.createStats();
 
     window.addEventListener('resize', () => {
       if (isMobile()) return;
@@ -41,6 +36,11 @@ class Configurator {
     window.addEventListener("orientationchange", () => {
       this.onResizeWindow();
     });
+
+    const axesHelper = new THREE.AxesHelper(2);
+    this.scene.add( axesHelper );
+
+    // this.createStats();
   }
 
   // ***************************************************** //
@@ -102,20 +102,6 @@ class Configurator {
     this.resetControls();
   }
 
-  resetControls() {
-    this.updateControls(CONTROL_SETTINGS.default);
-    this.controls.reset();
-    this.render();
-  }
-
-  updateControls(properties) {
-    Object.keys(properties).forEach(prop => {
-      this.controls[prop] = properties[prop];
-    });
-
-    this.controls.reset();
-  }
-
   createStats() {
     this.stats = new Stats();
     this.stats.showPanel(1); // 0: fps, 1: ms, 2: mb, 3+: custom
@@ -160,6 +146,24 @@ class Configurator {
   }
 
   // ***************************************************** //
+  // ***************** CONTROLS MANIPULATION **************** //
+  // ***************************************************** //
+
+  resetControls() {
+    this.updateControls(CONTROL_SETTINGS.default);
+    this.controls.reset();
+    this.render();
+  }
+
+  updateControls(properties) {
+    Object.keys(properties).forEach(prop => {
+      this.controls[prop] = properties[prop];
+    });
+
+    this.controls.reset();
+  }
+
+  // ***************************************************** //
   // ***************** SCENE MANIPULATION **************** //
   // ***************************************************** //
 
@@ -198,11 +202,6 @@ class Configurator {
     this.model.traverse((node) => {
       if (node.type === 'Mesh') node.material = this.material;
     });
-  }
-
-  rotateOnYAxis(angle) {
-    this.parent.rotateY(angle);
-    this.render();
   }
 
   async loadModel(url, progressCB) {

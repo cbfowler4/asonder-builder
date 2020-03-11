@@ -3,15 +3,6 @@ const { React, moment } = window;
 
 const { useEffect, useState } = React;
 
-let rotateAt = moment();
-
-const rotateModel = () => {
-  window.setTimeout(() => {
-    if (moment().isAfter(rotateAt)) Configurator.rotateOnYAxis(.007);
-    rotateModel();
-  }, 25)
-}
-
 const LoadingBarOverlay = ({ loading }) => (
   <div className='loading-overlay'>
     <div className='loading-bar-container'>
@@ -44,8 +35,6 @@ export const CanvasContainer = ({ controllerActions }) => {
       controllerActions.Action.reinitialize(initModelOptions, initSpecialOptions);
 
       setLoading(0);
-      rotateAt = moment();
-      // rotateModel();
     }
 
     loadModel();
@@ -60,12 +49,6 @@ export const CanvasContainer = ({ controllerActions }) => {
     canvasRef.addEventListener('mouseup', () => { setGrabbing(false); });
     canvasRef.addEventListener('touchend', () => { setGrabbing(false); });
   }, [canvasRef])
-
-  useEffect(() => {
-    // HANDLE ROTATION BASED ON GRABBING
-    if (!grabbing) rotateAt = moment().add(4, 's');
-    else rotateAt = moment().add(1, 'y');
-  }, [grabbing])
 
   return (
     <div
