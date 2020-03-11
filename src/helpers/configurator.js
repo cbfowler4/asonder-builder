@@ -5,7 +5,8 @@ import {
   FONT_FILE_PATH,
   BG_COLOR,
   BG_ALPHA,
-  MIN_CAMERA_DISTANCE,
+  CONTROL_SETTINGS,
+  MODEL_SCALE,
 } from '../helpers/configs';
 import '../helpers/bendModifier';
 
@@ -21,6 +22,9 @@ class Configurator {
 
     this.scene = new THREE.Scene();
   
+    const axesHelper = new THREE.AxesHelper(2);
+    this.scene.add( axesHelper );
+
     this.createCamera();
     this.createControls();
     this.createParent();
@@ -93,15 +97,23 @@ class Configurator {
   createControls() {
     this.controls = new THREE.OrbitControls(this.camera, this.renderer.domElement);
     this.controls.target.set(0, 0, 0);
+    this.controls.addEventListener('change', () => { this.render(); });
 
-    
-    this.controls.maxDistance = 13;
-    this.controls.minDistance = MIN_CAMERA_DISTANCE;
-    this.controls.rotateSpeed = .4;
-    this.controls.panSpeed = 0;
+    this.resetControls();
+  }
 
-    this.controls.update();
-    this.controls.addEventListener('change', () => this.render());
+  resetControls() {
+    this.updateControls(CONTROL_SETTINGS.default);
+    this.controls.reset();
+    this.render();
+  }
+
+  updateControls(properties) {
+    Object.keys(properties).forEach(prop => {
+      this.controls[prop] = properties[prop];
+    });
+
+    this.controls.reset();
   }
 
   createStats() {
@@ -134,10 +146,8 @@ class Configurator {
     this.height = this.width <= CONFIGURATOR_MIN_WIDTH ?
       .85 * window.innerHeight :
       this.canvas.offsetHeight;
-
   }
   
-
   onResizeWindow() {
     this.setSize();
     this.renderer.domElement.width = this.width;
@@ -163,16 +173,25 @@ class Configurator {
     const angle = .18 * Math.PI;
     this.bendModifier.set(direction, axis, angle);
 
-    const loader = new THREE.TTFLoader();
     const fontLoader = new THREE.FontLoader();
 
-    // loader.load(FONT_FILE_PATH, (font) => this.font = fontLoader.parse(font));
     fontLoader.load(FONT_FILE_PATH, (font) => this.font = font);
   }
 
   centerModel() {
-    const { x, z } = new THREE.Box3().setFromObject(this.model).getCenter();
-    this.model.position.set(-1 * x, 0, -1 * z);
+    const { x, z } = this.getCenter();
+    const position = this.model.position;
+    this.setPosition( position.x - x, 0, position.z - z );
+    this.resetControls();
+  }
+
+  getCenter(object) {
+    return new THREE.Box3().setFromObject(object || this.model).getCenter();
+  }
+
+  setPosition(x, y, z) {
+    this.model.position.set(x, y, z);
+    this.render();
   }
 
   setMaterial() {
@@ -202,7 +221,7 @@ class Configurator {
           const model = gltf.scene.children[0];
           this.parent.add(model);
           this.model = model;
-          this.model.scale.set(45, 45, 45);
+          this.model.scale.set(MODEL_SCALE, MODEL_SCALE, MODEL_SCALE);
           this.model.rotateX( Math.PI / 2 );
           this.model.rotateY( Math.PI );
 
@@ -228,16 +247,22 @@ class Configurator {
 
     const geometry = new THREE.TextGeometry(text, {
       font: this.font,
-      size: .15,
+      size: .07,
       height: .05,
+      curveSegments: 3,
     } );
   
     this.bendModifier.modify(geometry);
 
     if (this.textModel) this.scene.remove(this.textModel);
 
+    const stem = this.model.getObjectById(this.stemId);
+    const scale = stem.getWorldScale();
     this.textModel = new THREE.Mesh(geometry, this.material);
-    this.scene.add(this.textModel);
+    
+    this.textModel.scale.set(1/scale.x, 1/scale.y, 1/scale.z);
+
+    stem.add(this.textModel);
 
     this.setTextPosition();
 
@@ -245,26 +270,21 @@ class Configurator {
   }
 
   setTextPosition() {
+    if (!this.textModel) return;
     // Rotate first to ensure coordinate similarity
-    this.textModel.rotateY(-Math.PI / 2);
+    this.textModel.rotateX(Math.PI / 2);
+    this.textModel.rotateY(Math.PI / 2);
   
     const stem = this.model.getObjectById(this.stemId);
     const stemBox = new THREE.Box3().setFromObject(stem);
     const stemCenter = stemBox.getCenter();
     const textSize = new THREE.Box3().setFromObject(this.textModel).getSize();
 
+    const x = stemBox.min.x;
+    const y = stemCenter.y - textSize.y / 2;
+    const z = stemCenter.z - textSize.z / 2;
 
-    const x = stemBox.min.x + .05;
-    const y = stemCenter.y - textSize.y / 2 + .05;
-    const z = stemCenter.z - textSize.z / 2 + .1;
-
-
-    this.textModel.position.set(x, y, z);
-
-    // const axesHelper = new THREE.AxesHelper(2);
-    // const stemBoxHelper = new THREE.BoxHelper().setFromObject(stem);
-    // this.scene.add(stemBoxHelper);
-    // this.scene.add( axesHelper );
+    this.textModel.position.set(0, 0, 0);
   }
 
   addPostProcessing() {

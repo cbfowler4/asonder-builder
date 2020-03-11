@@ -3,11 +3,16 @@ import { AttributeList } from './attributeList';
 import { VersionList } from './versionList';
 
 const { React } = window;
-const { useState } = React;
+const { useState, useEffect } = React;
 
 
 export const Selector = ({ controllerActions }) => {
   const [selectedAttr, setSelectedAttr] = useState('');
+
+  useEffect(() => {
+    controllerActions.Action.centerAttribute(selectedAttr);
+    controllerActions.Action.updateControls(selectedAttr);
+  }, [selectedAttr]);
 
   return (
     <div

@@ -1,7 +1,13 @@
 import Configurator from './configurator';
 import { debounce } from './helpers';
 
-import { ATTRIBUTE_ORDER, ATTRIBUTE_CONFIG, S3_PATH, SPECIAL_ATTRIBUTE_CONFIG } from './configs';
+import {
+  ATTRIBUTE_ORDER,
+  ATTRIBUTE_CONFIG,
+  S3_PATH,
+  SPECIAL_ATTRIBUTE_CONFIG,
+  CONTROL_SETTINGS,
+} from './configs';
 
 
 const { React } = window;
@@ -83,6 +89,7 @@ export const useModelController = (initModelOptions, initSpecialOptions) => {
         const versions = modelOptions[attr];
         const selectedVersionId = Object.keys(versions).find((versionId) => versions[versionId].selected);
         const version = ATTRIBUTE_CONFIG[attr].versions.find((version) => version.id === selectedVersionId);
+        version.name = versions[selectedVersionId].name;
         if (version.img) version.imgPath = `${S3_PATH}${version.img}.png`;
   
         return version;
@@ -118,6 +125,28 @@ export const useModelController = (initModelOptions, initSpecialOptions) => {
   
         setModelOptions(newModelOpts);
       },
+      centerAttribute(attr) {
+        if (!Configurator.model) return;
+        if (!attr || attr === 'material' || attr === 'text') {
+          Configurator.centerModel(); return;
+        }
+
+        const version = controllerActions.Info.getSelectedVersion(attr);
+        const model = Configurator.model.getObjectByName(version.name);
+        const modelCenter = Configurator.getCenter(model);
+        const position = Configurator.model.position;
+      
+        Configurator.setPosition(
+          position.x - modelCenter.x,
+          position.y - modelCenter.y,
+          position.z - modelCenter.z,
+        );
+      },
+      updateControls(attr) {
+        if (!Configurator.model) return;
+        const properties = CONTROL_SETTINGS[attr] || CONTROL_SETTINGS.default;
+        Configurator.updateControls(properties);
+      }
     },
   }
 
