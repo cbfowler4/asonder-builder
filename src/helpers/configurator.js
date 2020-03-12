@@ -269,7 +269,19 @@ class Configurator {
 
     _initMaterial() {
       if (this.material) return;
-      this.material = new THREE.MeshPhongMaterial({ wireframe: false });
+      const loader = new THREE.TextureLoader();
+
+      this.textures = {
+        silver: loader.load('https://uncut-public.s3.amazonaws.com/textures/metal-3-silver.jpg'),
+        black: loader.load('https://uncut-public.s3.amazonaws.com/textures/metal-3-black.jpg'),
+      };
+
+      Object.values(this.textures).forEach((texture) => {
+        texture.wrapS = THREE.RepeatWrapping;
+        texture.wrapT = THREE.RepeatWrapping;
+      });
+
+      this.material = new THREE.MeshPhongMaterial();
     }
 
     _setMaterial() {
@@ -279,6 +291,7 @@ class Configurator {
     }
   
     updateMaterial(materialProperties) {
+      // return;
       if (!this.model || !materialProperties) {
         console.log(`NO MODEL OR MATERIAL PROPERTIES COULD NOT BE FOUND`);
         return;
@@ -291,6 +304,7 @@ class Configurator {
       }
   
       iterateOverMaterialPropertiesAndUpdate(this.material);
+      this.material.map = this.textures[materialProperties.texture];
     
       this.render();
     }
