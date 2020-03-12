@@ -10,7 +10,7 @@ import {
 } from './configs';
 
 
-const { React } = window;
+import React from 'react';
 const { useState, useEffect } = React;
 
 const updateConfiguratorText = debounce((text) => { Configurator.updateText(text); }, 1000);

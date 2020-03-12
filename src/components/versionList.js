@@ -1,6 +1,6 @@
 import { S3_PATH } from '../helpers/configs';
 import { isMobile } from '../helpers/helpers';
-const { React } = window;
+import React from 'react';
 
 
 

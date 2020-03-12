@@ -1,15 +1,20 @@
+import React from 'react';
 import Configurator from '../helpers/configurator';
-const { React, moment } = window;
+import { HashLoader } from 'react-spinners';
+
+// const { React, moment } = window;
+
 
 const { useEffect, useState } = React;
 
 const LoadingBarOverlay = ({ loading }) => (
   <div className='loading-overlay'>
     <div className='loading-bar-container'>
-      <h2>Opening Builder</h2>
-      <div className='loading-bar-total'>
+      <h2>Launching Builder</h2>
+      {/* <div className='loading-bar-total'>
         <div className='loading-bar' style={ { width: `${loading}%`} } />
-      </div>
+      </div> */}
+      <HashLoader color={ 'white' } size={ 80 } />
     </div>
   </div>
 )

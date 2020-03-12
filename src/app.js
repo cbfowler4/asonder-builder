@@ -1,3 +1,4 @@
+import React from 'react';
 import { CanvasContainer } from './components/canvasContainer';
 import { Selector } from './components/selector';
 import { AttributeHeader } from './components/attributeHeader';
@@ -9,7 +10,6 @@ import './styles/loader.scss';
 import './styles/attributeHeader.scss';
 import './styles/index.css';
 
-const React = window.React;
 const { useState, useEffect } = React;
 
 export const App = () => {

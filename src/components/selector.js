@@ -1,7 +1,7 @@
 import { isMobile } from '../helpers/helpers';
 import { VersionList } from './versionList';
 
-const { React } = window;
+import React from 'react';
 const { useEffect } = React;
 
 

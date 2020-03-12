@@ -1,4 +1,4 @@
-const { React } = window;
+import React from 'react';
 
 const HiddenSelect = () => {
   //select the element's id for Shopify. Shopify will select the variant that corresponds to the value.

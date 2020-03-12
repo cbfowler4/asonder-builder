@@ -1,5 +1,5 @@
 import { isMobile } from '../helpers/helpers';
-const { React } = window;
+import React from 'react';
 
 const { useState, useEffect } = React;
 
@@ -30,6 +30,7 @@ export const AttributeHeader = ({ controllerActions, selectedIdx, setSelectedIdx
           <h2>{ `Step ${1 + selectedIdx} of ${availableAttributes.length}: ${selectedAttr.label}` }</h2> :
           availableAttributes.map((attr, idx) => (
             <div
+              key={ attr.label }
               className={`header-container ${idx === selectedIdx ? 'active' : ''}`}
               onClick={ () => { setSelectedIdx(idx); }}
             >
