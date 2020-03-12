@@ -71,9 +71,8 @@ export const CONTROL_SETTINGS = {
   bowl: {
     minPolarAngle: Math.PI / 4,
     maxPolarAngle: .45 * Math.PI,
-    maxDistance: 3.5,
-    minDistance: 3,
-    rotateSpeed: .15,
+    maxDistance: 5,
+    minDistance: 4.5,
   },
   mouth: {
     maxDistance: 3,

@@ -1,35 +1,28 @@
 import { isMobile } from '../helpers/helpers';
-import { AttributeList } from './attributeList';
 import { VersionList } from './versionList';
 
 const { React } = window;
-const { useState, useEffect } = React;
+const { useEffect } = React;
 
 
-export const Selector = ({ controllerActions }) => {
-  const [selectedAttr, setSelectedAttr] = useState('');
+export const Selector = ({ controllerActions, selectedIdx, setSelectedIdx }) => {
+  const { name } = controllerActions.Info.getAttributeFromIndex(selectedIdx);
 
   useEffect(() => {
-    controllerActions.Action.centerAttribute(selectedAttr);
-    controllerActions.Action.updateControls(selectedAttr);
-  }, [selectedAttr]);
+    controllerActions.Action.centerAttribute(name);
+    controllerActions.Action.updateControls(name);
+  }, [name]);
 
   return (
     <div
       className={
-        `selector
-        ${selectedAttr ? 'show-versions' : ''}
+        `selector show-versions
         ${isMobile() ? '' : 'not-mobile'}`
       }
     >
-      <AttributeList
-        selectedAttr={ selectedAttr }
-        setSelectedAttr={ setSelectedAttr }
-        controllerActions={ controllerActions }
-      />
       <VersionList
-        selectedAttr={ selectedAttr }
-        setSelectedAttr={ setSelectedAttr }
+        selectedIdx={ selectedIdx }
+        setSelectedIdx={ setSelectedIdx }
         controllerActions={ controllerActions }
       />
     </div>

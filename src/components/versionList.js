@@ -1,10 +1,39 @@
 import { S3_PATH } from '../helpers/configs';
 const { React } = window;
 
-export const VersionList = ({ setSelectedAttr, controllerActions, selectedAttr }) => {
+
+
+export const VersionList = ({ controllerActions, selectedIdx, setSelectedIdx }) => {
   let content = null;
 
-  switch (selectedAttr) {
+  const availableAttributes = controllerActions.Info.getAvailableAttributes();
+  const { name } = controllerActions.Info.getAttributeFromIndex(selectedIdx);
+
+  const VersionBackButton = () => {
+    if (availableAttributes.length === 0) return null;
+
+    return (
+      <div className='nav-btn-container'>
+        { selectedIdx > 0 &&
+          <div onClick={ () => { setSelectedIdx(selectedIdx - 1); } } >
+            BACK
+          </div>
+        }
+        { selectedIdx < availableAttributes.length - 1 &&
+          <div onClick={ () => { setSelectedIdx(selectedIdx + 1); } }>
+            NEXT
+          </div>
+        }
+        { selectedIdx === availableAttributes.length - 1 &&
+          <div onClick={ () => { console.log('done!'); } }>
+            FINISH
+          </div>
+        }
+      </div>
+    );
+  }
+
+  switch (name) {
     case 'material':
       const selectedMaterial = controllerActions.Special.getSelectedMaterial() || {};
       content = controllerActions.Special.getAvailableMaterials().reduce((acc, material) => {
@@ -42,15 +71,15 @@ export const VersionList = ({ setSelectedAttr, controllerActions, selectedAttr }
       );
       break;
     default:
-      const selectedVersion = controllerActions.Info.getSelectedVersion(selectedAttr);
-      content = controllerActions.Info.getAvailableVersions(selectedAttr)
+      const selectedVersion = controllerActions.Info.getSelectedVersion(name);
+      content = controllerActions.Info.getAvailableVersions(name)
         .reduce((acc, version) => {
           const { id, text, img } = version;
           const optionTile = (
             <div
               className={ `version-tile ${id === selectedVersion.id ? 'active' : ''}` }
               key={ id }
-              onClick={ () => { controllerActions.Action.selectVersion(selectedAttr, id); } }
+              onClick={ () => { controllerActions.Action.selectVersion(name, id); } }
             >
               { img && <img className='tile-img' src={ `${S3_PATH}${img}.png` } /> }
               <h1 className='sel-attr-title'>{ text }</h1>
@@ -66,12 +95,7 @@ export const VersionList = ({ setSelectedAttr, controllerActions, selectedAttr }
       <div className='top-container'>
         { content }
       </div>
-      <div
-        className='version-back-btn'
-        onClick={ () => { setSelectedAttr(''); } }
-      >
-        <span>BACK TO MENU</span>
-      </div>
+        <VersionBackButton />
     </div>
   )
 }

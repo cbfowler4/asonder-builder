@@ -18,15 +18,15 @@ class Configurator {
   init(canvas, container) {
     this.container = container;
     this.canvas = canvas;
-    this.createRenderer();
+    this._createRenderer();
 
     this.scene = new THREE.Scene();
 
-    this.createCamera();
-    this.createControls();
-    this.createParent();
-    this.createLighting();
-    this.initMaterial();
+    this._createCamera();
+    this._createControls();
+    this._createParent();
+    this._createLighting();
+    this._initMaterial();
 
     window.addEventListener('resize', () => {
       if (isMobile()) return;
@@ -40,14 +40,14 @@ class Configurator {
     const axesHelper = new THREE.AxesHelper(2);
     this.scene.add( axesHelper );
 
-    // this.createStats();
+    // this._createStats();
   }
 
   // ***************************************************** //
   // ******************** SCENE SETUP ******************** //
   // ***************************************************** //
 
-  createRenderer() {
+  _createRenderer() {
     this.renderer = new THREE.WebGLRenderer({
       canvas: this.canvas,
       antialias: false,
@@ -59,19 +59,19 @@ class Configurator {
     this.renderer.gammaFactor = 2.2;
     this.renderer.gammaOutput = true;
     this.renderer.setClearColor(BG_COLOR, BG_ALPHA);
-    this.setSize();
+    this._setSize();
 
     this.renderer.setSize(this.width, this.height);
   }
 
-  createCamera() {
+  _createCamera() {
     this.camera = new THREE.PerspectiveCamera(35, this.width/this.height, 0.5, 15);
     this.camera.position.z = 1; 
     this.camera.position.y = 0;
     this.camera.position.x = isMobile() ? -10 : -6;
   }
 
-  createLighting() {
+  _createLighting() {
     var textLight = new THREE.DirectionalLight('#edece4', .35);
     var textLight2 = new THREE.DirectionalLight('#edece4', .5);
     var light2 = new THREE.DirectionalLight('#edece4', .5);
@@ -88,30 +88,17 @@ class Configurator {
     this.scene.add(light3);    
   }
 
-  createParent() {
+  _createParent() {
     this.parent = new THREE.Group();
     this.parent.position.set(0, 0, 0);
     this.scene.add(this.parent);
   }
 
-  createControls() {
-    this.controls = new THREE.OrbitControls(this.camera, this.renderer.domElement);
-    this.controls.target.set(0, 0, 0);
-    this.controls.addEventListener('change', () => { this.render(); });
-
-    this.resetControls();
-  }
-
-  createStats() {
+  _createStats() {
     this.stats = new Stats();
     this.stats.showPanel(1); // 0: fps, 1: ms, 2: mb, 3+: custom
     this.container.appendChild(this.stats.domElement);
     this.stats.domElement.style.position = 'absolute';
-  }
-
-  initMaterial() {
-    if (this.material) return;
-    this.material = new THREE.MeshPhongMaterial({ wireframe: false });
   }
 
   render() {
@@ -122,20 +109,18 @@ class Configurator {
     if (this.composer) this.composer.render();
     else this.renderer.render(this.scene, this.camera);
 
-
     if (this.stats) this.stats.end();
   }
 
-  setSize() {
+  _setSize() {
     this.canvas.style.width ='100%';
+    this.canvas.style.height ='100vh';
     this.width  = this.canvas.offsetWidth;
-    this.height = this.width <= CONFIGURATOR_MIN_WIDTH ?
-      .85 * window.innerHeight :
-      this.canvas.offsetHeight;
+    this.height = this.canvas.offsetHeight;
   }
   
   onResizeWindow() {
-    this.setSize();
+    this._setSize();
     this.renderer.domElement.width = this.width;
     this.camera.aspect = this.width / this.height;
     this.renderer.setSize(this.width, this.height);
@@ -148,6 +133,14 @@ class Configurator {
   // ***************************************************** //
   // ***************** CONTROLS MANIPULATION **************** //
   // ***************************************************** //
+
+  _createControls() {
+    this.controls = new THREE.OrbitControls(this.camera, this.renderer.domElement);
+    this.controls.target.set(0, 0, 0);
+    this.controls.addEventListener('change', () => { this.render(); });
+
+    this.resetControls();
+  }
 
   resetControls() {
     this.updateControls(CONTROL_SETTINGS.default);
@@ -164,10 +157,10 @@ class Configurator {
   }
 
   // ***************************************************** //
-  // ***************** SCENE MANIPULATION **************** //
+  // ***************** TEXT MANIPULATION **************** //
   // ***************************************************** //
 
-  initFont() {
+  _initFont() {
     this.fontLoader = new THREE.FontLoader();
 
     this.bendModifier = new THREE.BendModifier();
@@ -181,65 +174,6 @@ class Configurator {
 
     fontLoader.load(FONT_FILE_PATH, (font) => this.font = font);
   }
-
-  centerModel() {
-    const { x, z } = this.getCenter();
-    const position = this.model.position;
-    this.setPosition( position.x - x, 0, position.z - z );
-    this.resetControls();
-  }
-
-  getCenter(object) {
-    return new THREE.Box3().setFromObject(object || this.model).getCenter();
-  }
-
-  setPosition(x, y, z) {
-    this.model.position.set(x, y, z);
-    this.render();
-  }
-
-  setMaterial() {
-    this.model.traverse((node) => {
-      if (node.type === 'Mesh') node.material = this.material;
-    });
-  }
-
-  async loadModel(url, progressCB) {
-    if (!this.loader) {
-      this.loader = new THREE.GLTFLoader();
-      const dracoLoader = new THREE.DRACOLoader();
-      dracoLoader.setDecoderPath('https://uncut-pipes.s3.amazonaws.com/js/draco/');
-      dracoLoader.preload();
-      this.loader.setDRACOLoader(dracoLoader);
-    }
-
-
-    return new Promise((resolve, reject) => {
-      this.loader.load(url,
-        (gltf) => {
-          const model = gltf.scene.children[0];
-          this.parent.add(model);
-          this.model = model;
-          this.model.scale.set(MODEL_SCALE, MODEL_SCALE, MODEL_SCALE);
-          this.model.rotateX( Math.PI / 2 );
-          this.model.rotateY( Math.PI );
-
-          this.initFont();
-          this.centerModel();
-          this.setMaterial();
-          this.addPostProcessing();
-          this.updateMaterial(SPECIAL_ATTRIBUTE_CONFIG.material.versions[0].materialProperties);
-
-          resolve(model);
-        },
-        progressCB,
-        (error) => {
-          console.log( 'An error happened', error );
-          reject();
-        }
-      );
-    })
-  };
 
   updateText(text) {
     if (!this.font) { console.log('ERROR: NO FONT LOADED'); return; }
@@ -328,11 +262,79 @@ class Configurator {
       this.composer.addPass(vigPass);
       this.composer.addPass(saoPass);
     }
+
+  // ***************************************************** //
+  // ***************** MATERIAL MANIPULATION ************* //
+  // ***************************************************** //
+
+    _initMaterial() {
+      if (this.material) return;
+      this.material = new THREE.MeshPhongMaterial({ wireframe: false });
+    }
+
+    _setMaterial() {
+      this.model.traverse((node) => {
+        if (node.type === 'Mesh') node.material = this.material;
+      });
+    }
+  
+    updateMaterial(materialProperties) {
+      if (!this.model || !materialProperties) {
+        console.log(`NO MODEL OR MATERIAL PROPERTIES COULD NOT BE FOUND`);
+        return;
+      }
+  
+      const iterateOverMaterialPropertiesAndUpdate = (materialToUpdate) => {
+        Object.keys(materialProperties).forEach((key) => {
+          materialToUpdate[key] = materialProperties[key];
+        })
+      }
+  
+      iterateOverMaterialPropertiesAndUpdate(this.material);
     
+      this.render();
+    }
     
   // ***************************************************** //
   // ***************** MODEL MANIPULATION **************** //
   // ***************************************************** //
+
+  async loadModel(url, progressCB) {
+    if (!this.loader) {
+      this.loader = new THREE.GLTFLoader();
+      const dracoLoader = new THREE.DRACOLoader();
+      dracoLoader.setDecoderPath('https://uncut-pipes.s3.amazonaws.com/js/draco/');
+      dracoLoader.preload();
+      this.loader.setDRACOLoader(dracoLoader);
+    }
+
+
+    return new Promise((resolve, reject) => {
+      this.loader.load(url,
+        (gltf) => {
+          const model = gltf.scene.children[0];
+          this.parent.add(model);
+          this.model = model;
+          this.model.scale.set(MODEL_SCALE, MODEL_SCALE, MODEL_SCALE);
+          this.model.rotateX( Math.PI / 2 );
+          this.model.rotateY( Math.PI );
+
+          this._initFont();
+          this.centerModel();
+          this._setMaterial();
+          this.addPostProcessing();
+          this.updateMaterial(SPECIAL_ATTRIBUTE_CONFIG.material.versions[0].materialProperties);
+
+          resolve(model);
+        },
+        progressCB,
+        (error) => {
+          console.log( 'An error happened', error );
+          reject();
+        }
+      );
+    })
+  };
 
   generateModelOptions() {
     const modelOptions = {};
@@ -368,6 +370,22 @@ class Configurator {
     return modelOptions;
   }
 
+  centerModel() {
+    const { x, z } = this.getCenter();
+    const position = this.model.position;
+    this.setPosition( position.x - x, 0, position.z - z );
+    this.resetControls();
+  }
+
+  getCenter(object) {
+    return new THREE.Box3().setFromObject(object || this.model).getCenter();
+  }
+
+  setPosition(x, y, z) {
+    this.model.position.set(x, y, z);
+    this.render();
+  }
+
   show(name) {
     if (!this.model) return;
     const obj = this.model.getObjectByName(name);
@@ -396,22 +414,7 @@ class Configurator {
     this.render();
   }
 
-  updateMaterial(materialProperties) {
-    if (!this.model || !materialProperties) {
-      console.log(`NO MODEL OR MATERIAL PROPERTIES COULD NOT BE FOUND`);
-      return;
-    }
-
-    const iterateOverMaterialPropertiesAndUpdate = (materialToUpdate) => {
-      Object.keys(materialProperties).forEach((key) => {
-        materialToUpdate[key] = materialProperties[key];
-      })
-    }
-
-    iterateOverMaterialPropertiesAndUpdate(this.material);
   
-    this.render();
-  }
 }
 
 export default new Configurator();

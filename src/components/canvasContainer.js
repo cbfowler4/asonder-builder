@@ -6,7 +6,7 @@ const { useEffect, useState } = React;
 const LoadingBarOverlay = ({ loading }) => (
   <div className='loading-overlay'>
     <div className='loading-bar-container'>
-      <h2>Loading Model...</h2>
+      <h2>Opening Builder</h2>
       <div className='loading-bar-total'>
         <div className='loading-bar' style={ { width: `${loading}%`} } />
       </div>

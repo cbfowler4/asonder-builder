@@ -41,7 +41,7 @@
 .selector.not-mobile {
   .option-tile:hover,
   .version-tile:hover,
-  .version-back-btn:hover {
+  .nav-btn-container:hover {
     cursor: pointer;
   }
 }
@@ -115,9 +115,6 @@
   background: $green3;
 }
 
-.version-back-btn:hover {
-  background: $green3;
-}
 
 
 .selector .sel-attr-title, #message-display {
@@ -149,15 +146,29 @@
   }
 }
 
-.version-back-btn {
-  border-top: 1px solid rgb(101, 121, 101);
+.nav-btn-container {
   background: $green1;
-  padding: 12px 20px;
   display: flex;
   align-items: center;
-  justify-content: center;
+  justify-content: space-between;
   letter-spacing: 2px;
   transition: background .15s ease-in;
+
+  div {
+    flex-grow: 1;
+    padding: 12px 20px;
+    border: 1px solid rgb(101, 121, 101);
+    display: flex;
+    justify-content: center;
+  }
+
+  div:first-of-type {
+    border-right: none;
+  }
+  
+  div:hover {
+    background: $green3;
+  }
 }
 
 .option-tile input[type="radio"] {

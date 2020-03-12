@@ -76,6 +76,10 @@ export const useModelController = (initModelOptions, initSpecialOptions) => {
           }, [])
         );
       },
+      getAttributeFromIndex: (idx) => {
+        const availableAttributes = controllerActions.Info.getAvailableAttributes();
+        return availableAttributes[idx] || {};
+      },
       getAvailableVersions: (attr) => {
         const availableVersions = (modelOptions|| {})[attr] || [];
         if (!ATTRIBUTE_CONFIG[attr]) return [];
