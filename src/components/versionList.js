@@ -1,4 +1,5 @@
 import { S3_PATH } from '../helpers/configs';
+import { isMobile } from '../helpers/helpers';
 const { React } = window;
 
 
@@ -12,21 +13,37 @@ export const VersionList = ({ controllerActions, selectedIdx, setSelectedIdx }) 
   const VersionBackButton = () => {
     if (availableAttributes.length === 0) return null;
 
+    if (selectedIdx < 0) {
+      return (
+        <div className='start-btn'>
+          <div onClick={ () => { setSelectedIdx(0); } } >
+            Start Building
+          </div>
+        </div>
+      )
+    }
     return (
       <div className='nav-btn-container'>
-        { selectedIdx > 0 &&
+        { isMobile() && selectedIdx > 0 &&
           <div onClick={ () => { setSelectedIdx(selectedIdx - 1); } } >
-            BACK
+            <img src='https://cbfowler4.s3.amazonaws.com/uncut_assets/back.svg' alt='back' />
           </div>
         }
         { selectedIdx < availableAttributes.length - 1 &&
           <div onClick={ () => { setSelectedIdx(selectedIdx + 1); } }>
-            NEXT
+            { isMobile() ?
+              <img
+                src='https://cbfowler4.s3.amazonaws.com/uncut_assets/back.svg'
+                alt='forward'
+                style={ { transform: 'rotate(180deg)' } } 
+              /> :
+              <span>Next</span>
+            }
           </div>
         }
         { selectedIdx === availableAttributes.length - 1 &&
           <div onClick={ () => { console.log('done!'); } }>
-            FINISH
+            DONE
           </div>
         }
       </div>

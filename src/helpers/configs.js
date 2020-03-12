@@ -81,7 +81,7 @@ export const CONTROL_SETTINGS = {
     maxAzimuthAngle: -.45 * Math.PI,
     minPolarAngle: Math.PI / 3,
     maxPolarAngle: 2 * Math.PI / 3,
-    rotateSpeed: .1,
+    rotateSpeed: .2,
   },
   text: {
     minPolarAngle: .45 * Math.PI,

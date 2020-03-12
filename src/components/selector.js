@@ -10,7 +10,6 @@ export const Selector = ({ controllerActions, selectedIdx, setSelectedIdx }) => 
 
   useEffect(() => {
     controllerActions.Action.centerAttribute(name);
-    controllerActions.Action.updateControls(name);
   }, [name]);
 
   return (

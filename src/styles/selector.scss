@@ -24,7 +24,7 @@
   overflow: hidden;
   transform: translate3d(0, 0, 0);
   transition: background .15s ease-in;
-  margin: 8px;
+  margin: 4px;
   padding: 10px;
   height: $tile-size;
   width: $tile-size;
@@ -51,26 +51,6 @@
   padding: 10px;
   box-sizing: content-box;
 }
-
-// .version-tile img {
-//   height: 30px;
-//   padding: 10px;
-//   box-sizing: content-box;
-// }
-
-// .version-tile {
-//   height: $tile-size;
-//   width: $tile-size;
-//   background: $green1;
-//   margin: 10px;
-//   display: flex;
-//   flex-direction: column;
-//   align-items: center;
-//   justify-content: center;
-//   border-radius: 10px;
-//   padding: 5px;
-//   overflow: hidden;
-// }
 
 .material-icon {
   height: 30px;
@@ -115,8 +95,6 @@
   background: $green3;
 }
 
-
-
 .selector .sel-attr-title, #message-display {
   font-size: 10px;
   text-align: center;
@@ -156,8 +134,8 @@
 
   div {
     flex-grow: 1;
-    padding: 12px 20px;
-    border: 1px solid rgb(101, 121, 101);
+    padding: 8px;
+    border: $border-1;
     display: flex;
     justify-content: center;
   }
@@ -169,7 +147,34 @@
   div:hover {
     background: $green3;
   }
+
+  img {
+    height: 18px;
+    width: 18px;
+  }
 }
+
+.start-btn {
+  position: absolute;
+  bottom: 20px;
+  left: 0;
+  right: 0;
+  display: flex;
+  justify-content: center;
+
+  div {
+    border: 2px solid white;
+    border-radius: 30px;
+    padding: 12px 25px;
+    cursor: pointer;
+  }
+
+  div:hover {
+    background: $green4;
+  }
+}
+
+
 
 .option-tile input[type="radio"] {
   display: none;
@@ -198,7 +203,7 @@
   width: 110px;
   color: white;
   text-transform: none;
-  border: 1px solid rgb(20, 90, 20);
+  border: $border-1;
   padding: 10px;
 }
 

@@ -34,9 +34,13 @@
   animation-name: slideup;
 }
 
-$green1: rgb(27, 102, 27);
-$green2: rgb(18, 80, 18);
-$green3: rgb(23, 97, 23);
+
+$green1: rgb(15, 15, 15);
+$green2: rgb(35, 35, 35);
+$green3: rgb(45, 45, 45);
+$green4: rgb(150, 150, 150);
+
+$border-1: 1px solid rgb(100, 100, 100);
 
 $tile-size: 88px;
 $tile-shadow: 2px 2px 6px -4px rgba(0,0,0,0.75);

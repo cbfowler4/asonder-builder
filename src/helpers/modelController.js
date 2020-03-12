@@ -145,6 +145,7 @@ export const useModelController = (initModelOptions, initSpecialOptions) => {
           position.y - modelCenter.y,
           position.z - modelCenter.z,
         );
+        controllerActions.Action.updateControls(attr);
       },
       updateControls(attr) {
         if (!Configurator.model) return;
