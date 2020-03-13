@@ -150,7 +150,6 @@ class Configurator {
   }
 
   updateControls(properties) {
-    console.log(properties)
     Object.keys(properties).forEach(prop => {
       if (isMobile() && prop.includes('Distance')) {
         this.controls[prop] = properties[prop] + MOBILE_DISTANCE_OFFSET;
@@ -226,6 +225,57 @@ class Configurator {
     this.textModel.position.set(0, 0, 0);
   }
 
+  // ***************************************************** //
+  // ***************** MATERIAL MANIPULATION ************* //
+  // ***************************************************** //
+
+  _initMaterial() {
+    if (this.material) return;
+    const loader = new THREE.TextureLoader();
+
+    this.textures = {
+      silver: loader.load('https://uncut-public.s3.amazonaws.com/textures/metal-3-silver.jpg'),
+      black: loader.load('https://uncut-public.s3.amazonaws.com/textures/metal-3-black.jpg'),
+    };
+
+    Object.values(this.textures).forEach((texture) => {
+      texture.wrapS = THREE.RepeatWrapping;
+      texture.wrapT = THREE.RepeatWrapping;
+    });
+
+    this.material = new THREE.MeshPhongMaterial();
+  }
+
+  _setMaterial() {
+    this.model.traverse((node) => {
+      if (node.type === 'Mesh') node.material = this.material;
+    });
+  }
+
+  updateMaterial(materialProperties) {
+    // return;
+    if (!this.model || !materialProperties) {
+      console.log(`NO MODEL OR MATERIAL PROPERTIES COULD NOT BE FOUND`);
+      return;
+    }
+
+    const iterateOverMaterialPropertiesAndUpdate = (materialToUpdate) => {
+      Object.keys(materialProperties).forEach((key) => {
+        materialToUpdate[key] = materialProperties[key];
+      })
+    }
+
+    iterateOverMaterialPropertiesAndUpdate(this.material);
+    this.material.map = this.textures[materialProperties.texture];
+  
+    this.render();
+  }
+
+        
+  // ***************************************************** //
+  // *********** POST PROCESSING & OPTIMIZATION ********** //
+  // ***************************************************** //
+
   addPostProcessing() {
     this.composer = new THREE.EffectComposer(this.renderer);
 
@@ -242,78 +292,32 @@ class Configurator {
     taaRenderPass.clearAlpha = BG_ALPHA;
     
     const saoPass = new THREE.SAOPass(this.scene, this.camera, true, false);
-      saoPass.params = {
-        output: 0,
-        saoBias: 3,
-        saoIntensity: .8,
-        saoScale: 4,
-        saoKernelRadius: 10,
-        saoMinResolution: 0,
-      };
+    saoPass.params = {
+      output: 0,
+      saoBias: 3.5,
+      saoIntensity: .8,
+      saoScale: 4,
+      saoKernelRadius: 10,
+      saoMinResolution: 0,
+    };
 
-      const vigPass = new THREE.ShaderPass(THREE.VignetteShader);
-      vigPass.uniforms.darkness.value = .8;
-      vigPass.uniforms.offset.value = 1;
-      vigPass.uniforms.tDiffuse.value = 10;
+    const vigPass = new THREE.ShaderPass(THREE.VignetteShader);
+    vigPass.uniforms.darkness.value = .8;
+    vigPass.uniforms.offset.value = 1;
+    vigPass.uniforms.tDiffuse.value = 10;
 
-      const fxaaPass = new THREE.ShaderPass(THREE.FXAAShader);
-      var pixelRatio = this.renderer.getPixelRatio();
-      fxaaPass.material.uniforms[ 'resolution' ].value.x = 1 / (this.canvas.offsetWidth * pixelRatio);
-      fxaaPass.material.uniforms[ 'resolution' ].value.y = 1 / (this.canvas.offsetHeight * pixelRatio);
+    const fxaaPass = new THREE.ShaderPass(THREE.FXAAShader);
+    var pixelRatio = this.renderer.getPixelRatio();
+    fxaaPass.material.uniforms[ 'resolution' ].value.x = 1 / (this.canvas.offsetWidth * pixelRatio);
+    fxaaPass.material.uniforms[ 'resolution' ].value.y = 1 / (this.canvas.offsetHeight * pixelRatio);
 
-      this.composer.addPass(taaRenderPass);
-      this.composer.addPass(renderPass);
-      this.composer.addPass(copyPass);
-      this.composer.addPass(fxaaPass); 
-      this.composer.addPass(vigPass);
-      this.composer.addPass(saoPass);
-    }
-
-  // ***************************************************** //
-  // ***************** MATERIAL MANIPULATION ************* //
-  // ***************************************************** //
-
-    _initMaterial() {
-      if (this.material) return;
-      const loader = new THREE.TextureLoader();
-
-      this.textures = {
-        silver: loader.load('https://uncut-public.s3.amazonaws.com/textures/metal-3-silver.jpg'),
-        black: loader.load('https://uncut-public.s3.amazonaws.com/textures/metal-3-black.jpg'),
-      };
-
-      Object.values(this.textures).forEach((texture) => {
-        texture.wrapS = THREE.RepeatWrapping;
-        texture.wrapT = THREE.RepeatWrapping;
-      });
-
-      this.material = new THREE.MeshPhongMaterial();
-    }
-
-    _setMaterial() {
-      this.model.traverse((node) => {
-        if (node.type === 'Mesh') node.material = this.material;
-      });
-    }
-  
-    updateMaterial(materialProperties) {
-      // return;
-      if (!this.model || !materialProperties) {
-        console.log(`NO MODEL OR MATERIAL PROPERTIES COULD NOT BE FOUND`);
-        return;
-      }
-  
-      const iterateOverMaterialPropertiesAndUpdate = (materialToUpdate) => {
-        Object.keys(materialProperties).forEach((key) => {
-          materialToUpdate[key] = materialProperties[key];
-        })
-      }
-  
-      iterateOverMaterialPropertiesAndUpdate(this.material);
-      this.material.map = this.textures[materialProperties.texture];
-    
-      this.render();
-    }
+    this.composer.addPass(taaRenderPass);
+    this.composer.addPass(renderPass);
+    this.composer.addPass(copyPass);
+    this.composer.addPass(fxaaPass); 
+    this.composer.addPass(vigPass);
+    this.composer.addPass(saoPass);
+  }
     
   // ***************************************************** //
   // ***************** MODEL MANIPULATION **************** //
@@ -351,7 +355,7 @@ class Configurator {
           //Set initial rotation if spinning on load
           const { x, z } = this.getRotation();
           this.setRotation(x, Y_ROT_INITIAL, z);
-          
+
           resolve(model);
         },
         progressCB,

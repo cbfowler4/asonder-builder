@@ -131,11 +131,13 @@ export const useModelController = (initModelOptions, initSpecialOptions) => {
       },
       centerAttribute(attr) {
         if (!Configurator.model) return;
+
         if (!attr || attr === 'material' || attr === 'text') {
           Configurator.centerModel();
           controllerActions.Action.updateControls(attr);
           return;
         }
+
 
         const version = controllerActions.Info.getSelectedVersion(attr);
         const model = Configurator.model.getObjectByName(version.name);
@@ -149,8 +151,10 @@ export const useModelController = (initModelOptions, initSpecialOptions) => {
         );
         controllerActions.Action.updateControls(attr);
       },
+      resetModelRotation() {
+        Configurator.setRotation(0, 2 * Math.PI, 0);
+      },
       updateControls(attr) {
-        console.log('updating attr', attr);
         if (!Configurator.model) return;
         const properties = CONTROL_SETTINGS[attr] || CONTROL_SETTINGS.default;
         Configurator.updateControls(properties);

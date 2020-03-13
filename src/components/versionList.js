@@ -16,7 +16,10 @@ export const VersionList = ({ controllerActions, selectedIdx, setSelectedIdx }) 
     if (selectedIdx < 0) {
       return (
         <div className='start-btn'>
-          <div onClick={ () => { setSelectedIdx(0); } } >
+          <div onClick={ () => {
+            controllerActions.Action.resetModelRotation();
+            setSelectedIdx(0);
+          } } >
             Start Building
           </div>
         </div>

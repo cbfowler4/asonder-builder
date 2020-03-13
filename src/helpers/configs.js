@@ -11,7 +11,6 @@ export const MODEL_SCALE = 45;
 export const Y_ROT_INITIAL = .75 * Math.PI;
 export const MOBILE_DISTANCE_OFFSET = 3;
 
-
 // PATHS
 // export const FONT_FILE_PATH = 'https://cbfowler4.s3.amazonaws.com/fonts/My+Font_Regular+(9).json';
 export const FONT_FILE_PATH = 'https://cbfowler4.s3.amazonaws.com/fonts/My+Font_Regular+(6).json';
