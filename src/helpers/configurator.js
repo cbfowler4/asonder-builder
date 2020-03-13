@@ -38,8 +38,8 @@ class Configurator {
       this.onResizeWindow();
     });
 
-    const axesHelper = new THREE.AxesHelper(2);
-    this.scene.add( axesHelper );
+    // const axesHelper = new THREE.AxesHelper(2);
+    // this.scene.add( axesHelper );
 
     // this._createStats();
   }
