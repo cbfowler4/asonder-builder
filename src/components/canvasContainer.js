@@ -1,8 +1,28 @@
 import React from 'react';
 import Configurator from '../helpers/configurator';
 import { HashLoader } from 'react-spinners';
+import BezierEasing from 'bezier-easing';
+import { Y_ROT_INITIAL } from '../helpers/configs';
 
-// const { React, moment } = window;
+const yFinal = 2 * Math.PI;
+
+const easing = BezierEasing(0,0.55,0.60,1);
+let step = 0;
+const time = 1200; // milliseconds
+const stepTime = 15; // milliseconds
+
+
+const rotateModel = () => {
+  const t = stepTime * step / time
+  if (t >= 1) return;
+  window.setTimeout(() => {
+    const { x, z } = Configurator.getRotation();
+    const y = (yFinal - Y_ROT_INITIAL) * easing(t) + Y_ROT_INITIAL;
+    Configurator.setRotation(x, y, z);
+    rotateModel();
+    step += 1;
+  }, stepTime)
+}
 
 
 const { useEffect, useState } = React;
@@ -11,9 +31,6 @@ const LoadingBarOverlay = ({ loading }) => (
   <div className='loading-overlay'>
     <div className='loading-bar-container'>
       <h2>Launching Builder</h2>
-      {/* <div className='loading-bar-total'>
-        <div className='loading-bar' style={ { width: `${loading}%`} } />
-      </div> */}
       <HashLoader color={ 'white' } size={ 80 } />
     </div>
   </div>
@@ -40,9 +57,12 @@ export const CanvasContainer = ({ controllerActions }) => {
       controllerActions.Action.reinitialize(initModelOptions, initSpecialOptions);
 
       setLoading(0);
+
+      rotateModel();
     }
 
     loadModel();
+    
   }, [canvasRef])
 
   useEffect(() => {

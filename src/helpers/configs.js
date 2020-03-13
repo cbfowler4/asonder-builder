@@ -5,9 +5,11 @@ export const DEFAULT_PREFIX = 'initial-launch-rev2';
 
 export const CONFIGURATOR_MIN_WIDTH = 750;
 export const BG_COLOR = 0x898c8a;
-export const BG_ALPHA = .2;
+export const BG_ALPHA = .3;
 export const MIN_CAMERA_DISTANCE = 3.5;
 export const MODEL_SCALE = 45;
+export const Y_ROT_INITIAL = .75 * Math.PI;
+export const MOBILE_DISTANCE_OFFSET = 3;
 
 
 // PATHS
@@ -40,29 +42,27 @@ export const SPECIAL_ATTRIBUTE_CONFIG = {
     label: 'Material',
     versions: [
       {
-        id: 'silver',
-        text: 'Bronze-Silver',
-        color: 'rgb(140, 137, 110)',
-        materialProperties: {
-          color: new THREE.Color('rgb(195, 192, 189)'),
-          specular: new THREE.Color('rgb(30, 30, 30)'),
-          shininess: 40,
-          texture: 'silver',
-        },
-      },
-      {
         id: 'black',
         text: 'Black Matte',
         color: 'rgb(0, 0, 0)',
         materialProperties: {
-          color: new THREE.Color('rgb(40, 40, 40)'),
-          specular: new THREE.Color('rgb(15, 15, 15)'),
-          shininess: 30,
+          color: new THREE.Color('rgb(35, 35, 35)'),
+          specular: new THREE.Color('rgb(35, 35, 35)'),
+          shininess: 20,
           texture: 'black',
         }
       },
-
-      
+      {
+        id: 'silver',
+        text: 'Bronze-Silver',
+        color: 'rgb(140, 137, 120)',
+        materialProperties: {
+          color: new THREE.Color('rgb(195, 192, 189)'),
+          specular: new THREE.Color('rgb(30, 30, 30)'),
+          shininess: 35,
+          texture: 'silver',
+        },
+      },
     ]
   },
   text: {
@@ -72,36 +72,38 @@ export const SPECIAL_ATTRIBUTE_CONFIG = {
 
 export const CONTROL_SETTINGS = {
   bowl: {
-    minPolarAngle: Math.PI / 4,
-    maxPolarAngle: .45 * Math.PI,
-    maxDistance: 5,
+    minPolarAngle: 0,
+    maxPolarAngle: .42 * Math.PI,
+    minAzimuthAngle: -Infinity,
+    maxAzimuthAngle: Infinity,
+    maxDistance: 5.5,
     minDistance: 4.5,
   },
   mouth: {
-    maxDistance: 3,
-    minDistance: 2,
-    minAzimuthAngle: - .75 * Math.PI,
-    maxAzimuthAngle: -.45 * Math.PI,
+    maxDistance: 6,
+    minDistance: 3,
+    minAzimuthAngle: - .95 * Math.PI,
+    maxAzimuthAngle: -.25 * Math.PI,
     minPolarAngle: Math.PI / 3,
     maxPolarAngle: 2 * Math.PI / 3,
     rotateSpeed: .2,
   },
   text: {
-    minPolarAngle: .45 * Math.PI,
-    maxPolarAngle: .55 * Math.PI,
-    minAzimuthAngle: - .6 * Math.PI,
-    maxAzimuthAngle: - .35 * Math.PI,
-    maxDistance: 3,
-    minDistance: 2,
+    minPolarAngle: .4 * Math.PI,
+    maxPolarAngle: .6 * Math.PI,
+    minAzimuthAngle: - .65 * Math.PI,
+    maxAzimuthAngle: - .25 * Math.PI,
+    maxDistance: 7,
+    minDistance: 3.5,
   },
   default: {
     maxDistance: 13,
     minDistance: MIN_CAMERA_DISTANCE,
-    minAzimuthAngle: - Math.PI,
-    maxAzimuthAngle: Math.PI,
-    maxPolarAngle: Math.PI,
-    minPolarAngle: 0,
-    rotateSpeed: .25,
+    minAzimuthAngle: -Infinity,
+    maxAzimuthAngle: Infinity,
+    maxPolarAngle: Infinity,
+    minPolarAngle: -Infinity,
+    rotateSpeed: .3,
     panSpeed: 0,
   },
 }

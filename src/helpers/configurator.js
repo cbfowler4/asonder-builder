@@ -1,11 +1,12 @@
 import {
   ATTRIBUTE_CONFIG,
   SPECIAL_ATTRIBUTE_CONFIG,
-  CONFIGURATOR_MIN_WIDTH,
+  Y_ROT_INITIAL,
   FONT_FILE_PATH,
   BG_COLOR,
   BG_ALPHA,
   CONTROL_SETTINGS,
+  MOBILE_DISTANCE_OFFSET,
   MODEL_SCALE,
 } from '../helpers/configs';
 import '../helpers/bendModifier';
@@ -37,8 +38,8 @@ class Configurator {
       this.onResizeWindow();
     });
 
-    // const axesHelper = new THREE.AxesHelper(2);
-    // this.scene.add( axesHelper );
+    const axesHelper = new THREE.AxesHelper(2);
+    this.scene.add( axesHelper );
 
     // this._createStats();
   }
@@ -65,10 +66,10 @@ class Configurator {
   }
 
   _createCamera() {
-    this.camera = new THREE.PerspectiveCamera(35, this.width/this.height, 0.5, 15);
-    this.camera.position.z = 1; 
-    this.camera.position.y = 0;
-    this.camera.position.x = isMobile() ? -10 : -6;
+    this.camera = new THREE.PerspectiveCamera(35, this.width/this.height, 0.5, 18);
+    this.camera.position.z = 2; 
+    this.camera.position.y = 3;
+    this.camera.position.x = isMobile() ? -13 : -8;
   }
 
   _createLighting() {
@@ -149,8 +150,13 @@ class Configurator {
   }
 
   updateControls(properties) {
+    console.log(properties)
     Object.keys(properties).forEach(prop => {
-      this.controls[prop] = properties[prop];
+      if (isMobile() && prop.includes('Distance')) {
+        this.controls[prop] = properties[prop] + MOBILE_DISTANCE_OFFSET;
+      } else {
+        this.controls[prop] = properties[prop];
+      }
     });
 
     this.controls.reset();
@@ -330,15 +336,22 @@ class Configurator {
           this.parent.add(model);
           this.model = model;
           this.model.scale.set(MODEL_SCALE, MODEL_SCALE, MODEL_SCALE);
+          
           this.model.rotateX( Math.PI / 2 );
           this.model.rotateY( Math.PI );
 
           this._initFont();
           this.centerModel();
           this._setMaterial();
+
+
           this.addPostProcessing();
           this.updateMaterial(SPECIAL_ATTRIBUTE_CONFIG.material.versions[0].materialProperties);
 
+          //Set initial rotation if spinning on load
+          const { x, z } = this.getRotation();
+          this.setRotation(x, Y_ROT_INITIAL, z);
+          
           resolve(model);
         },
         progressCB,
@@ -398,6 +411,20 @@ class Configurator {
   setPosition(x, y, z) {
     this.model.position.set(x, y, z);
     this.render();
+  }
+
+  rotateOnYAxis(angle) {
+    this.parent.rotateY(angle);
+    this.render();
+  }
+
+  setRotation(x, y, z) {
+    this.parent.rotation.set(x, y, z);
+    this.render();
+  }
+
+  getRotation() {
+    return this.parent.rotation;
   }
 
   show(name) {

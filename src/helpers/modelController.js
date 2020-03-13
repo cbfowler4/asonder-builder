@@ -132,7 +132,9 @@ export const useModelController = (initModelOptions, initSpecialOptions) => {
       centerAttribute(attr) {
         if (!Configurator.model) return;
         if (!attr || attr === 'material' || attr === 'text') {
-          Configurator.centerModel(); return;
+          Configurator.centerModel();
+          controllerActions.Action.updateControls(attr);
+          return;
         }
 
         const version = controllerActions.Info.getSelectedVersion(attr);
@@ -148,6 +150,7 @@ export const useModelController = (initModelOptions, initSpecialOptions) => {
         controllerActions.Action.updateControls(attr);
       },
       updateControls(attr) {
+        console.log('updating attr', attr);
         if (!Configurator.model) return;
         const properties = CONTROL_SETTINGS[attr] || CONTROL_SETTINGS.default;
         Configurator.updateControls(properties);
