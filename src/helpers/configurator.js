@@ -296,7 +296,7 @@ class Configurator {
       output: 0,
       saoBias: 3.5,
       saoIntensity: .8,
-      saoScale: 4,
+      saoScale: 4.5,
       saoKernelRadius: 10,
       saoMinResolution: 0,
     };
@@ -316,7 +316,7 @@ class Configurator {
     this.composer.addPass(copyPass);
     this.composer.addPass(fxaaPass); 
     this.composer.addPass(vigPass);
-    this.composer.addPass(saoPass);
+    // this.composer.addPass(saoPass);
   }
     
   // ***************************************************** //
@@ -378,16 +378,16 @@ class Configurator {
 
       if (name === 'stem') this.stemId = node.id;
 
-      if (!ATTRIBUTE_CONFIG[name]) return;
+      if (!dispAttributes) return;
       const defaultVersion = dispAttributes.versions[0];
       
-      // TEMP TRANSLATION TO GET PARENT GROUP //
       const translatedVersion = version.length === 3 ? version.slice(0, 2) : '';
       if (!translatedVersion) return;
-
+      const displayVersion = dispAttributes.versions.find((v) => v.id === translatedVersion);
+      
       const selected = defaultVersion.id === translatedVersion;
       const newOption = {
-        id: node.ID,
+        text: displayVersion.text,
         name: node.name,
         selected,
       }

@@ -3,6 +3,7 @@ import Configurator from '../helpers/configurator';
 import { HashLoader } from 'react-spinners';
 import BezierEasing from 'bezier-easing';
 import { Y_ROT_INITIAL } from '../helpers/configs';
+import { getModelPath } from '../helpers/helpers';
 
 const yFinal = 2 * Math.PI;
 
@@ -48,13 +49,13 @@ export const CanvasContainer = ({ controllerActions }) => {
 
     const loadModel = async () => {
       await Configurator.loadModel(
-        'https://cbfowler4.s3.amazonaws.com/Lauch+2_r2_drc.glb',
+        getModelPath(),
         (xhr) => { setLoading(xhr.loaded / xhr.total * 100); }
       );
 
       const initModelOptions = Configurator.generateModelOptions();
       const initSpecialOptions = controllerActions.Special.generateSpecialOptions();
-      controllerActions.Action.reinitialize(initModelOptions, initSpecialOptions);
+      controllerActions.Action.reinitialize(initModelOptions, initSpecialOptions);   
 
       setLoading(0);
 

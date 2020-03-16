@@ -1,18 +1,18 @@
 const { THREE } = window;
 
-export const DEFAULT_URLID = 'fd82a3d61802402fb50684bf1199348f';
-export const DEFAULT_PREFIX = 'initial-launch-rev2';
+export const DEFAULT_PRODUCT = 'brooklyn-pipe';
 
 export const CONFIGURATOR_MIN_WIDTH = 750;
 export const BG_COLOR = 0x898c8a;
 export const BG_ALPHA = .3;
-export const MIN_CAMERA_DISTANCE = 3.5;
+export const MIN_CAMERA_DISTANCE = 4.5;
 export const MODEL_SCALE = 45;
 export const Y_ROT_INITIAL = .75 * Math.PI;
 export const MOBILE_DISTANCE_OFFSET = 3;
+export const MAX_TEXT_LENGTH = 22;
+
 
 // PATHS
-// export const FONT_FILE_PATH = 'https://cbfowler4.s3.amazonaws.com/fonts/My+Font_Regular+(9).json';
 export const FONT_FILE_PATH = 'https://cbfowler4.s3.amazonaws.com/fonts/My+Font_Regular+(6).json';
 export const S3_PATH = 'https://cbfowler4.s3.amazonaws.com/uncut_assets/';
 

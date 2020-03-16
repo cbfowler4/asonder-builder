@@ -1,14 +1,17 @@
-import {
-  DEFAULT_URLID,
-  DEFAULT_PREFIX,
-} from './configs';
+import { DEFAULT_PRODUCT } from './configs';
 
+export const isLocal = () => window.location.href.includes('localhost');
 
-export const getConfig = () => {
+export const getModelPath = () => {
   const urlParams = new URLSearchParams(window.location.search);
-  const urlid = urlParams.get('id') || DEFAULT_URLID;
-  const prefix = urlParams.get('prefix') || DEFAULT_PREFIX;
-  return { urlid, prefix };
+  const productName = urlParams.get('product') || DEFAULT_PRODUCT;
+  const folderName = isLocal() ? 'cbfowler4' : 'uncut-pipes';
+  return `https://${folderName}.s3.amazonaws.com/pipes/${productName}.glb`;
+}
+
+export const getAttributeFromUrl = (attr) => {
+  const urlParams = new URLSearchParams(window.location.search);
+  return urlParams.get(attr);
 }
 
 export const debounce = (func, wait, immediate) => {

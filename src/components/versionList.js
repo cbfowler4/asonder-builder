@@ -1,4 +1,4 @@
-import { S3_PATH } from '../helpers/configs';
+import { S3_PATH, MAX_TEXT_LENGTH } from '../helpers/configs';
 import { isMobile } from '../helpers/helpers';
 import React from 'react';
 
@@ -45,7 +45,7 @@ export const VersionList = ({ controllerActions, selectedIdx, setSelectedIdx }) 
           </div>
         }
         { selectedIdx === availableAttributes.length - 1 &&
-          <div onClick={ () => { console.log('done!'); } }>
+          <div onClick={ () => { controllerActions.Action.writeOptionsToUrl(); } }>
             DONE
           </div>
         }
@@ -81,8 +81,8 @@ export const VersionList = ({ controllerActions, selectedIdx, setSelectedIdx }) 
             id='custom-message'
             type='text'
             name='properties[Custom Message]'
-            maxLength='22'
-            placeholder='22 character limit'
+            maxLength={ MAX_TEXT_LENGTH }
+            placeholder={ `${MAX_TEXT_LENGTH} character limit` }
             onChange={ (e) => { controllerActions.Special.setCustomText(e.target.value); } }
             value={ text }
             autoFocus

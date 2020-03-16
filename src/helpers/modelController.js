@@ -1,5 +1,5 @@
 import Configurator from './configurator';
-import { debounce } from './helpers';
+import { debounce, getAttributeFromUrl } from './helpers';
 
 import {
   ATTRIBUTE_ORDER,
@@ -7,6 +7,7 @@ import {
   S3_PATH,
   SPECIAL_ATTRIBUTE_CONFIG,
   CONTROL_SETTINGS,
+  MAX_TEXT_LENGTH,
 } from './configs';
 
 
@@ -39,7 +40,7 @@ export const useModelController = (initModelOptions, initSpecialOptions) => {
             return { ...acc, [name]: SPECIAL_ATTRIBUTE_CONFIG.material.versions[0].id };
           }
           return { ...acc, [name]: '' };
-        }, { text: 'KKK' })
+        }, { text: '' })
       ),
       selectMaterial: (material) => {
         if (specialOptions.material) {
@@ -100,9 +101,12 @@ export const useModelController = (initModelOptions, initSpecialOptions) => {
       },
     },
     Action: {
-      reinitialize: (initModelOptions, initSpecialOptions) => {
-        setModelOptions(initModelOptions);
-        setSpecialOptions(initSpecialOptions);
+      reinitialize: (modelOptionsInput, specialOptionsInput) => {
+        const { modelOptions, specialOptions } = controllerActions.Private
+          ._mergeOptionsWithUrlValues(modelOptionsInput, specialOptionsInput)
+    
+        setModelOptions(modelOptions);
+        setSpecialOptions(specialOptions);
       },
       selectVersion: (attr, versionId) => {
         if (!attr || !versionId) return;
@@ -158,8 +162,77 @@ export const useModelController = (initModelOptions, initSpecialOptions) => {
         if (!Configurator.model) return;
         const properties = CONTROL_SETTINGS[attr] || CONTROL_SETTINGS.default;
         Configurator.updateControls(properties);
+      },
+      writeOptionsToUrl() {
+        const urlParams = new URLSearchParams(window.location.search);
+        Object.values(controllerActions.Info.getAvailableAttributes()).forEach(({ name, label }) => {
+          let value;
+          switch (name) {
+            case 'text':
+              value = controllerActions.Special.getCustomText();
+              break;
+            case 'material':
+              value = controllerActions.Special.getSelectedMaterial().id;
+              break;
+            default:
+              value = controllerActions.Info.getSelectedVersion(name).text;
+              break
+          }
+          urlParams.set(label, value);
+        });
+        window.location.search = urlParams.toString();;
       }
     },
+    Private: {
+      _isTextValid: (text) => {
+        const regEx = /[^ -~]/;
+        return text && text.length <= MAX_TEXT_LENGTH && !regEx.test(text)
+      },
+      _isMaterialValid: (materialId) => {
+        const materials = controllerActions.Special.getAvailableMaterials();
+        return Object.values(materials).some((material) => material.id === materialId);
+      },
+      _isAttributeLabelValid(attr, label) {
+        if (!ATTRIBUTE_CONFIG[attr] || !ATTRIBUTE_ORDER.includes(attr)) return;
+        return ATTRIBUTE_CONFIG[attr].versions.some((version) => version.text === label);
+      },
+      _getLabelByAttribute(attr) {
+        const attributeConfigs = { ...ATTRIBUTE_CONFIG, ...SPECIAL_ATTRIBUTE_CONFIG };
+       if (attributeConfigs[attr]) return attributeConfigs[attr].label;
+      },
+      _mergeOptionsWithUrlValues(modelOptionsInput, specialOptionsInput) {
+        const urlParams = new URLSearchParams(window.location.search);
+        const modelOptions = { ...modelOptionsInput };
+        const specialOptions = { ...specialOptionsInput };
+
+        Object.keys({ ...modelOptions, ...specialOptions }).forEach((attr) => {
+          const label = controllerActions.Private._getLabelByAttribute(attr);
+          const urlValue = urlParams.get(label);
+          if (!urlValue) return;
+          switch (attr) {
+            case 'text':
+              if (controllerActions.Private._isTextValid(urlValue)) {
+                specialOptions[attr] = urlValue;
+              }
+              break;
+            case 'material':
+              if (controllerActions.Private._isMaterialValid(urlValue)) {
+                specialOptions[attr] = urlValue;
+              }
+              break;
+            default:
+              if (controllerActions.Private._isAttributeLabelValid(attr, urlValue)) {
+                Object.values(modelOptions[attr]).forEach((version) => {
+                  version.selected = version.text === urlValue;
+                })
+              }
+          }
+        });
+
+        return { modelOptions, specialOptions }
+      }
+    
+    }
   }
 
   return {
