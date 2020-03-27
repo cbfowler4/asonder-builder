@@ -19,7 +19,7 @@ const rotateModel = () => {
   window.setTimeout(() => {
     const { x, z } = Configurator.getRotation();
     const y = (yFinal - Y_ROT_INITIAL) * easing(t) + Y_ROT_INITIAL;
-    // Configurator.setRotation(x, y, z);
+    Configurator.setRotation(x, y, z);
     rotateModel();
     step += 1;
   }, stepTime)

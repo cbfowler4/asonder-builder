@@ -71,7 +71,7 @@ class Configurator {
     this.camera = new THREE.PerspectiveCamera(35, this.width/this.height, 0.02, 5);
     this.camera.position.z = .1; 
     this.camera.position.y = .08;
-    this.camera.position.x = isMobile() ? -.3 : -.3;
+    this.camera.position.x = -.3 + (isMobile() ? -MOBILE_DISTANCE_OFFSET : 0)
   }
 
   _createLighting() {
@@ -149,7 +149,6 @@ class Configurator {
     this.updateControls(CONTROL_SETTINGS.default);
     this.controls.reset();
     this.render();
-    console.log('CONTROLS: ', this.controls)
   }
 
   updateControls(properties) {
@@ -162,6 +161,7 @@ class Configurator {
     });
 
     this.controls.reset();
+    this.render();
   }
 
   // ***************************************************** //
@@ -197,7 +197,7 @@ class Configurator {
     const fontParams = {
       font: this.font,
       size: .0012,
-      height: .0003,
+      height: .0004,
       curveSegments: 3,
     };
 
@@ -206,13 +206,8 @@ class Configurator {
     this.textModel = new THREE.Mesh(geometry, this.material);
     this.setTextPosition();
 
-    const axesHelper = new THREE.AxesHelper(.01 / this.stemScale.x);
     this.stem.add(this.textModel);
-    this.stem.add(axesHelper);
-
-    const axesHelperText = new THREE.AxesHelper(.005);
-    this.textModel.add(axesHelperText);
-
+  
     this.render();
   }
 
@@ -230,11 +225,11 @@ class Configurator {
     const z = STEM_OR_M / 2 - .0035;
     
   
-    
-    this.textModel.position.set(x / stemScale.x, y / stemScale.y, z / stemScale.z);
-    // console.log('x: ', y, 'y:', z, 'z: ', x);
-    console.log('TEXT POSITION', this.textModel.position);
-    console.log('TEXT SIZE', textSize);
+    this.textModel.position.set(
+      x / this.stemScale.x,
+      y / this.stemScale.y,
+      z / this.stemScale.z
+    );
   }
 
   // ***************************************************** //
@@ -351,17 +346,12 @@ class Configurator {
       this.loader.load(url,
         (gltf) => {
           const model = gltf.scene.children[0];
-          // debugger
           this.parent.add(model);
           this.model = model;
           this.model.scale.set(MODEL_SCALE, MODEL_SCALE, MODEL_SCALE);
           
-          
           this.model.rotateX( Math.PI / 2 );
           this.model.rotateY( Math.PI );
-
-          const size = new THREE.Box3().setFromObject(this.model).getSize();
-          console.log(size);
 
 
           this._initFont();
@@ -374,7 +364,7 @@ class Configurator {
 
           //Set initial rotation if spinning on load
           const { x, z } = this.getRotation();
-          // this.setRotation(x, Y_ROT_INITIAL, z);
+          this.setRotation(x, Y_ROT_INITIAL, z);
 
 
           resolve(model);
@@ -426,7 +416,6 @@ class Configurator {
     const { x, z } = this.getCenter();
     const position = this.model.position;
     this.setPosition( position.x - x, 0, position.z - z );
-    console.log('POSITION: ', this.model.position);
     this.resetControls();
   }
 

@@ -9,7 +9,7 @@ export const BG_ALPHA = .3;
 export const MIN_CAMERA_DISTANCE = 0.14;
 export const MODEL_SCALE = 1;
 export const Y_ROT_INITIAL = .75 * Math.PI;
-export const MOBILE_DISTANCE_OFFSET = .03;
+export const MOBILE_DISTANCE_OFFSET = .1;
 export const MAX_TEXT_LENGTH = 22;
 
 export const STEM_LENGTH_CNTR_M = .028575;
@@ -112,10 +112,10 @@ export const CONTROL_SETTINGS = {
 
 
 export const ATTRIBUTE_ORDER = [
-  'text',
   'bowl',
   'mouth',
   'material',
+  'text',
 ];
 
 
