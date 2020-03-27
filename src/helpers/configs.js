@@ -1,16 +1,19 @@
 const { THREE } = window;
 
 export const DEFAULT_PRODUCT = 'brooklyn-pipe';
+// export const DEFAULT_PRODUCT = 'test_geode_no_draco';
 
 export const CONFIGURATOR_MIN_WIDTH = 750;
 export const BG_COLOR = 0x898c8a;
 export const BG_ALPHA = .3;
-export const MIN_CAMERA_DISTANCE = 4.5;
-export const MODEL_SCALE = 45;
+export const MIN_CAMERA_DISTANCE = 0.14;
+export const MODEL_SCALE = 1;
 export const Y_ROT_INITIAL = .75 * Math.PI;
-export const MOBILE_DISTANCE_OFFSET = 3;
+export const MOBILE_DISTANCE_OFFSET = .03;
 export const MAX_TEXT_LENGTH = 22;
 
+export const STEM_LENGTH_CNTR_M = .028575;
+export const STEM_OR_M = .004445;
 
 // PATHS
 export const FONT_FILE_PATH = 'https://cbfowler4.s3.amazonaws.com/fonts/My+Font_Regular+(6).json';
@@ -75,13 +78,13 @@ export const CONTROL_SETTINGS = {
     maxPolarAngle: .42 * Math.PI,
     minAzimuthAngle: -Infinity,
     maxAzimuthAngle: Infinity,
-    maxDistance: 5.5,
-    minDistance: 4.5,
+    maxDistance: .12,
+    minDistance: .08,
   },
   mouth: {
-    maxDistance: 6,
-    minDistance: 3,
-    minAzimuthAngle: - .95 * Math.PI,
+    maxDistance: .18,
+    minDistance: .08,
+    minAzimuthAngle: - .99 * Math.PI,
     maxAzimuthAngle: -.25 * Math.PI,
     minPolarAngle: Math.PI / 3,
     maxPolarAngle: 2 * Math.PI / 3,
@@ -92,11 +95,11 @@ export const CONTROL_SETTINGS = {
     maxPolarAngle: .6 * Math.PI,
     minAzimuthAngle: - .65 * Math.PI,
     maxAzimuthAngle: - .25 * Math.PI,
-    maxDistance: 7,
-    minDistance: 3.5,
+    maxDistance: .15,
+    minDistance: .08,
   },
   default: {
-    maxDistance: 13,
+    maxDistance: .2,
     minDistance: MIN_CAMERA_DISTANCE,
     minAzimuthAngle: -Infinity,
     maxAzimuthAngle: Infinity,
@@ -109,10 +112,10 @@ export const CONTROL_SETTINGS = {
 
 
 export const ATTRIBUTE_ORDER = [
+  'text',
   'bowl',
   'mouth',
   'material',
-  'text',
 ];
 
 

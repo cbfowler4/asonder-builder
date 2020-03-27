@@ -2,6 +2,8 @@ import {
   ATTRIBUTE_CONFIG,
   SPECIAL_ATTRIBUTE_CONFIG,
   Y_ROT_INITIAL,
+  STEM_LENGTH_CNTR_M,
+  STEM_OR_M,
   FONT_FILE_PATH,
   BG_COLOR,
   BG_ALPHA,
@@ -66,10 +68,10 @@ class Configurator {
   }
 
   _createCamera() {
-    this.camera = new THREE.PerspectiveCamera(35, this.width/this.height, 0.5, 18);
-    this.camera.position.z = 2; 
-    this.camera.position.y = 3;
-    this.camera.position.x = isMobile() ? -13 : -8;
+    this.camera = new THREE.PerspectiveCamera(35, this.width/this.height, 0.02, 5);
+    this.camera.position.z = .1; 
+    this.camera.position.y = .08;
+    this.camera.position.x = isMobile() ? -.3 : -.3;
   }
 
   _createLighting() {
@@ -147,6 +149,7 @@ class Configurator {
     this.updateControls(CONTROL_SETTINGS.default);
     this.controls.reset();
     this.render();
+    console.log('CONTROLS: ', this.controls)
   }
 
   updateControls(properties) {
@@ -181,28 +184,34 @@ class Configurator {
   }
 
   updateText(text) {
+    if (!text) return;
     if (!this.font) { console.log('ERROR: NO FONT LOADED'); return; }
 
-    const geometry = new THREE.TextGeometry(text, {
-      font: this.font,
-      size: .07,
-      height: .05,
-      curveSegments: 3,
-    } );
+    if (!this.stem) {
+      this.stem = this.model.getObjectById(this.stemId);
+      this.stemScale = this.stem.getWorldScale();
+    }
+
+    if (this.textModel) this.stem.remove(this.textModel); 
   
+    const fontParams = {
+      font: this.font,
+      size: .0012,
+      height: .0003,
+      curveSegments: 3,
+    };
+
+    const geometry = new THREE.TextGeometry(text, fontParams);
     this.bendModifier.modify(geometry);
-
-    if (this.textModel) this.scene.remove(this.textModel);
-
-    const stem = this.model.getObjectById(this.stemId);
-    const scale = stem.getWorldScale();
     this.textModel = new THREE.Mesh(geometry, this.material);
-    
-    this.textModel.scale.set(1/scale.x, 1/scale.y, 1/scale.z);
-
-    stem.add(this.textModel);
-
     this.setTextPosition();
+
+    const axesHelper = new THREE.AxesHelper(.01 / this.stemScale.x);
+    this.stem.add(this.textModel);
+    this.stem.add(axesHelper);
+
+    const axesHelperText = new THREE.AxesHelper(.005);
+    this.textModel.add(axesHelperText);
 
     this.render();
   }
@@ -213,16 +222,19 @@ class Configurator {
     this.textModel.rotateX(Math.PI / 2);
     this.textModel.rotateY(Math.PI / 2);
   
-    const stem = this.model.getObjectById(this.stemId);
-    const stemBox = new THREE.Box3().setFromObject(stem);
-    const stemCenter = stemBox.getCenter();
+    const stemScale = this.stem.getWorldScale();
     const textSize = new THREE.Box3().setFromObject(this.textModel).getSize();
-
-    const x = stemBox.min.x;
-    const y = stemCenter.y - textSize.y / 2;
-    const z = stemCenter.z - textSize.z / 2;
-
-    this.textModel.position.set(0, 0, 0);
+    
+    const x = STEM_OR_M - .0002;
+    const y = STEM_LENGTH_CNTR_M - textSize.y; //y is length dimension in stem coordinate system
+    const z = STEM_OR_M / 2 - .0035;
+    
+  
+    
+    this.textModel.position.set(x / stemScale.x, y / stemScale.y, z / stemScale.z);
+    // console.log('x: ', y, 'y:', z, 'z: ', x);
+    console.log('TEXT POSITION', this.textModel.position);
+    console.log('TEXT SIZE', textSize);
   }
 
   // ***************************************************** //
@@ -306,6 +318,7 @@ class Configurator {
     vigPass.uniforms.offset.value = 1;
     vigPass.uniforms.tDiffuse.value = 10;
 
+
     const fxaaPass = new THREE.ShaderPass(THREE.FXAAShader);
     var pixelRatio = this.renderer.getPixelRatio();
     fxaaPass.material.uniforms[ 'resolution' ].value.x = 1 / (this.canvas.offsetWidth * pixelRatio);
@@ -325,6 +338,7 @@ class Configurator {
 
   async loadModel(url, progressCB) {
     if (!this.loader) {
+      // this.loader = new THREE.FBXLoader();
       this.loader = new THREE.GLTFLoader();
       const dracoLoader = new THREE.DRACOLoader();
       dracoLoader.setDecoderPath('https://uncut-pipes.s3.amazonaws.com/js/draco/');
@@ -337,12 +351,18 @@ class Configurator {
       this.loader.load(url,
         (gltf) => {
           const model = gltf.scene.children[0];
+          // debugger
           this.parent.add(model);
           this.model = model;
           this.model.scale.set(MODEL_SCALE, MODEL_SCALE, MODEL_SCALE);
           
+          
           this.model.rotateX( Math.PI / 2 );
           this.model.rotateY( Math.PI );
+
+          const size = new THREE.Box3().setFromObject(this.model).getSize();
+          console.log(size);
+
 
           this._initFont();
           this.centerModel();
@@ -354,7 +374,8 @@ class Configurator {
 
           //Set initial rotation if spinning on load
           const { x, z } = this.getRotation();
-          this.setRotation(x, Y_ROT_INITIAL, z);
+          // this.setRotation(x, Y_ROT_INITIAL, z);
+
 
           resolve(model);
         },
@@ -405,6 +426,7 @@ class Configurator {
     const { x, z } = this.getCenter();
     const position = this.model.position;
     this.setPosition( position.x - x, 0, position.z - z );
+    console.log('POSITION: ', this.model.position);
     this.resetControls();
   }
 

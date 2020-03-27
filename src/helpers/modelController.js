@@ -1,5 +1,5 @@
 import Configurator from './configurator';
-import { debounce, getAttributeFromUrl } from './helpers';
+import { debounce } from './helpers';
 
 import {
   ATTRIBUTE_ORDER,
@@ -28,7 +28,7 @@ export const useModelController = (initModelOptions, initSpecialOptions) => {
   }, [specialOptions.material]);
 
   useEffect(() => {
-    // updateConfiguratorText(specialOptions.text);
+    updateConfiguratorText(specialOptions.text);
   }, [specialOptions.text]);
 
   const controllerActions = {

@@ -9,11 +9,6 @@ export const getModelPath = () => {
   return `https://${folderName}.s3.amazonaws.com/pipes/${productName}.glb`;
 }
 
-export const getAttributeFromUrl = (attr) => {
-  const urlParams = new URLSearchParams(window.location.search);
-  return urlParams.get(attr);
-}
-
 export const debounce = (func, wait, immediate) => {
   var timeout;
 
