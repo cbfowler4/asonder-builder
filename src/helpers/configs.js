@@ -1,6 +1,7 @@
 const { THREE } = window;
 
 export const DEFAULT_PRODUCT = 'brooklyn-pipe';
+export const PRODUCT_QS_NAME = 'product';
 // export const DEFAULT_PRODUCT = 'test_geode_no_draco';
 
 export const CONFIGURATOR_MIN_WIDTH = 750;

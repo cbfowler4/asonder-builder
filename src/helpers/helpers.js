@@ -1,10 +1,10 @@
-import { DEFAULT_PRODUCT } from './configs';
+import { DEFAULT_PRODUCT, PRODUCT_QS_NAME } from './configs';
 
 export const isLocal = () => window.location.href.includes('localhost');
 
 export const getModelPath = () => {
   const urlParams = new URLSearchParams(window.location.search);
-  const productName = urlParams.get('product') || DEFAULT_PRODUCT;
+  const productName = urlParams.get(PRODUCT_QS_NAME) || DEFAULT_PRODUCT;
   const folderName = isLocal() ? 'cbfowler4' : 'uncut-pipes';
   return `https://${folderName}.s3.amazonaws.com/pipes/${productName}.glb`;
 }
