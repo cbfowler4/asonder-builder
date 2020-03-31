@@ -27,6 +27,7 @@ export const ATTRIBUTE_CONFIG = {
     versions: [
       { id: 'v0', text: 'Tapered', img: 'tapered' },
       { id: 'v1', text: 'Open Tube', img: 'open' },
+      { id: 'v2', text: 'Conduit', img: 'conduit' },
     ],
   },
   bowl: {
@@ -34,6 +35,7 @@ export const ATTRIBUTE_CONFIG = {
     versions: [
       { id: 'v1', text: 'Spiral', img: 'spiral' },
       { id: 'v3', text: 'Rose', img: 'rose' },
+      { id: 'v4', text: 'Geode', img: 'geode' },
       { id: 'v0', text: 'Standard', img: 'standard' },
       { id: 'v2', text: 'Cauldron', img: 'cauldron' },
     ],
