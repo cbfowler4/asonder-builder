@@ -45,10 +45,6 @@ canvas:focus {
 
 
 @media (max-width: 750px) {
-  #root {
-    height: 100vh;
-  }
-
   .configurator-root {
     height: 100%;
     flex-direction: column;
