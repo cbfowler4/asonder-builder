@@ -2,9 +2,20 @@ import { DEFAULT_PRODUCT, PRODUCT_QS_NAME } from './configs';
 
 export const isLocal = () => window.location.href.includes('localhost');
 
-export const getModelPath = () => {
+const getProductName = () => {
   const urlParams = new URLSearchParams(window.location.search);
   const productName = urlParams.get(PRODUCT_QS_NAME) || DEFAULT_PRODUCT;
+  return productName;
+}
+
+export const navigateToProductPage = (search) => {
+  if (isLocal()) return;
+  const { origin } = window.location;
+  const productName = getProductName();
+  window.location.assign(`${origin}/products/${productName}?${search}`);
+}
+export const getModelPath = () => {
+  const productName = getProductName();
   const folderName = isLocal() ? 'cbfowler4' : 'uncut-pipes';
   return `https://${folderName}.s3.amazonaws.com/pipes/${productName}.glb`;
 }

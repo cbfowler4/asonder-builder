@@ -1,5 +1,5 @@
 import { S3_PATH, MAX_TEXT_LENGTH } from '../helpers/configs';
-import { isMobile } from '../helpers/helpers';
+import { isMobile, navigateToProductPage } from '../helpers/helpers';
 import React from 'react';
 
 
@@ -45,7 +45,10 @@ export const VersionList = ({ controllerActions, selectedIdx, setSelectedIdx }) 
           </div>
         }
         { selectedIdx === availableAttributes.length - 1 &&
-          <div onClick={ () => { controllerActions.Action.writeOptionsToUrl(); } }>
+          <div onClick={ () => {
+            const search = controllerActions.Info.getSearchAttrsForUrl();
+            navigateToProductPage(search);
+            } }>
             DONE
           </div>
         }

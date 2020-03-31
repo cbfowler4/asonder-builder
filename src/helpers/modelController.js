@@ -99,6 +99,25 @@ export const useModelController = (initModelOptions, initSpecialOptions) => {
   
         return version;
       },
+      getSearchAttrsForUrl() {
+        const urlParams = new URLSearchParams(window.location.search);
+        Object.values(controllerActions.Info.getAvailableAttributes()).forEach(({ name, label }) => {
+          let value;
+          switch (name) {
+            case 'text':
+              value = controllerActions.Special.getCustomText();
+              break;
+            case 'material':
+              value = controllerActions.Special.getSelectedMaterial().id;
+              break;
+            default:
+              value = controllerActions.Info.getSelectedVersion(name).text;
+              break
+          }
+          urlParams.set(label, value);
+        });
+        return urlParams.toString();
+      }
     },
     Action: {
       reinitialize: (modelOptionsInput, specialOptionsInput) => {
@@ -163,25 +182,6 @@ export const useModelController = (initModelOptions, initSpecialOptions) => {
         const properties = CONTROL_SETTINGS[attr] || CONTROL_SETTINGS.default;
         Configurator.updateControls(properties);
       },
-      writeOptionsToUrl() {
-        const urlParams = new URLSearchParams(window.location.search);
-        Object.values(controllerActions.Info.getAvailableAttributes()).forEach(({ name, label }) => {
-          let value;
-          switch (name) {
-            case 'text':
-              value = controllerActions.Special.getCustomText();
-              break;
-            case 'material':
-              value = controllerActions.Special.getSelectedMaterial().id;
-              break;
-            default:
-              value = controllerActions.Info.getSelectedVersion(name).text;
-              break
-          }
-          urlParams.set(label, value);
-        });
-        window.location.search = urlParams.toString();;
-      }
     },
     Private: {
       _isTextValid: (text) => {
