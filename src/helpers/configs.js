@@ -2,7 +2,7 @@ const { THREE } = window;
 
 export const DEFAULT_PRODUCT = 'brooklyn-pipe';
 export const PRODUCT_QS_NAME = 'product';
-// export const DEFAULT_PRODUCT = 'test_geode_no_draco';
+export const COLLECTION_QS_NAME = 'collection';
 
 export const CONFIGURATOR_MIN_WIDTH = 750;
 export const BG_COLOR = 0x898c8a;

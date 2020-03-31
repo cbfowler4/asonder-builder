@@ -1,18 +1,29 @@
-import { DEFAULT_PRODUCT, PRODUCT_QS_NAME } from './configs';
+import {
+  DEFAULT_PRODUCT,
+  PRODUCT_QS_NAME,
+  COLLECTION_QS_NAME,
+} from './configs';
 
 export const isLocal = () => window.location.href.includes('localhost');
 
 const getProductName = () => {
   const urlParams = new URLSearchParams(window.location.search);
-  const productName = urlParams.get(PRODUCT_QS_NAME) || DEFAULT_PRODUCT;
-  return productName;
+  return urlParams.get(PRODUCT_QS_NAME) || DEFAULT_PRODUCT;
+}
+
+const getCollectionName = () => {
+  const urlParams = new URLSearchParams(window.location.search);
+  return urlParams.get(COLLECTION_QS_NAME);
 }
 
 export const navigateToProductPage = (search) => {
   if (isLocal()) return;
   const { origin } = window.location;
   const productName = getProductName();
-  window.location.assign(`${origin}/products/${productName}?${search}`);
+  const collectionName = getCollectionName();
+  const collectionPath = collectionName ? `/collections/${collectionName}` : '';
+  const url = `${origin}${collectionPath}/products/${productName}?${search}`
+  window.location.assign(url);
 }
 export const getModelPath = () => {
   const productName = getProductName();
