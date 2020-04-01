@@ -9,6 +9,7 @@ import {
   BG_ALPHA,
   CONTROL_SETTINGS,
   MOBILE_DISTANCE_OFFSET,
+  MOBILE_HEIGHT_OFFSET,
   MODEL_SCALE,
 } from '../helpers/configs';
 import '../helpers/bendModifier';
@@ -139,7 +140,6 @@ class Configurator {
 
   _createControls() {
     this.controls = new THREE.OrbitControls(this.camera, this.renderer.domElement);
-    this.controls.target.set(0, 0, 0);
     this.controls.addEventListener('change', () => { this.render(); });
 
     this.resetControls();
@@ -148,7 +148,15 @@ class Configurator {
   resetControls() {
     this.updateControls(CONTROL_SETTINGS.default);
     this.controls.reset();
+    
+    if (isMobile()) this.offsetControls();
+    
+    this.controls.update();
     this.render();
+  }
+
+  offsetControls() {
+    this.controls.target.set(0, MOBILE_HEIGHT_OFFSET, 0);
   }
 
   updateControls(properties) {
@@ -161,6 +169,9 @@ class Configurator {
     });
 
     this.controls.reset();
+    if (isMobile()) this.offsetControls();
+
+    this.controls.update() 
     this.render();
   }
 

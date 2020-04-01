@@ -12,6 +12,7 @@ export const MODEL_SCALE = 1;
 export const Y_ROT_INITIAL = .75 * Math.PI;
 export const MOBILE_DISTANCE_OFFSET = .1;
 export const MAX_TEXT_LENGTH = 22;
+export const MOBILE_HEIGHT_OFFSET = -.02;
 
 export const STEM_LENGTH_CNTR_M = .028575;
 export const STEM_OR_M = .004445;
@@ -47,7 +48,7 @@ export const SPECIAL_ATTRIBUTE_CONFIG = {
     label: 'Material',
     versions: [
       {
-        id: 'black',
+        id: 'Black',
         text: 'Black Matte',
         color: 'rgb(0, 0, 0)',
         materialProperties: {
@@ -58,7 +59,7 @@ export const SPECIAL_ATTRIBUTE_CONFIG = {
         }
       },
       {
-        id: 'silver',
+        id: 'Silver',
         text: 'Bronze-Silver',
         color: 'rgb(140, 137, 120)',
         materialProperties: {
@@ -91,7 +92,6 @@ export const CONTROL_SETTINGS = {
     maxAzimuthAngle: -.25 * Math.PI,
     minPolarAngle: Math.PI / 3,
     maxPolarAngle: 2 * Math.PI / 3,
-    rotateSpeed: .2,
   },
   text: {
     minPolarAngle: .4 * Math.PI,
@@ -108,7 +108,7 @@ export const CONTROL_SETTINGS = {
     maxAzimuthAngle: Infinity,
     maxPolarAngle: Infinity,
     minPolarAngle: -Infinity,
-    rotateSpeed: .3,
+    rotateSpeed: .5,
     panSpeed: 0,
   },
 }
