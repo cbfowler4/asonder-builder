@@ -85,7 +85,7 @@ export const VersionList = ({ controllerActions, selectedIdx, setSelectedIdx }) 
             type='text'
             name='properties[Custom Message]'
             maxLength={ MAX_TEXT_LENGTH }
-            placeholder={ `${MAX_TEXT_LENGTH} character limit` }
+            placeholder={ `${MAX_TEXT_LENGTH} Character Limit (Optional)` }
             onChange={ (e) => { controllerActions.Special.setCustomText(e.target.value); } }
             value={ text }
             autoFocus

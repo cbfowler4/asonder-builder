@@ -10,9 +10,11 @@ export const BG_ALPHA = .3;
 export const MIN_CAMERA_DISTANCE = 0.14;
 export const MODEL_SCALE = 1;
 export const Y_ROT_INITIAL = .75 * Math.PI;
-export const MOBILE_DISTANCE_OFFSET = .1;
 export const MAX_TEXT_LENGTH = 22;
-export const MOBILE_HEIGHT_OFFSET = -.02;
+
+export const MOBILE_HEIGHT_OFFSET = -.018;
+export const MOBILE_DISTANCE_OFFSET = .12;
+export const MOBILE_MIN_DISTANCE_OFFSET = .05;
 
 export const STEM_LENGTH_CNTR_M = .028575;
 export const STEM_OR_M = .004445;

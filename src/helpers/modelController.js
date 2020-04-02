@@ -40,7 +40,7 @@ export const useModelController = (initModelOptions, initSpecialOptions) => {
             return { ...acc, [name]: SPECIAL_ATTRIBUTE_CONFIG.material.versions[0].id };
           }
           return { ...acc, [name]: '' };
-        }, { text: '' })
+        }, { text: 'hello' })
       ),
       selectMaterial: (material) => {
         if (specialOptions.material) {

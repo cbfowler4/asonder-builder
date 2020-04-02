@@ -9,6 +9,7 @@ import {
   BG_ALPHA,
   CONTROL_SETTINGS,
   MOBILE_DISTANCE_OFFSET,
+  MOBILE_MIN_DISTANCE_OFFSET,
   MOBILE_HEIGHT_OFFSET,
   MODEL_SCALE,
 } from '../helpers/configs';
@@ -161,8 +162,11 @@ class Configurator {
 
   updateControls(properties) {
     Object.keys(properties).forEach(prop => {
-      if (isMobile() && prop.includes('Distance')) {
+      if (isMobile() && prop.includes('maxDistance')) {
         this.controls[prop] = properties[prop] + MOBILE_DISTANCE_OFFSET;
+      }
+      else if (isMobile() && prop.includes('minDistance')) {
+        this.controls[prop] = properties[prop] + MOBILE_MIN_DISTANCE_OFFSET;
       } else {
         this.controls[prop] = properties[prop];
       }
