@@ -38,9 +38,11 @@ export const useModelController = (initModelOptions, initSpecialOptions) => {
           if (ATTRIBUTE_CONFIG[name]) return acc;
           else if (name === 'material') {
             return { ...acc, [name]: SPECIAL_ATTRIBUTE_CONFIG.material.versions[0].id };
+          } else if (name === 'text') {
+            return { ...acc, text: 'uncutbk' }
           }
           return { ...acc, [name]: '' };
-        }, { text: 'hello' })
+        }, {})
       ),
       selectMaterial: (material) => {
         if (specialOptions.material) {

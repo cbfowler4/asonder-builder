@@ -39,7 +39,7 @@ class Configurator {
     })
 
     window.addEventListener("orientationchange", () => {
-      this.onResizeWindow();
+      this.onResizeWindow(true);
     });
 
     // const axesHelper = new THREE.AxesHelper(2);
@@ -117,15 +117,21 @@ class Configurator {
     if (this.stats) this.stats.end();
   }
 
-  _setSize() {
+  _setSize(orientationChanged) {
     this.canvas.style.width ='100%';
     this.canvas.style.height ='100vh';
-    this.width  = this.canvas.offsetWidth;
-    this.height = this.canvas.offsetHeight;
+
+    if (orientationChanged) {
+      this.width  = this.canvas.offsetHeight;
+      this.height = this.canvas.offsetWidth;
+    } else {
+      this.width  = this.canvas.offsetWidth;
+      this.height = this.canvas.offsetHeight;
+    }
   }
   
-  onResizeWindow() {
-    this._setSize();
+  onResizeWindow(orientationChanged) {
+    this._setSize(orientationChanged);
     this.renderer.domElement.width = this.width;
     this.camera.aspect = this.width / this.height;
     this.renderer.setSize(this.width, this.height);
@@ -199,7 +205,6 @@ class Configurator {
   }
 
   updateText(text) {
-    if (!text) return;
     if (!this.font) { console.log('ERROR: NO FONT LOADED'); return; }
 
     if (!this.stem) {
@@ -331,8 +336,8 @@ class Configurator {
 
     const fxaaPass = new THREE.ShaderPass(THREE.FXAAShader);
     var pixelRatio = this.renderer.getPixelRatio();
-    fxaaPass.material.uniforms[ 'resolution' ].value.x = 1 / (this.canvas.offsetWidth * pixelRatio);
-    fxaaPass.material.uniforms[ 'resolution' ].value.y = 1 / (this.canvas.offsetHeight * pixelRatio);
+    fxaaPass.material.uniforms[ 'resolution' ].value.x = 1 / (this.width * pixelRatio);
+    fxaaPass.material.uniforms[ 'resolution' ].value.y = 1 / (this.height * pixelRatio);
 
     this.composer.addPass(taaRenderPass);
     this.composer.addPass(renderPass);

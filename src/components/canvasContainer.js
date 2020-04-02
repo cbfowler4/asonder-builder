@@ -28,7 +28,7 @@ const rotateModel = () => {
 
 const { useEffect, useState } = React;
 
-const LoadingBarOverlay = ({ loading }) => (
+const LoadingBarOverlay = () => (
   <div className='loading-overlay'>
     <div className='loading-bar-container'>
       <h2>Launching Builder</h2>
@@ -55,6 +55,7 @@ export const CanvasContainer = ({ controllerActions }) => {
 
       const initModelOptions = Configurator.generateModelOptions();
       const initSpecialOptions = controllerActions.Special.generateSpecialOptions();
+
       controllerActions.Action.reinitialize(initModelOptions, initSpecialOptions);   
 
       setLoading(0);
@@ -81,7 +82,7 @@ export const CanvasContainer = ({ controllerActions }) => {
       ref={ node => setContainerRef(node) }
       className={ `iframe-container ${grabbing ? 'grabbing' : ''}` }
     >
-      <canvas ref={ node => setCanvasRef(node) } />
+      <canvas id='configurator-canvas' ref={ node => setCanvasRef(node) } />
       { Boolean(loading) &&
         <LoadingBarOverlay loading={ loading } />
       }
