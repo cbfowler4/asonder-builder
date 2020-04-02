@@ -54,9 +54,9 @@ export const SPECIAL_ATTRIBUTE_CONFIG = {
         text: 'Black Matte',
         color: 'rgb(0, 0, 0)',
         materialProperties: {
-          color: new THREE.Color('rgb(35, 35, 35)'),
+          color: new THREE.Color('rgb(40, 40, 40)'),
           specular: new THREE.Color('rgb(35, 35, 35)'),
-          shininess: 20,
+          shininess: 22,
           texture: 'black',
         }
       },

@@ -1,5 +1,5 @@
 import Configurator from './configurator';
-import { debounce } from './helpers';
+import { debounce, getUrlParams } from './helpers';
 
 import {
   ATTRIBUTE_ORDER,
@@ -102,7 +102,7 @@ export const useModelController = (initModelOptions, initSpecialOptions) => {
         return version;
       },
       getSearchAttrsForUrl() {
-        const urlParams = new URLSearchParams(window.location.search);
+        const urlParams = getUrlParams();
         Object.values(controllerActions.Info.getAvailableAttributes()).forEach(({ name, label }) => {
           let value;
           switch (name) {
@@ -118,7 +118,7 @@ export const useModelController = (initModelOptions, initSpecialOptions) => {
           }
           urlParams.set(label, value);
         });
-        return urlParams.toString();
+        return btoa(urlParams.toString());
       }
     },
     Action: {
@@ -203,7 +203,7 @@ export const useModelController = (initModelOptions, initSpecialOptions) => {
        if (attributeConfigs[attr]) return attributeConfigs[attr].label;
       },
       _mergeOptionsWithUrlValues(modelOptionsInput, specialOptionsInput) {
-        const urlParams = new URLSearchParams(window.location.search);
+        const urlParams = getUrlParams();
         const modelOptions = { ...modelOptionsInput };
         const specialOptions = { ...specialOptionsInput };
 

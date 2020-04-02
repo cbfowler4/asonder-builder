@@ -6,13 +6,19 @@ import {
 
 export const isLocal = () => window.location.href.includes('localhost');
 
+export const getUrlParams = () => {
+  const { atob, location } = window;
+  const search = location.search.slice(1);
+  return new URLSearchParams(atob(search))
+};
+
 const getProductName = () => {
-  const urlParams = new URLSearchParams(window.location.search);
+  const urlParams = getUrlParams();
   return urlParams.get(PRODUCT_QS_NAME) || DEFAULT_PRODUCT;
 }
 
 const getCollectionName = () => {
-  const urlParams = new URLSearchParams(window.location.search);
+  const urlParams = getUrlParams();
   return urlParams.get(COLLECTION_QS_NAME);
 }
 

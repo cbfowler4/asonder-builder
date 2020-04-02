@@ -49,7 +49,7 @@ export const VersionList = ({ controllerActions, selectedIdx, setSelectedIdx }) 
             const search = controllerActions.Info.getSearchAttrsForUrl();
             navigateToProductPage(search);
             } }>
-            DONE
+            <span>DONE</span>
           </div>
         }
       </div>
