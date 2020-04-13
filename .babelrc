@@ -3,6 +3,12 @@
     "plugins": [
       ["@babel/plugin-transform-runtime", {
         "regenerator": true
+      }],
+      ["transform-imports", {
+        "react-spinners": {
+          "transform": "react-spinners/${member}",
+          "preventFullImport": true
+        }
       }]
     ]
   }
