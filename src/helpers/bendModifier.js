@@ -1,4 +1,5 @@
-const { THREE } = window;
+// const { THREE } = window;
+import * as THREE from 'three';
 /** The Bend modifier lets you bend the current selection up to 90 degrees about a single axis,
  * producing a uniform bend in an object's geometry.
  * You can control the angle and direction of the bend on any of three axes.

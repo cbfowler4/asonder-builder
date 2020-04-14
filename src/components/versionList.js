@@ -1,7 +1,6 @@
-import { S3_PATH, MAX_TEXT_LENGTH } from '../helpers/configs';
+import { ASSET_PATH, MAX_TEXT_LENGTH } from '../helpers/configs';
 import { isMobile, navigateToProductPage } from '../helpers/helpers';
 import React from 'react';
-
 
 
 export const VersionList = ({ controllerActions, selectedIdx, setSelectedIdx }) => {
@@ -29,14 +28,14 @@ export const VersionList = ({ controllerActions, selectedIdx, setSelectedIdx }) 
       <div className='nav-btn-container'>
         { isMobile() && selectedIdx > 0 &&
           <div onClick={ () => { setSelectedIdx(selectedIdx - 1); } } >
-            <img src='https://cbfowler4.s3.amazonaws.com/uncut_assets/back.svg' alt='back' />
+            <img src={`${ASSET_PATH}back.svg`} alt='back' />
           </div>
         }
         { selectedIdx < availableAttributes.length - 1 &&
           <div onClick={ () => { setSelectedIdx(selectedIdx + 1); } }>
             { isMobile() ?
               <img
-                src='https://cbfowler4.s3.amazonaws.com/uncut_assets/back.svg'
+                src={`${ASSET_PATH}back.svg`}
                 alt='forward'
                 style={ { transform: 'rotate(180deg)' } } 
               /> :
@@ -101,10 +100,10 @@ export const VersionList = ({ controllerActions, selectedIdx, setSelectedIdx }) 
           const optionTile = (
             <div
               className={ `version-tile ${id === selectedVersion.id ? 'active' : ''}` }
-              key={ id }
+              key={ `${id}-${name}` }
               onClick={ () => { controllerActions.Action.selectVersion(name, id); } }
             >
-              { img && <img className='tile-img' src={ `${S3_PATH}${img}.png` } /> }
+              { img && <img className='tile-img' src={ `${ASSET_PATH}${img}.png` } /> }
               <h1 className='sel-attr-title'>{ text }</h1>
             </div>
           );

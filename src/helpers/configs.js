@@ -1,4 +1,5 @@
-const { THREE } = window;
+// const { THREE } = window;
+import * as THREE from 'three';
 
 export const DEFAULT_PRODUCT = 'brooklyn-pipe';
 export const PRODUCT_QS_NAME = 'product';
@@ -20,8 +21,13 @@ export const STEM_LENGTH_CNTR_M = .028575;
 export const STEM_OR_M = .004445;
 
 // PATHS
-export const FONT_FILE_PATH = 'https://cbfowler4.s3.amazonaws.com/fonts/Regular-Font.json';
-export const S3_PATH = 'https://cbfowler4.s3.amazonaws.com/uncut_assets/';
+const UNCUT_PUBLIC_CLOUDFRONT = 'd3qn2bop83qdz7.cloudfront.net';
+const UNCUT_PIPES_CLOUDFRONT = 'd7c94s7u7a0eq.cloudfront.net';
+
+export const ASSET_PATH = `https://${UNCUT_PUBLIC_CLOUDFRONT}/assets/`;
+export const TEXTURES_PATH = `https://${UNCUT_PUBLIC_CLOUDFRONT}/textures/`;
+export const FONT_FILE_PATH = `https://${UNCUT_PUBLIC_CLOUDFRONT}/fonts/Regular-Font.json`;
+
 
 
 export const ATTRIBUTE_CONFIG = {

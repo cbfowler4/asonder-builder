@@ -2,6 +2,7 @@ import {
   DEFAULT_PRODUCT,
   PRODUCT_QS_NAME,
   COLLECTION_QS_NAME,
+  UNCUT_PIPES_CLOUDFRONT,
 } from './configs';
 
 export const isLocal = () => window.location.href.includes('localhost');
@@ -33,8 +34,11 @@ export const navigateToProductPage = (search) => {
 }
 export const getModelPath = () => {
   const productName = getProductName();
-  const folderName = isLocal() ? 'cbfowler4' : 'uncut-pipes';
-  return `https://${folderName}.s3.amazonaws.com/pipes/${productName}.glb`;
+  if (isLocal()) {
+    return `https://cbfowler4.s3.amazonaws.com/pipes/${productName}.glb`;
+  }
+
+  return `https://${UNCUT_PIPES_CLOUDFRONT}/pipes/${productName}.glb`
 }
 
 export const debounce = (func, wait, immediate) => {

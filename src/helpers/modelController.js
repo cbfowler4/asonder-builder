@@ -4,7 +4,7 @@ import { debounce, getUrlParams } from './helpers';
 import {
   ATTRIBUTE_ORDER,
   ATTRIBUTE_CONFIG,
-  S3_PATH,
+  ASSET_PATH,
   SPECIAL_ATTRIBUTE_CONFIG,
   CONTROL_SETTINGS,
   MAX_TEXT_LENGTH,
@@ -12,6 +12,8 @@ import {
 
 
 import React from 'react';
+// const { React } = window;
+
 const { useState, useEffect } = React;
 
 const updateConfiguratorText = debounce((text) => { Configurator.updateText(text); }, 1000);
@@ -97,7 +99,7 @@ export const useModelController = (initModelOptions, initSpecialOptions) => {
         const selectedVersionId = Object.keys(versions).find((versionId) => versions[versionId].selected);
         const version = ATTRIBUTE_CONFIG[attr].versions.find((version) => version.id === selectedVersionId);
         version.name = versions[selectedVersionId].name;
-        if (version.img) version.imgPath = `${S3_PATH}${version.img}.png`;
+        if (version.img) version.imgPath = `${ASSET_PATH}${version.img}.png`;
   
         return version;
       },

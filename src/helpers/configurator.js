@@ -12,11 +12,26 @@ import {
   MOBILE_MIN_DISTANCE_OFFSET,
   MOBILE_HEIGHT_OFFSET,
   MODEL_SCALE,
+  TEXTURES_PATH,
 } from '../helpers/configs';
 import '../helpers/bendModifier';
 
 import { isMobile } from '../helpers/helpers';
-const { THREE } = window;
+import * as THREE from 'three';
+
+import { OrbitControls } from 'three/examples/jsm/controls/OrbitControls.js';
+import { GLTFLoader } from 'three/examples/jsm/loaders/GLTFLoader.js';
+import { DRACOLoader } from 'three/examples/jsm/loaders/DRACOLoader.js';
+
+import { EffectComposer } from 'three/examples/jsm/postprocessing/EffectComposer.js';
+import { CopyShader } from 'three/examples/jsm/shaders/CopyShader.js';
+import { FXAAShader } from 'three/examples/jsm/shaders/FXAAShader.js';
+import { VignetteShader } from 'three/examples/jsm/shaders/VignetteShader.js';
+import { RenderPass } from 'three/examples/jsm/postprocessing/RenderPass.js';
+import { ShaderPass } from 'three/examples/jsm/postprocessing/ShaderPass.js';
+import { TAARenderPass } from 'three/examples/jsm/postprocessing/TAARenderPass.js';
+import { SAOPass } from 'three/examples/jsm/postprocessing/SAOPass.js';
+
 
 
 class Configurator {
@@ -146,7 +161,7 @@ class Configurator {
   // ***************************************************** //
 
   _createControls() {
-    this.controls = new THREE.OrbitControls(this.camera, this.renderer.domElement);
+    this.controls = new OrbitControls(this.camera, this.renderer.domElement);
     this.controls.addEventListener('change', () => { this.render(); });
 
     this.resetControls();
@@ -261,8 +276,8 @@ class Configurator {
     const loader = new THREE.TextureLoader();
 
     this.textures = {
-      silver: loader.load('https://uncut-public.s3.amazonaws.com/textures/metal-3-silver.jpg'),
-      black: loader.load('https://uncut-public.s3.amazonaws.com/textures/metal-3-black.jpg'),
+      silver: loader.load(`${TEXTURES_PATH}metal-3-silver.jpg`),
+      black: loader.load(`${TEXTURES_PATH}metal-3-black.jpg`),
     };
 
     Object.values(this.textures).forEach((texture) => {
@@ -304,21 +319,21 @@ class Configurator {
   // ***************************************************** //
 
   addPostProcessing() {
-    this.composer = new THREE.EffectComposer(this.renderer);
+    this.composer = new EffectComposer(this.renderer);
 
-    const copyPass = new THREE.ShaderPass(THREE.CopyShader);
+    const copyPass = new ShaderPass(CopyShader);
 
-    const renderPass = new THREE.RenderPass(this.scene, this.camera);
+    const renderPass = new RenderPass(this.scene, this.camera);
     renderPass.enabled = false;
     
-    const taaRenderPass = new THREE.TAARenderPass(this.scene, this.camera );
+    const taaRenderPass = new TAARenderPass(this.scene, this.camera );
     taaRenderPass.unbiased = true;
     taaRenderPass.sampleLevel = 3;
     taaRenderPass.renderToScreen = true;
     taaRenderPass.clearColor = BG_COLOR;
     taaRenderPass.clearAlpha = BG_ALPHA;
     
-    const saoPass = new THREE.SAOPass(this.scene, this.camera, true, false);
+    const saoPass = new SAOPass(this.scene, this.camera, true, false);
     saoPass.params = {
       output: 0,
       saoBias: 3.5,
@@ -328,13 +343,13 @@ class Configurator {
       saoMinResolution: 0,
     };
 
-    const vigPass = new THREE.ShaderPass(THREE.VignetteShader);
+    const vigPass = new ShaderPass(VignetteShader);
     vigPass.uniforms.darkness.value = .8;
     vigPass.uniforms.offset.value = 1;
     vigPass.uniforms.tDiffuse.value = 10;
 
 
-    const fxaaPass = new THREE.ShaderPass(THREE.FXAAShader);
+    const fxaaPass = new ShaderPass(FXAAShader);
     var pixelRatio = this.renderer.getPixelRatio();
     fxaaPass.material.uniforms[ 'resolution' ].value.x = 1 / (this.width * pixelRatio);
     fxaaPass.material.uniforms[ 'resolution' ].value.y = 1 / (this.height * pixelRatio);
@@ -354,9 +369,9 @@ class Configurator {
   async loadModel(url, progressCB) {
     if (!this.loader) {
       // this.loader = new THREE.FBXLoader();
-      this.loader = new THREE.GLTFLoader();
-      const dracoLoader = new THREE.DRACOLoader();
-      dracoLoader.setDecoderPath('https://uncut-pipes.s3.amazonaws.com/js/draco/');
+      this.loader = new GLTFLoader();
+      const dracoLoader = new DRACOLoader();
+      dracoLoader.setDecoderPath('https://www.gstatic.com/draco/v1/decoders/');
       dracoLoader.preload();
       this.loader.setDRACOLoader(dracoLoader);
     }

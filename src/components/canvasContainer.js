@@ -1,4 +1,6 @@
 import React from 'react';
+// const { React } = window;
+
 import Configurator from '../helpers/configurator';
 import { HashLoader } from 'react-spinners';
 import BezierEasing from 'bezier-easing';

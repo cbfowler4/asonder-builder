@@ -1,14 +1,19 @@
 const path = require('path');
-// const HtmlWebPackPlugin = require("html-webpack-plugin");
+
 const CopyPlugin = require('copy-webpack-plugin');
 const TerserPlugin = require("terser-webpack-plugin");
 const BundleAnalyzerPlugin = require('webpack-bundle-analyzer').BundleAnalyzerPlugin;
 
 module.exports = {
-  entry: './src/index.js',
+  entry: { uncutbk: './src/index.js' },
   output: {
-    path: path.resolve(__dirname, 'dist'),
-    filename: 'uncutbk.bundle.js'
+    path: path.join(__dirname, './dist'),
+    filename: '[name].bundle.js',
+  },
+  optimization: {
+    splitChunks: {
+      chunks: 'all',
+    },
   },
   devServer: {
     contentBase: path.join(__dirname, 'dist'),
@@ -45,7 +50,7 @@ module.exports = {
         to: path.resolve(__dirname, 'dist')
       },
     ]),
-    new BundleAnalyzerPlugin()
+    // new BundleAnalyzerPlugin()
   ],
   optimization: {
     minimize: true,

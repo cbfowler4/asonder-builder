@@ -1,5 +1,7 @@
 import { isMobile } from '../helpers/helpers';
 import React from 'react';
+// const { React } = window;
+
 
 const { useState, useEffect } = React;
 

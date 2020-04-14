@@ -3,6 +3,7 @@ import { CanvasContainer } from './components/canvasContainer';
 import { Selector } from './components/selector';
 import { AttributeHeader } from './components/attributeHeader';
 import { useModelController } from './helpers/modelController';
+// const { React } = window;
 
 import './styles/configurator.scss';
 import './styles/selector.scss';

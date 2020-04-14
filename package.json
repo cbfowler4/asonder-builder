@@ -6,9 +6,10 @@
     "@babel/runtime": "^7.7.7",
     "bezier-easing": "^2.1.0",
     "path": "^0.12.7",
-    "react": "^16.13.0",
-    "react-dom": "^16.13.0",
-    "react-spinners": "^0.8.1"
+    "react": "^16.13.1",
+    "react-dom": "^16.13.1",
+    "react-spinners": "^0.8.1",
+    "three": "^0.115.0"
   },
   "scripts": {
     "build": "webpack -p",
