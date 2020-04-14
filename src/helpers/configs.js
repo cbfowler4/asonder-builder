@@ -22,7 +22,7 @@ export const STEM_OR_M = .004445;
 
 // PATHS
 const UNCUT_PUBLIC_CLOUDFRONT = 'd3qn2bop83qdz7.cloudfront.net';
-const UNCUT_PIPES_CLOUDFRONT = 'd7c94s7u7a0eq.cloudfront.net';
+export const UNCUT_PIPES_CLOUDFRONT = 'd7c94s7u7a0eq.cloudfront.net';
 
 export const ASSET_PATH = `https://${UNCUT_PUBLIC_CLOUDFRONT}/assets/`;
 export const TEXTURES_PATH = `https://${UNCUT_PUBLIC_CLOUDFRONT}/textures/`;

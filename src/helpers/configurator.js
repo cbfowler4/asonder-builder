@@ -30,9 +30,6 @@ import { VignetteShader } from 'three/examples/jsm/shaders/VignetteShader.js';
 import { RenderPass } from 'three/examples/jsm/postprocessing/RenderPass.js';
 import { ShaderPass } from 'three/examples/jsm/postprocessing/ShaderPass.js';
 import { TAARenderPass } from 'three/examples/jsm/postprocessing/TAARenderPass.js';
-import { SAOPass } from 'three/examples/jsm/postprocessing/SAOPass.js';
-
-
 
 class Configurator {
   init(canvas, container) {
@@ -205,22 +202,33 @@ class Configurator {
   // ***************************************************** //
 
   _initFont() {
-    this.fontLoader = new THREE.FontLoader();
-
-    this.bendModifier = new THREE.BendModifier();
-    
-    const direction = new THREE.Vector3(0, 0, -1);
-    const axis =  new THREE.Vector3(1, 0, 0);
-    const angle = .18 * Math.PI;
-    this.bendModifier.set(direction, axis, angle);
-
-    const fontLoader = new THREE.FontLoader();
-
-    fontLoader.load(FONT_FILE_PATH, (font) => this.font = font);
+    return new Promise((resolve) => {
+      this.fontLoader = new THREE.FontLoader();
+  
+      this.bendModifier = new THREE.BendModifier();
+      
+      const direction = new THREE.Vector3(0, 0, -1);
+      const axis =  new THREE.Vector3(1, 0, 0);
+      const angle = .18 * Math.PI;
+      this.bendModifier.set(direction, axis, angle);
+  
+      const fontLoader = new THREE.FontLoader();
+  
+      fontLoader.load(FONT_FILE_PATH, (font) => {
+        this.font = font;
+        resolve();
+      }, () => {}, (err) => {
+        console.log('ERROR LOADING FONT');
+      });
+    })
   }
 
-  updateText(text) {
-    if (!this.font) { console.log('ERROR: NO FONT LOADED'); return; }
+  updateText(text = '') {
+    if (!this.fontLoader && !this.font) {
+      this._initFont().then(() => this.updateText(text));
+      return;
+    } else if (!this.font || !this.model) return;
+
 
     if (!this.stem) {
       this.stem = this.model.getObjectById(this.stemId);
@@ -332,17 +340,7 @@ class Configurator {
     taaRenderPass.renderToScreen = true;
     taaRenderPass.clearColor = BG_COLOR;
     taaRenderPass.clearAlpha = BG_ALPHA;
-    
-    const saoPass = new SAOPass(this.scene, this.camera, true, false);
-    saoPass.params = {
-      output: 0,
-      saoBias: 3.5,
-      saoIntensity: .8,
-      saoScale: 4.5,
-      saoKernelRadius: 10,
-      saoMinResolution: 0,
-    };
-
+  
     const vigPass = new ShaderPass(VignetteShader);
     vigPass.uniforms.darkness.value = .8;
     vigPass.uniforms.offset.value = 1;
@@ -359,7 +357,6 @@ class Configurator {
     this.composer.addPass(copyPass);
     this.composer.addPass(fxaaPass); 
     this.composer.addPass(vigPass);
-    // this.composer.addPass(saoPass);
   }
     
   // ***************************************************** //
@@ -388,8 +385,6 @@ class Configurator {
           this.model.rotateX( Math.PI / 2 );
           this.model.rotateY( Math.PI );
 
-
-          this._initFont();
           this.centerModel();
           this._setMaterial();
 
