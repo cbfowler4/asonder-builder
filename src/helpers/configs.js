@@ -56,8 +56,8 @@ export const SPECIAL_ATTRIBUTE_CONFIG = {
     label: 'Material',
     versions: [
       {
-        id: 'Black',
-        text: 'Black Matte',
+        id: 'Matte Black',
+        text: 'Matte Black',
         color: 'rgb(0, 0, 0)',
         materialProperties: {
           color: new THREE.Color('rgb(40, 40, 40)'),
@@ -67,7 +67,7 @@ export const SPECIAL_ATTRIBUTE_CONFIG = {
         }
       },
       {
-        id: 'Silver',
+        id: 'Bronze-Silver',
         text: 'Bronze-Silver',
         color: 'rgb(140, 137, 120)',
         materialProperties: {
