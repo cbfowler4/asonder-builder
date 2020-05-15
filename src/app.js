@@ -3,7 +3,7 @@ import { CanvasContainer } from './components/canvasContainer';
 import { Selector } from './components/selector';
 import { AttributeHeader } from './components/attributeHeader';
 import { useModelController } from './helpers/modelController';
-// const { React } = window;
+import { updateViewHeight } from './helpers/helpers';
 
 import './styles/configurator.scss';
 import './styles/selector.scss';
@@ -26,13 +26,9 @@ export const App = () => {
     }
   }, [selectedIdx]);
 
-  useEffect(() => {
-    // First we get the viewport height and we multiple it by 1% to get a value for a vh unit
-    const vh = window.innerHeight * 0.01;
-    // Then we set the value in the --vh custom property to the root of the document
-    document.documentElement.style.setProperty('--vh', `${vh}px`);
+  useEffect(() => updateViewHeight(), []);
 
-  }, []);
+  window.addEventListener('resize', () => updateViewHeight());
 
   return (
     <div className='configurator-root'>

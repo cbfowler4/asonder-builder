@@ -35,6 +35,19 @@
 }
 
 
+@keyframes color-pulse {
+  from {
+    opacity: 1;
+  }
+  50% {
+    opacity: .8;
+  }
+  to {
+    opacity: 1;
+  }
+}
+
+
 $green1: #1a1919;
 $green2: rgb(53, 52, 51);
 $green3: #24231F;

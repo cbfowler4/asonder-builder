@@ -36,15 +36,15 @@ export const ATTRIBUTE_CONFIG = {
     versions: [
       { id: 'v0', text: 'Tapered', img: 'tapered' },
       { id: 'v1', text: 'Open Tube', img: 'open' },
-      { id: 'v2', text: 'Conduit', img: 'conduit' },
+      { id: 'v2', text: 'Conduit', img: 'conduit', height: '44px' },
     ],
   },
   bowl: {
     label: 'Bowl',
     versions: [
       { id: 'v1', text: 'Spiral', img: 'spiral' },
-      { id: 'v3', text: 'Rose', img: 'rose' },
-      { id: 'v4', text: 'Geode', img: 'geode' },
+      { id: 'v3', text: 'Rose', img: 'rose', height: '44px' },
+      { id: 'v4', text: 'Geode', img: 'geode', height: '49px' },
       { id: 'v0', text: 'Standard', img: 'standard' },
       { id: 'v2', text: 'Cauldron', img: 'cauldron' },
     ],

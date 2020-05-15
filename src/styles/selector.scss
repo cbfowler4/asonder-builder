@@ -47,7 +47,8 @@
 
 .tile-img {
   height: 40px;
-  padding: 10px;
+  position: absolute;
+  bottom: 30px;
   box-sizing: content-box;
 }
 
@@ -84,6 +85,8 @@
   font-size: 11px;
   text-align: center;
   width: 100%;
+  bottom: 8px;
+  position: absolute;
   word-break: break-word;
 }
 

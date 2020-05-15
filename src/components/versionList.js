@@ -96,14 +96,16 @@ export const VersionList = ({ controllerActions, selectedIdx, setSelectedIdx }) 
       const selectedVersion = controllerActions.Info.getSelectedVersion(name);
       content = controllerActions.Info.getAvailableVersions(name)
         .reduce((acc, version) => {
-          const { id, text, img } = version;
+          const { id, text, img, height } = version;
+          const style = { height };
+
           const optionTile = (
             <div
               className={ `version-tile ${id === selectedVersion.id ? 'active' : ''}` }
               key={ `${id}-${name}` }
               onClick={ () => { controllerActions.Action.selectVersion(name, id); } }
             >
-              { img && <img className='tile-img' src={ `${ASSET_PATH}${img}.png` } /> }
+              { img && <img className='tile-img' src={ `${ASSET_PATH}${img}.png` } style={ style } /> }
               <h1 className='sel-attr-title'>{ text }</h1>
             </div>
           );

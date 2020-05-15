@@ -45,14 +45,8 @@ class Configurator {
     this._createLighting();
     this._initMaterial();
 
-    window.addEventListener('resize', () => {
-      if (isMobile()) return;
-      this.onResizeWindow();
-    })
+    window.addEventListener('resize', () => this.onResizeWindow());
 
-    window.addEventListener("orientationchange", () => {
-      this.onResizeWindow(true);
-    });
 
     // const axesHelper = new THREE.AxesHelper(2);
     // this.scene.add( axesHelper );
@@ -129,21 +123,13 @@ class Configurator {
     if (this.stats) this.stats.end();
   }
 
-  _setSize(orientationChanged) {
-    this.canvas.style.width ='100%';
-    this.canvas.style.height ='100vh';
-
-    if (orientationChanged) {
-      this.width  = this.canvas.offsetHeight;
-      this.height = this.canvas.offsetWidth;
-    } else {
-      this.width  = this.canvas.offsetWidth;
-      this.height = this.canvas.offsetHeight;
-    }
+  _setSize() {
+    this.height = window.innerHeight;
+    this.width = window.innerWidth;
   }
   
-  onResizeWindow(orientationChanged) {
-    this._setSize(orientationChanged);
+  onResizeWindow() {
+    this._setSize();
     this.renderer.domElement.width = this.width;
     this.camera.aspect = this.width / this.height;
     this.renderer.setSize(this.width, this.height);

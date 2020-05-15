@@ -4,6 +4,7 @@ h2, h1 {
 
 #root {
   overflow: hidden;
+  width: 100vw;
 }
 
 .configurator-root {
@@ -96,3 +97,4 @@ canvas:focus {
   width: 100vw;
   height: 100vh;
 }
+
