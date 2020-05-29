@@ -8,9 +8,9 @@ import {
 export const isLocal = () => window.location.href.includes('localhost');
 
 export const getUrlParams = () => {
-  const { atob, location } = window;
+  const { location } = window;
   const search = location.search.slice(1);
-  return new URLSearchParams(atob(search))
+  return new URLSearchParams(search)
 };
 
 const getProductName = () => {

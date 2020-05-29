@@ -1,7 +1,7 @@
 // const { THREE } = window;
 import * as THREE from 'three';
 
-export const DEFAULT_PRODUCT = 'brooklyn-pipe';
+export const DEFAULT_PRODUCT = 'brooklyn-pipe-2';
 export const PRODUCT_QS_NAME = 'product';
 export const COLLECTION_QS_NAME = 'collection';
 
@@ -13,11 +13,11 @@ export const MODEL_SCALE = 1;
 export const Y_ROT_INITIAL = .75 * Math.PI;
 export const MAX_TEXT_LENGTH = 22;
 
-export const MOBILE_HEIGHT_OFFSET = -.018;
+export const MOBILE_HEIGHT_OFFSET = -.012;
 export const MOBILE_DISTANCE_OFFSET = .12;
 export const MOBILE_MIN_DISTANCE_OFFSET = .05;
 
-export const STEM_LENGTH_CNTR_M = .028575;
+export const STEM_LENGTH_CNTR_M = .04;
 export const STEM_OR_M = .004445;
 
 // PATHS
@@ -43,10 +43,10 @@ export const ATTRIBUTE_CONFIG = {
     label: 'Bowl',
     versions: [
       { id: 'v1', text: 'Spiral', img: 'spiral' },
-      { id: 'v3', text: 'Rose', img: 'rose', height: '44px' },
-      { id: 'v4', text: 'Geode', img: 'geode', height: '49px' },
+      { id: 'v2', text: 'Rose', img: 'rose', height: '44px' },
+      { id: 'v3', text: 'Geode', img: 'geode', height: '49px' },
       { id: 'v0', text: 'Standard', img: 'standard' },
-      { id: 'v2', text: 'Cauldron', img: 'cauldron' },
+      // { id: 'v2', text: 'Cauldron', img: 'cauldron' },
     ],
   },
 };

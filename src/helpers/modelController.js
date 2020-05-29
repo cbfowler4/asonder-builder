@@ -41,7 +41,7 @@ export const useModelController = (initModelOptions, initSpecialOptions) => {
           else if (name === 'material') {
             return { ...acc, [name]: SPECIAL_ATTRIBUTE_CONFIG.material.versions[0].id };
           } else if (name === 'text') {
-            return { ...acc, text: 'uncutbk' }
+            return { ...acc, text: 'asonder' }
           }
           return { ...acc, [name]: '' };
         }, {})
@@ -120,7 +120,7 @@ export const useModelController = (initModelOptions, initSpecialOptions) => {
           }
           urlParams.set(label, value);
         });
-        return btoa(urlParams.toString());
+        return urlParams.toString();
       }
     },
     Action: {

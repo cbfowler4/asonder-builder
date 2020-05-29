@@ -190,6 +190,7 @@ class Configurator {
   _initFont() {
     return new Promise((resolve) => {
       this.fontLoader = new THREE.FontLoader();
+      this.stemScale = 1;
   
       this.bendModifier = new THREE.BendModifier();
       
@@ -225,10 +226,12 @@ class Configurator {
   
     const fontParams = {
       font: this.font,
-      size: .0012,
-      height: .0004,
+      size: .0034 / this.stemScale.x,
+      height: .0010 / this.stemScale.x, 
       curveSegments: 3,
     };
+
+    console.log(fontParams);
 
     const geometry = new THREE.TextGeometry(text, fontParams);
     this.bendModifier.modify(geometry);
@@ -246,11 +249,16 @@ class Configurator {
     this.textModel.rotateX(Math.PI / 2);
     this.textModel.rotateY(Math.PI / 2);
   
-    const stemScale = this.stem.getWorldScale();
     const textSize = new THREE.Box3().setFromObject(this.textModel).getSize();
+    const stemSize = new THREE.Box3().setFromObject(this.stem).getSize();
     
+    console.log('Stem size: ', stemSize);
+    console.log('text size;', textSize);
+    
+
     const x = STEM_OR_M - .0002;
-    const y = STEM_LENGTH_CNTR_M - textSize.y; //y is length dimension in stem coordinate system
+    // const y = STEM_LENGTH_CNTR_M - textSize.y; //y is length dimension in stem coordinate system
+    const y = STEM_LENGTH_CNTR_M - textSize.y / 2;
     const z = STEM_OR_M / 2 - .0035;
     
   
@@ -259,6 +267,8 @@ class Configurator {
       y / this.stemScale.y,
       z / this.stemScale.z
     );
+
+    console.log('text model position', this.textModel.position)
   }
 
   // ***************************************************** //
@@ -410,16 +420,17 @@ class Configurator {
       
       const translatedVersion = version.length === 3 ? version.slice(0, 2) : '';
       if (!translatedVersion) return;
-      const displayVersion = dispAttributes.versions.find((v) => v.id === translatedVersion);
+      const displayVersion = dispAttributes.versions.find((v) => v.id === translatedVersion) || {};
       
       const selected = defaultVersion.id === translatedVersion;
+
       const newOption = {
         text: displayVersion.text,
         name: node.name,
         selected,
       }
 
-      if (!name || !version) return;
+      if (!name || !version || !displayVersion) return;
       if (!modelOptions[name]) modelOptions[name] = {};
 
       modelOptions[name][translatedVersion] = newOption; // TEMP TRANSLATION VERSION TO SET OPTION
