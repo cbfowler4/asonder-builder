@@ -1,18 +1,19 @@
 import Configurator from './configurator';
 import { debounce, getUrlParams } from './helpers';
 
+import { ASSET_PATH } from '../configs/envConfig';
+
 import {
-  ATTRIBUTE_ORDER,
-  ATTRIBUTE_CONFIG,
-  ASSET_PATH,
   SPECIAL_ATTRIBUTE_CONFIG,
   CONTROL_SETTINGS,
   MAX_TEXT_LENGTH,
-} from './configs';
+  ATTRIBUTE_ORDER,
+  ATTRIBUTE_CONFIG,
+} from '../configs/configs';
 
 
 import React from 'react';
-// const { React } = window;
+
 
 const { useState, useEffect } = React;
 

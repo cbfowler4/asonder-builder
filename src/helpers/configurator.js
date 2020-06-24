@@ -1,19 +1,23 @@
 import {
+  FONT_FILE_PATH,
+  BG_COLOR,
+  BG_ALPHA,
+  TEXTURES_PATH,
+} from '../configs/envConfig';
+
+import {
   ATTRIBUTE_CONFIG,
   SPECIAL_ATTRIBUTE_CONFIG,
   Y_ROT_INITIAL,
   STEM_LENGTH_CNTR_M,
   STEM_OR_M,
-  FONT_FILE_PATH,
-  BG_COLOR,
-  BG_ALPHA,
   CONTROL_SETTINGS,
   MOBILE_DISTANCE_OFFSET,
   MOBILE_MIN_DISTANCE_OFFSET,
   MOBILE_HEIGHT_OFFSET,
   MODEL_SCALE,
-  TEXTURES_PATH,
-} from '../helpers/configs';
+} from '../configs/configs';
+
 import '../helpers/bendModifier';
 
 import { isMobile } from '../helpers/helpers';
@@ -231,8 +235,6 @@ class Configurator {
       curveSegments: 3,
     };
 
-    console.log(fontParams);
-
     const geometry = new THREE.TextGeometry(text, fontParams);
     this.bendModifier.modify(geometry);
     this.textModel = new THREE.Mesh(geometry, this.material);
@@ -252,13 +254,10 @@ class Configurator {
     const textSize = new THREE.Box3().setFromObject(this.textModel).getSize();
     const stemSize = new THREE.Box3().setFromObject(this.stem).getSize();
     
-    console.log('Stem size: ', stemSize);
-    console.log('text size;', textSize);
-    
 
     const x = STEM_OR_M - .0002;
     // const y = STEM_LENGTH_CNTR_M - textSize.y; //y is length dimension in stem coordinate system
-    const y = STEM_LENGTH_CNTR_M - textSize.y / 2;
+    const y = STEM_LENGTH_CNTR_M - textSize.y / 2;;
     const z = STEM_OR_M / 2 - .0035;
     
   
@@ -267,8 +266,6 @@ class Configurator {
       y / this.stemScale.y,
       z / this.stemScale.z
     );
-
-    console.log('text model position', this.textModel.position)
   }
 
   // ***************************************************** //

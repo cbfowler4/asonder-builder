@@ -4,7 +4,7 @@ import React from 'react';
 import Configurator from '../helpers/configurator';
 import { HashLoader } from 'react-spinners';
 import BezierEasing from 'bezier-easing';
-import { Y_ROT_INITIAL } from '../helpers/configs';
+import { Y_ROT_INITIAL } from '../configs/envConfig';
 import { getModelPath } from '../helpers/helpers';
 
 const yFinal = 2 * Math.PI;

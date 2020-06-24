@@ -3,7 +3,7 @@ import {
   PRODUCT_QS_NAME,
   COLLECTION_QS_NAME,
   UNCUT_PIPES_CLOUDFRONT,
-} from './configs';
+} from '../configs/envConfig';
 
 export const isLocal = () => window.location.href.includes('localhost');
 

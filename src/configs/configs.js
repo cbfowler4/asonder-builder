@@ -1,7 +1,7 @@
 // const { THREE } = window;
 import * as THREE from 'three';
 
-export const DEFAULT_PRODUCT = 'brooklyn-pipe-2';
+export const DEFAULT_PRODUCT = 'brooklyn-pipe';
 export const PRODUCT_QS_NAME = 'product';
 export const COLLECTION_QS_NAME = 'collection';
 
@@ -46,7 +46,6 @@ export const ATTRIBUTE_CONFIG = {
       { id: 'v2', text: 'Rose', img: 'rose', height: '44px' },
       { id: 'v3', text: 'Geode', img: 'geode', height: '49px' },
       { id: 'v0', text: 'Standard', img: 'standard' },
-      // { id: 'v2', text: 'Cauldron', img: 'cauldron' },
     ],
   },
 };

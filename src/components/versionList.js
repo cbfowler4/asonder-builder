@@ -1,4 +1,5 @@
-import { ASSET_PATH, MAX_TEXT_LENGTH } from '../helpers/configs';
+import { ASSET_PATH } from '../configs/envConfig';
+import { MAX_TEXT_LENGTH } from '../configs/configs'
 import { isMobile, navigateToProductPage } from '../helpers/helpers';
 import React from 'react';
 
