@@ -1,11 +1,9 @@
 import React from 'react';
-// const { React } = window;
 
 import Configurator from '../helpers/configurator';
 import { HashLoader } from 'react-spinners';
 import BezierEasing from 'bezier-easing';
-import { Y_ROT_INITIAL } from '../configs/envConfig';
-import { getModelPath } from '../helpers/helpers';
+import { getModelPath, getConfig } from '../helpers/helpers';
 
 const yFinal = 2 * Math.PI;
 
@@ -16,11 +14,12 @@ const stepTime = 15; // milliseconds
 
 
 const rotateModel = () => {
+  const { yRotation } = getConfig().model;
   const t = stepTime * step / time
   if (t >= 1) return;
   window.setTimeout(() => {
     const { x, z } = Configurator.getRotation();
-    const y = (yFinal - Y_ROT_INITIAL) * easing(t) + Y_ROT_INITIAL;
+    const y = (yFinal - yRotation) * easing(t) + yRotation;
     Configurator.setRotation(x, y, z);
     rotateModel();
     step += 1;

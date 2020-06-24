@@ -1,6 +1,5 @@
 import { ASSET_PATH } from '../configs/envConfig';
-import { MAX_TEXT_LENGTH } from '../configs/configs'
-import { isMobile, navigateToProductPage } from '../helpers/helpers';
+import { isMobile, navigateToProductPage, getConfig } from '../helpers/helpers';
 import React from 'react';
 
 
@@ -78,14 +77,15 @@ export const VersionList = ({ controllerActions, selectedIdx, setSelectedIdx }) 
       break;
     case 'text':
       const text = controllerActions.Special.getCustomText();
+      const { maxTextLength } = getConfig().model;
       content = (
         <div className='custom-message-container'>
           <input
             id='custom-message'
             type='text'
             name='properties[Custom Message]'
-            maxLength={ MAX_TEXT_LENGTH }
-            placeholder={ `${MAX_TEXT_LENGTH} Character Limit (Optional)` }
+            maxLength={ maxTextLength }
+            placeholder={ `${maxTextLength} Character Limit (Optional)` }
             onChange={ (e) => { controllerActions.Special.setCustomText(e.target.value); } }
             value={ text }
             autoFocus

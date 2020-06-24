@@ -5,22 +5,9 @@ import {
   TEXTURES_PATH,
 } from '../configs/envConfig';
 
-import {
-  ATTRIBUTE_CONFIG,
-  SPECIAL_ATTRIBUTE_CONFIG,
-  Y_ROT_INITIAL,
-  STEM_LENGTH_CNTR_M,
-  STEM_OR_M,
-  CONTROL_SETTINGS,
-  MOBILE_DISTANCE_OFFSET,
-  MOBILE_MIN_DISTANCE_OFFSET,
-  MOBILE_HEIGHT_OFFSET,
-  MODEL_SCALE,
-} from '../configs/configs';
-
 import '../helpers/bendModifier';
 
-import { isMobile } from '../helpers/helpers';
+import { isMobile, getConfig } from '../helpers/helpers';
 import * as THREE from 'three';
 
 import { OrbitControls } from 'three/examples/jsm/controls/OrbitControls.js';
@@ -83,7 +70,7 @@ class Configurator {
     this.camera = new THREE.PerspectiveCamera(35, this.width/this.height, 0.02, 5);
     this.camera.position.z = .1; 
     this.camera.position.y = .08;
-    this.camera.position.x = -.3 + (isMobile() ? -MOBILE_DISTANCE_OFFSET : 0)
+    this.camera.position.x = -.3 + (isMobile() ? -getConfig().mobile.distanceOffset : 0)
   }
 
   _createLighting() {
@@ -155,7 +142,7 @@ class Configurator {
   }
 
   resetControls() {
-    this.updateControls(CONTROL_SETTINGS.default);
+    this.updateControls(getConfig().controls.default);
     this.controls.reset();
     
     if (isMobile()) this.offsetControls();
@@ -165,16 +152,16 @@ class Configurator {
   }
 
   offsetControls() {
-    this.controls.target.set(0, MOBILE_HEIGHT_OFFSET, 0);
+    this.controls.target.set(0, getConfig().mobile.heightOffset, 0);
   }
 
   updateControls(properties) {
     Object.keys(properties).forEach(prop => {
       if (isMobile() && prop.includes('maxDistance')) {
-        this.controls[prop] = properties[prop] + MOBILE_DISTANCE_OFFSET;
+        this.controls[prop] = properties[prop] + getConfig().mobile.distanceOffset;
       }
       else if (isMobile() && prop.includes('minDistance')) {
-        this.controls[prop] = properties[prop] + MOBILE_MIN_DISTANCE_OFFSET;
+        this.controls[prop] = properties[prop] + getConfig().mobile.minDistanceOffset;
       } else {
         this.controls[prop] = properties[prop];
       }
@@ -255,10 +242,10 @@ class Configurator {
     const stemSize = new THREE.Box3().setFromObject(this.stem).getSize();
     
 
-    const x = STEM_OR_M - .0002;
+    const x =  getConfig().mobile.stemORMeters - .0002;
     // const y = STEM_LENGTH_CNTR_M - textSize.y; //y is length dimension in stem coordinate system
-    const y = STEM_LENGTH_CNTR_M - textSize.y / 2;;
-    const z = STEM_OR_M / 2 - .0035;
+    const y =  getConfig().mobile.stemCenterMeters - textSize.y / 2;;
+    const z =  getConfig().mobile.stemORMeters / 2 - .0035;
     
   
     this.textModel.position.set(
@@ -370,10 +357,11 @@ class Configurator {
     return new Promise((resolve, reject) => {
       this.loader.load(url,
         (gltf) => {
+          const { modelScale, yRotation } = getConfig().model;
           const model = gltf.scene.children[0];
           this.parent.add(model);
           this.model = model;
-          this.model.scale.set(MODEL_SCALE, MODEL_SCALE, MODEL_SCALE);
+          this.model.scale.set(modelScale, modelScale, modelScale);
           
           this.model.rotateX( Math.PI / 2 );
           this.model.rotateY( Math.PI );
@@ -383,11 +371,11 @@ class Configurator {
 
 
           this.addPostProcessing();
-          this.updateMaterial(SPECIAL_ATTRIBUTE_CONFIG.material.versions[0].materialProperties);
+          this.updateMaterial(getConfig().specialAttributes.material.versions[0].materialProperties);
 
           //Set initial rotation if spinning on load
           const { x, z } = this.getRotation();
-          this.setRotation(x, Y_ROT_INITIAL, z);
+          this.setRotation(x, yRotation, z);
 
 
           resolve(model);
@@ -403,20 +391,23 @@ class Configurator {
 
   generateModelOptions() {
     const modelOptions = {};
+    const { attributes } = getConfig();
     this.model.traverse((node) => {
+      // console.log(node.name);
       const [opt, name, versionFull] = node.name.split('-');
       if (!versionFull || opt !== 'opt') return;
       const version = versionFull.split('_')[0];
 
-      const dispAttributes = ATTRIBUTE_CONFIG[name];
+      const dispAttributes = attributes[name];
 
       if (name === 'stem') this.stemId = node.id;
-
+      
       if (!dispAttributes) return;
       const defaultVersion = dispAttributes.versions[0];
       
-      const translatedVersion = version.length === 3 ? version.slice(0, 2) : '';
-      if (!translatedVersion) return;
+      const translatedVersion = version.length === 3 ? version.slice(0, 2) : version;
+      if (name === 'stem') console.log(name, versionFull, translatedVersion);
+      // if (!translatedVersion) return;
       const displayVersion = dispAttributes.versions.find((v) => v.id === translatedVersion) || {};
       
       const selected = defaultVersion.id === translatedVersion;
@@ -439,16 +430,26 @@ class Configurator {
   centerModel() {
     const { x, z } = this.getCenter();
     const position = this.model.position;
+    // console.log('center model called', this.getCenter());
+    // console.log('X', position.x, "Y", position.y);
+    // console.log('position', position)
     this.setPosition( position.x - x, 0, position.z - z );
+    // console.log('position', this.model.position);
     this.resetControls();
   }
 
   getCenter(object) {
+    const box = new THREE.Box3().setFromObject(this.model);
+    console.log('getCenter', box.getCenter(), this.model.position, this.model);
+    const helper = new THREE.BoxHelper().setFromObject(this.model);
+    this.scene.add(helper);
+    // debugger
     return new THREE.Box3().setFromObject(object || this.model).getCenter();
   }
 
   setPosition(x, y, z) {
-    this.model.position.set(x, y, z);
+    // console.log('set position called', x, y, z);
+    // this.model.position.set(x, y, z);
     this.render();
   }
 

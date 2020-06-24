@@ -5,6 +5,9 @@ import {
   UNCUT_PIPES_CLOUDFRONT,
 } from '../configs/envConfig';
 
+import ORIGINS_CONFIG from '../configs/originsConfig';
+import BROOKLYN_CONFIG from '../configs/brooklynConfig';
+
 export const isLocal = () => window.location.href.includes('localhost');
 
 export const getUrlParams = () => {
@@ -21,6 +24,17 @@ const getProductName = () => {
 const getCollectionName = () => {
   const urlParams = getUrlParams();
   return urlParams.get(COLLECTION_QS_NAME);
+}
+
+export const getConfig = () => {
+  const productName = getProductName();
+  
+  const configMap = {
+    "brooklyn-pipe": BROOKLYN_CONFIG,
+    "origins-pipe-2": ORIGINS_CONFIG,
+  }
+
+  return configMap[productName];
 }
 
 export const navigateToProductPage = (search) => {

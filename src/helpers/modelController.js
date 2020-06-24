@@ -1,25 +1,16 @@
 import Configurator from './configurator';
-import { debounce, getUrlParams } from './helpers';
+import { debounce, getUrlParams, getConfig } from './helpers';
 
 import { ASSET_PATH } from '../configs/envConfig';
 
-import {
-  SPECIAL_ATTRIBUTE_CONFIG,
-  CONTROL_SETTINGS,
-  MAX_TEXT_LENGTH,
-  ATTRIBUTE_ORDER,
-  ATTRIBUTE_CONFIG,
-} from '../configs/configs';
-
-
 import React from 'react';
-
 
 const { useState, useEffect } = React;
 
 const updateConfiguratorText = debounce((text) => { Configurator.updateText(text); }, 1000);
 
 export const useModelController = (initModelOptions, initSpecialOptions) => {
+  const { attributes, specialAttributes, controls, model, attributeOrder } = getConfig();
   const [modelOptions, setModelOptions] = useState(initModelOptions || {});
   const [specialOptions, setSpecialOptions] = useState(initSpecialOptions || {});
 
@@ -37,10 +28,10 @@ export const useModelController = (initModelOptions, initSpecialOptions) => {
   const controllerActions = {
     Special: {
       generateSpecialOptions: () => (
-        ATTRIBUTE_ORDER.reduce((acc, name) => {
-          if (ATTRIBUTE_CONFIG[name]) return acc;
+        attributeOrder.reduce((acc, name) => {
+          if (attributes[name]) return acc;
           else if (name === 'material') {
-            return { ...acc, [name]: SPECIAL_ATTRIBUTE_CONFIG.material.versions[0].id };
+            return { ...acc, [name]: specialAttributes.material.versions[0].id };
           } else if (name === 'text') {
             return { ...acc, text: 'asonder' }
           }
@@ -54,13 +45,13 @@ export const useModelController = (initModelOptions, initSpecialOptions) => {
       },
       getSelectedMaterial: () => {
         if (!specialOptions.material) return '';
-        const material = SPECIAL_ATTRIBUTE_CONFIG.material.versions
+        const material = specialAttributes.material.versions
           .find(version => version.id === specialOptions.material);
         
         return material;
       },
       getAvailableMaterials: () => (
-        SPECIAL_ATTRIBUTE_CONFIG.material.versions
+        specialAttributes.material.versions
           .reduce((acc, version) => acc.concat(version), [])
       ),
       setCustomText: (text) => { setSpecialOptions({ ...specialOptions, text }); },
@@ -70,13 +61,13 @@ export const useModelController = (initModelOptions, initSpecialOptions) => {
       getAvailableAttributes: () => {
         if (!Configurator.model) return [];
         return (
-          ATTRIBUTE_ORDER.reduce((acc, name) => {
-            if (ATTRIBUTE_CONFIG[name]) {
-              const { label } = ATTRIBUTE_CONFIG[name] || {};
+          attributeOrder.reduce((acc, name) => {
+            if (attributes[name]) {
+              const { label } = attributes[name] || {};
               if (controllerActions.Info.getAvailableVersions(name).length < 2) return acc; // if less than 2 versions are provided it is no configurable
               return acc.concat({ name, label });  
-            } else if (SPECIAL_ATTRIBUTE_CONFIG[name]) {
-              const { label } = SPECIAL_ATTRIBUTE_CONFIG[name] || {}; 
+            } else if (specialAttributes[name]) {
+              const { label } = specialAttributes[name] || {}; 
               return acc.concat({ name, label });
             } else return acc;
           }, [])
@@ -88,17 +79,17 @@ export const useModelController = (initModelOptions, initSpecialOptions) => {
       },
       getAvailableVersions: (attr) => {
         const availableVersions = (modelOptions|| {})[attr] || [];
-        if (!ATTRIBUTE_CONFIG[attr]) return [];
-        return ATTRIBUTE_CONFIG[attr].versions
+        if (!attributes[attr]) return [];
+        return attributes[attr].versions
           .filter(version => (availableVersions[version.id]));
       },
-      getSelectedAttribute: (attr) => (ATTRIBUTE_CONFIG[attr] || {}),
+      getSelectedAttribute: (attr) => (attributes[attr] || {}),
       getSelectedVersion: (attr) => {
         if (!attr) return null;
     
         const versions = modelOptions[attr];
         const selectedVersionId = Object.keys(versions).find((versionId) => versions[versionId].selected);
-        const version = ATTRIBUTE_CONFIG[attr].versions.find((version) => version.id === selectedVersionId);
+        const version = attributes[attr].versions.find((version) => version.id === selectedVersionId);
         version.name = versions[selectedVersionId].name;
         if (version.img) version.imgPath = `${ASSET_PATH}${version.img}.png`;
   
@@ -144,7 +135,7 @@ export const useModelController = (initModelOptions, initSpecialOptions) => {
   
         if (!newModelOpts[attr][versionId]) {
           console.log(`WARNING: versionId ${versionId} does not exist on minor attributue ${attr}. Selecting default version`)
-          const defaultVersion = ATTRIBUTE_CONFIG[attr].versions[0];
+          const defaultVersion = attributes[attr].versions[0];
           if (!defaultVersion) throw new Error('No default version to select');
           Object.keys(newModelOpts[attr]).forEach((v) => {
             newModelOpts[attr][v] = v === defaultVersion.id;
@@ -161,8 +152,9 @@ export const useModelController = (initModelOptions, initSpecialOptions) => {
         if (!Configurator.model) return;
 
         if (!attr || attr === 'material' || attr === 'text') {
+          console.log('center attribute')
           Configurator.centerModel();
-          controllerActions.Action.updateControls(attr);
+          // controllerActions.Action.updateControls(attr);
           return;
         }
 
@@ -184,25 +176,25 @@ export const useModelController = (initModelOptions, initSpecialOptions) => {
       },
       updateControls(attr) {
         if (!Configurator.model) return;
-        const properties = CONTROL_SETTINGS[attr] || CONTROL_SETTINGS.default;
+        const properties = controls[attr] || controls.default;
         Configurator.updateControls(properties);
       },
     },
     Private: {
       _isTextValid: (text) => {
         const regEx = /[^ -~]/;
-        return text && text.length <= MAX_TEXT_LENGTH && !regEx.test(text)
+        return text && text.length <= model.maxTextLength && !regEx.test(text)
       },
       _isMaterialValid: (materialId) => {
         const materials = controllerActions.Special.getAvailableMaterials();
         return Object.values(materials).some((material) => material.id === materialId);
       },
       _isAttributeLabelValid(attr, label) {
-        if (!ATTRIBUTE_CONFIG[attr] || !ATTRIBUTE_ORDER.includes(attr)) return;
-        return ATTRIBUTE_CONFIG[attr].versions.some((version) => version.text === label);
+        if (!attributes[attr] || !attributeOrder.includes(attr)) return;
+        return attributes[attr].versions.some((version) => version.text === label);
       },
       _getLabelByAttribute(attr) {
-        const attributeConfigs = { ...ATTRIBUTE_CONFIG, ...SPECIAL_ATTRIBUTE_CONFIG };
+        const attributeConfigs = { ...attributes, ...specialAttributes };
        if (attributeConfigs[attr]) return attributeConfigs[attr].label;
       },
       _mergeOptionsWithUrlValues(modelOptionsInput, specialOptionsInput) {
