@@ -31,8 +31,9 @@ export const getConfig = () => {
   
   const configMap = {
     "brooklyn-pipe": BROOKLYN_CONFIG,
-    "origins-pipe-2": ORIGINS_CONFIG,
+    "origins-pipe": ORIGINS_CONFIG,
   }
+
 
   return configMap[productName];
 }

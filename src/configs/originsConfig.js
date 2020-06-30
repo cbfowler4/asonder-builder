@@ -4,6 +4,7 @@ const MIN_CAMERA_DISTANCE = .14;
 
 export default {
   model: {
+    name: 'origins',
     minCameraDistance: MIN_CAMERA_DISTANCE,
     modelScale: 1,
     yRotation: .75 * Math.PI,
@@ -26,7 +27,7 @@ export default {
       ],
     },
     stem: {
-      label: 'Stem',
+      label: 'Path',
       versions: [
         { id: 'v0', text: 'Standard', img: 'standard' },
         { id: 'v1', text: 'Spiral', img: 'spiral' },
@@ -63,6 +64,9 @@ export default {
     },
     text: {
       label: 'Custom Text',
+      maxTextLength: 22,
+      horizontalCenterMeters: .04,
+      verticalCenterMeters: .004445,
     }
   },
   controls: {
@@ -77,8 +81,8 @@ export default {
     text: {
       minPolarAngle: .4 * Math.PI,
       maxPolarAngle: .6 * Math.PI,
-      minAzimuthAngle: - .65 * Math.PI,
-      maxAzimuthAngle: - .25 * Math.PI,
+      minAzimuthAngle: .25 * Math.PI,
+      maxAzimuthAngle: .65 * Math.PI,
       maxDistance: .15,
       minDistance: .08,
     },

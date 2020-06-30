@@ -77,7 +77,7 @@ export const VersionList = ({ controllerActions, selectedIdx, setSelectedIdx }) 
       break;
     case 'text':
       const text = controllerActions.Special.getCustomText();
-      const { maxTextLength } = getConfig().model;
+      const { maxTextLength } = getConfig().specialAttributes.text;
       content = (
         <div className='custom-message-container'>
           <input

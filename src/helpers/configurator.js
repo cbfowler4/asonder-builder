@@ -1,3 +1,5 @@
+require('../libs/threeCSG.js');
+
 import {
   FONT_FILE_PATH,
   BG_COLOR,
@@ -38,9 +40,6 @@ class Configurator {
 
     window.addEventListener('resize', () => this.onResizeWindow());
 
-
-    // const axesHelper = new THREE.AxesHelper(2);
-    // this.scene.add( axesHelper );
 
     // this._createStats();
   }
@@ -207,12 +206,59 @@ class Configurator {
       return;
     } else if (!this.font || !this.model) return;
 
+    const { name } = getConfig().model;
 
     if (!this.stem) {
       this.stem = this.model.getObjectById(this.stemId);
       this.stemScale = this.stem.getWorldScale();
     }
 
+    if (name === 'origins') this.updateOriginsText(text);
+    else if (name === 'brooklyn') this.updateBrooklynText(text);
+
+    this.render();
+  }
+
+  updateOriginsText(text) {
+    if (this.textModel) this.model.remove(this.textModel); 
+
+    const fontParams = {
+      font: this.font,
+      size: .0034 / this.stemScale.x,
+      height: .0010 / this.stemScale.x, 
+      curveSegments: 3,
+    };
+
+    let geometry = new THREE.TextGeometry(text, fontParams);
+    
+
+    this.textModel = new THREE.Mesh(geometry, this.material);
+    this.setOriginsTextPosition();
+
+    // this.stem.add(this.textModel);
+    
+    // const modelBSP = new ThreeBSP(this.model);
+    // const textBSP = new ThreeBSP(this.textModel);
+
+    // const subtractBSP = modelBSP.subtract(textBSP);
+
+    // this.model = subtractBSP.toMesh(this.material);
+
+    // this.scene.add(this.model);
+
+    // var result = subtract_bsp.toMesh( new THREE.MeshLambertMaterial({
+		// 	shading: THREE.SmoothShading,
+		// 	map: new THREE.TextureLoader().load('texture.png')
+		// }));
+
+		// result.geometry.computeVertexNormals();
+		// scene.add( result );
+    // this.model.add(textCSG);
+
+
+  }
+
+  updateBrooklynText(text) {
     if (this.textModel) this.stem.remove(this.textModel); 
   
     const fontParams = {
@@ -224,35 +270,57 @@ class Configurator {
 
     const geometry = new THREE.TextGeometry(text, fontParams);
     this.bendModifier.modify(geometry);
+
     this.textModel = new THREE.Mesh(geometry, this.material);
-    this.setTextPosition();
+    this.setBrooklynTextPosition();
 
     this.stem.add(this.textModel);
-  
-    this.render();
   }
 
-  setTextPosition() {
+  setOriginsTextPosition() {
     if (!this.textModel) return;
     // Rotate first to ensure coordinate similarity
     this.textModel.rotateX(Math.PI / 2);
-    this.textModel.rotateY(Math.PI / 2);
+    this.textModel.rotateY(3 * Math.PI / 2);
+
+    const { horizontalCenterMeters, verticalCenterMeters } = getConfig().specialAttributes.text;
   
     const textSize = new THREE.Box3().setFromObject(this.textModel).getSize();
-    const stemSize = new THREE.Box3().setFromObject(this.stem).getSize();
-    
 
-    const x =  getConfig().mobile.stemORMeters - .0002;
-    // const y = STEM_LENGTH_CNTR_M - textSize.y; //y is length dimension in stem coordinate system
-    const y =  getConfig().mobile.stemCenterMeters - textSize.y / 2;;
-    const z =  getConfig().mobile.stemORMeters / 2 - .0035;
+    const x = -verticalCenterMeters + .0007;
+    const y =  horizontalCenterMeters - textSize.y / 2;;
+    const z = verticalCenterMeters / 2 - .0035;
     
-  
     this.textModel.position.set(
       x / this.stemScale.x,
       y / this.stemScale.y,
       z / this.stemScale.z
     );
+
+
+  }
+
+
+  setBrooklynTextPosition() {
+    if (!this.textModel) return;
+    // Rotate first to ensure coordinate similarity
+    this.textModel.rotateX(Math.PI / 2);
+    this.textModel.rotateY(Math.PI / 2);
+
+    const { horizontalCenterMeters, verticalCenterMeters } = getConfig().specialAttributes.text;
+  
+    const textSize = new THREE.Box3().setFromObject(this.textModel).getSize();
+
+    const x = verticalCenterMeters - .0002;
+    const y =  horizontalCenterMeters - textSize.y / 2;;
+    const z = verticalCenterMeters / 2 - .0035;
+    
+    this.textModel.position.set(
+      x / this.stemScale.x,
+      y / this.stemScale.y,
+      z / this.stemScale.z
+    );
+
   }
 
   // ***************************************************** //
@@ -393,7 +461,6 @@ class Configurator {
     const modelOptions = {};
     const { attributes } = getConfig();
     this.model.traverse((node) => {
-      // console.log(node.name);
       const [opt, name, versionFull] = node.name.split('-');
       if (!versionFull || opt !== 'opt') return;
       const version = versionFull.split('_')[0];
@@ -401,13 +468,12 @@ class Configurator {
       const dispAttributes = attributes[name];
 
       if (name === 'stem') this.stemId = node.id;
-      
+
       if (!dispAttributes) return;
       const defaultVersion = dispAttributes.versions[0];
       
-      const translatedVersion = version.length === 3 ? version.slice(0, 2) : version;
-      if (name === 'stem') console.log(name, versionFull, translatedVersion);
-      // if (!translatedVersion) return;
+      const translatedVersion = version.length === 3 ? version.slice(0, 2) : '';
+      if (!translatedVersion) return;
       const displayVersion = dispAttributes.versions.find((v) => v.id === translatedVersion) || {};
       
       const selected = defaultVersion.id === translatedVersion;
@@ -430,26 +496,16 @@ class Configurator {
   centerModel() {
     const { x, z } = this.getCenter();
     const position = this.model.position;
-    // console.log('center model called', this.getCenter());
-    // console.log('X', position.x, "Y", position.y);
-    // console.log('position', position)
     this.setPosition( position.x - x, 0, position.z - z );
-    // console.log('position', this.model.position);
     this.resetControls();
   }
 
   getCenter(object) {
-    const box = new THREE.Box3().setFromObject(this.model);
-    console.log('getCenter', box.getCenter(), this.model.position, this.model);
-    const helper = new THREE.BoxHelper().setFromObject(this.model);
-    this.scene.add(helper);
-    // debugger
     return new THREE.Box3().setFromObject(object || this.model).getCenter();
   }
 
   setPosition(x, y, z) {
-    // console.log('set position called', x, y, z);
-    // this.model.position.set(x, y, z);
+    this.model.position.set(x, y, z);
     this.render();
   }
 

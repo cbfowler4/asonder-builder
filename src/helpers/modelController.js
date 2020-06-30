@@ -152,9 +152,8 @@ export const useModelController = (initModelOptions, initSpecialOptions) => {
         if (!Configurator.model) return;
 
         if (!attr || attr === 'material' || attr === 'text') {
-          console.log('center attribute')
           Configurator.centerModel();
-          // controllerActions.Action.updateControls(attr);
+          controllerActions.Action.updateControls(attr);
           return;
         }
 

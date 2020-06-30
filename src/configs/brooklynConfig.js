@@ -5,12 +5,10 @@ const MIN_CAMERA_DISTANCE = 0.14;
 
 export default {
   model: {
+    name: 'brooklyn',
     minCameraDistance: MIN_CAMERA_DISTANCE,
     modelScale: 1,
     yRotation: .75 * Math.PI,
-    maxTextLength: 22,
-    stemCenterMeters: .04,
-    stemORMeters: .004445,
   },
   mobile: {
     heightOffset: -.12,
@@ -66,6 +64,10 @@ export default {
     },
     text: {
       label: 'Custom Text',
+      maxTextLength: 22,
+      horizontalCenterMeters: .04,
+      verticalCenterMeters: .004445,
+      bendText: true,
     }
   },
   controls: {
