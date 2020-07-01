@@ -26,6 +26,13 @@ const rotateModel = () => {
   }, stepTime)
 }
 
+const preloadImages = (imageUrls) => {
+  imageUrls.forEach((url) => {
+    const image = new Image();
+    image.src = url;
+  });
+}
+
 
 const { useEffect, useState } = React;
 
@@ -67,6 +74,10 @@ export const CanvasContainer = ({ controllerActions }) => {
     loadModel();
     
   }, [canvasRef])
+
+  useEffect(() => {
+    preloadImages(controllerActions.Info.getAllImageUrls());
+  }, [loading])
 
   useEffect(() => {
     // HANDLE GRABBING BASED ON EVENTS

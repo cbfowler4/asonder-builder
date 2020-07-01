@@ -2,13 +2,15 @@ import { ASSET_PATH } from '../configs/envConfig';
 import { isMobile, navigateToProductPage, getConfig } from '../helpers/helpers';
 import React from 'react';
 
+const { useEffect } = React;
+
 
 export const VersionList = ({ controllerActions, selectedIdx, setSelectedIdx }) => {
   let content = null;
 
   const availableAttributes = controllerActions.Info.getAvailableAttributes();
   const { name } = controllerActions.Info.getAttributeFromIndex(selectedIdx);
-
+  
   const VersionBackButton = () => {
     if (availableAttributes.length === 0) return null;
 

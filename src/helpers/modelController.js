@@ -113,6 +113,14 @@ export const useModelController = (initModelOptions, initSpecialOptions) => {
           urlParams.set(label, value);
         });
         return urlParams.toString();
+      },
+      getAllImageUrls() {
+        return this.getAvailableAttributes().reduce((acc, attr) => {
+          const urls = this.getAvailableVersions(attr.name).reduce((verAcc, version) => {
+            return verAcc.concat(`${ASSET_PATH}${version.img}.png`);
+          }, []);
+          return acc.concat(urls);
+        }, []);
       }
     },
     Action: {
