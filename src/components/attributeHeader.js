@@ -21,7 +21,7 @@ export const AttributeHeader = ({ controllerActions, selectedIdx, setSelectedIdx
   if (selectedIdx < 0) {
     return (
       <div className='attribute-header'>
-        <h2>Brooklyn Collection</h2>
+        {/* <h2>Design your custom piece</h2> */}
       </div>
     )
   }

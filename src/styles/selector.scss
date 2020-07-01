@@ -147,10 +147,11 @@
     border-radius: 30px;
     padding: 12px 25px;
     cursor: pointer;
+    transition: all .1s ease-in-out;
   }
 
   div:hover {
-    background: $green4;
+    opacity: .7;
   }
 }
 

@@ -44,8 +44,8 @@ export default {
           color: 'rgb(0, 0, 0)',
           materialProperties: {
             color: new THREE.Color('rgb(40, 40, 40)'),
-            specular: new THREE.Color('rgb(35, 35, 35)'),
-            shininess: 22,
+            specular: new THREE.Color('rgb(40, 40, 40)'),
+            shininess: 18,
             texture: 'black',
           }
         },
@@ -56,7 +56,7 @@ export default {
           materialProperties: {
             color: new THREE.Color('rgb(195, 192, 189)'),
             specular: new THREE.Color('rgb(30, 30, 30)'),
-            shininess: 35,
+            shininess: 38,
             texture: 'silver',
           },
         },
