@@ -11,8 +11,8 @@ export default {
     yRotation: .75 * Math.PI,
   },
   mobile: {
-    heightOffset: -.12,
-    distanceOffset: .12,
+    heightOffset: -.015,
+    distanceOffset: .18,
     minDistanceOffset: .05,
   },
   attributes: {

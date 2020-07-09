@@ -494,7 +494,7 @@ class Configurator {
   }
 
   centerModel() {
-    const { x, z } = this.getCenter();
+    const { x, y, z } = this.getCenter();
     const position = this.model.position;
     this.setPosition( position.x - x, 0, position.z - z );
     this.resetControls();
