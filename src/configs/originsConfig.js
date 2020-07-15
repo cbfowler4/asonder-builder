@@ -51,7 +51,7 @@ export default {
         },
         {
           id: 'Bronze-Silver',
-          text: 'Bronze-Silver',
+          text: 'Bronze Silver',
           color: 'rgb(140, 137, 120)',
           materialProperties: {
             color: new THREE.Color('rgb(195, 192, 189)'),

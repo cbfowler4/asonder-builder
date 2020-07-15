@@ -14,9 +14,6 @@ h2, h1 {
   height: inherit;
 }
 
-.configurator-root * {
-  text-transform: uppercase;
-}
 
 .iframe-container {
   position: relative;
@@ -25,7 +22,7 @@ h2, h1 {
 
   background: rgb(254, 255, 255);
   // background: linear-gradient(20deg, rgba(194,213,213,1) 0%, rgba(244,237,237,1) 63%, rgba(231,240,237,1) 100%);  
-  background: linear-gradient(20deg, rgba(225, 241, 240, .9) 0%, rgba(245, 217, 255, .9) 63%, rgba(227, 238, 238, .9) 100%);
+  background: linear-gradient(20deg, rgba(225, 241, 240, .9) 0%, rgb(226, 209, 255) 63%, rgba(227, 238, 238, .9) 100%);
 
 
 }
@@ -58,20 +55,6 @@ canvas:focus {
   .iframe-container {
     width: 100%;
   }
-}
-
-.line-item-property-field input {
-	margin-bottom: 10px;
-  background-color: transparent;
-  border: 1px solid #176717b3;
-  font-style: normal;
-  width: 100%;
-  color: white;
-  text-transform: none;
-}
-
-.line-item-property-field input:focus {
-  outline-color: rgb(27, 116, 27);
 }
 
 .btn--add-to-cart {

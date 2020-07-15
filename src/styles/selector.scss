@@ -35,7 +35,7 @@
   flex-direction: column;
   justify-content: center;
   align-items: center;
-  background: $green1;
+  background: $main-purp;
 }
 
 .selector.not-mobile {
@@ -55,9 +55,14 @@
 .material-icon {
   height: 30px;
   width: 30px;
-  border: 1px solid rgba(256, 256, 256, .5);
+  border: 1px solid rgba(256, 256, 256, .65);
   border-radius: 50%;
   margin: 5px;
+  margin-bottom: 37px;
+}
+
+.sel-attr-title.sel-material {
+  width: 90% !important;;
 }
 
 .version-list {
@@ -78,16 +83,23 @@
 }
 
 .version-tile:hover {
-  background: $green3;
+  background: $main-purp-hover;
 }
 
 .selector .sel-attr-title, #message-display {
-  font-size: 11px;
+  font-size: 14px;
   text-align: center;
   width: 100%;
   bottom: 8px;
   position: absolute;
   word-break: break-word;
+  font-weight: 300;
+}
+
+.selector .sel-attr-title, .nav-btn-container {
+  text-transform: lowercase;
+  color: $white;
+  letter-spacing: 1.3px;
 }
 
 .selector.show-versions {
@@ -104,12 +116,12 @@
 }
 
 .nav-btn-container {
-  background: $green1;
+  background: $main-purp;
   display: flex;
   align-items: stretch;
   justify-content: space-between;
-  letter-spacing: 1px;
-  transition: background .15s ease-in;
+  letter-spacing: 2px;
+  font-size: 16px;
 
   div {
     flex-grow: 1;
@@ -117,6 +129,8 @@
     border: $border-1;
     display: flex;
     justify-content: center;
+    transition: background .1s ease-in;
+
   }
 
   div:nth-of-type(2) {
@@ -124,7 +138,7 @@
   }
   
   div:hover {
-    background: $green3;
+    background: $main-purp-hover;
   }
 
   img {
@@ -141,22 +155,30 @@
   right: 0;
   display: flex;
   justify-content: center;
+  font-weight: 300;
+  font-style: normal;
+  letter-spacing: 0.1em;
+  text-transform: uppercase;
+  padding: 12px 20px;
+  font-size: 0.8125em;
 
   div {
-    border: 2px solid white;
-    border-radius: 30px;
-    padding: 12px 25px;
     cursor: pointer;
+    padding: 12px 20px;
     transition: all .1s ease-in-out;
+    color: $white;
+    background-color: $main-purp;
+    line-height: 1.42;
   }
 
   div:hover {
-    opacity: .7;
+    background-color: $main-purp-hover;
   }
+
 }
 
 .selector .version-tile.active {
-  background: $green2;
+  background: $main-purp-active;
 }
 
 #ProductSelect {
@@ -169,7 +191,7 @@
   align-items: center;
   padding: 25px;
   flex-grow: 1;
-  background: $green1;
+  background: $main-purp;
 }
 
 #custom-message {

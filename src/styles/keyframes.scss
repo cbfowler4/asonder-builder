@@ -47,17 +47,15 @@
   }
 }
 
+$white: white;
+$black: #232323;
+$main-purp: #513687;
+$main-purp-active: #402b6b;
+$main-purp-hover:  #6b47b3;
 
-$green1: #1a1919;
-$green2: rgb(53, 52, 51);
-$green3: #24231F;
-$green4: rgb(150, 150, 150);
-// $green1: rgb(15, 15, 15);
-// $green2: rgb(35, 35, 35);
-// $green3: rgb(45, 45, 45);
-// $green4: rgb(150, 150, 150);
 
-$border-1: 1px solid rgb(100, 100, 100);
+$border-1: 1px solid rgba(100, 100, 100, .5);
+
 
 $tile-size: 92px;
 $tile-shadow: 2px 2px 6px -4px rgba(0,0,0,0.75);

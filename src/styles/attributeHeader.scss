@@ -6,12 +6,24 @@
   left: 0;
   right: 0;
   height: 50px;
-  background: $green1;
+  background: $white;
   z-index: 1;
-  border-bottom: $border-1;
   display: flex;
   justify-content: space-between;
   align-items: center;
+  color: $black;
+  text-transform: lowercase;
+}
+
+
+.default-header {
+  border-bottom: $border-1;
+}
+
+.attribute-header img {
+  position: absolute;
+  height: 35px;
+  top: 7px;
 }
 
 .zoom-icon {
@@ -23,11 +35,25 @@
   cursor: pointer;
 }
 
-.attribute-header h2 {
-  font-size: 16px;
-  font-weight: 400;
-  padding: 5px;
+.zoom-btn {
+  position: absolute;
+  bottom: -65px;
+  right: 20px;
+  cursor: pointer;
 }
+
+.attribute-header h2 {
+  font-size: 18px;
+  font-weight: 300;
+  padding: 5px;
+  letter-spacing: 1.3px;
+}
+
+.header-container:hover {
+  opacity: .8;
+  color: $main-purp;
+}
+
 
 .attribute-header {
   display: flex;
@@ -43,12 +69,16 @@
   align-items: center;
   height: inherit;
   box-sizing: border-box;
-
-  h2 {
-    cursor: pointer;
-  }
+  text-transform: lowercase;
+  cursor: pointer;
 }
 
 .header-container.active {
-  border-bottom: 3px solid white;
+  border-bottom: 3px solid $main-purp;
+  padding-bottom: 0px;
+}
+
+.header-container {
+  padding-bottom: 2px;
+  border-bottom: $border-1;
 }

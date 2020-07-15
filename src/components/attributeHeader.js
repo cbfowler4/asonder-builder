@@ -20,31 +20,37 @@ export const AttributeHeader = ({ controllerActions, selectedIdx, setSelectedIdx
   if (availableAttributes.length === 0) return <div className='attribute-header'></div>
   if (selectedIdx < 0) {
     return (
-      <div className='attribute-header'>
-        {/* <h2>Design your custom piece</h2> */}
+      <div className='attribute-header default-header'>
+        <img src='https://uncut-public.s3.amazonaws.com/assets/asonder_purple.svg'/>
       </div>
     )
   }
   return (
-    <div className='attribute-header'>
+    <div className={ `attribute-header ${isMobile() ? 'default-header' : ''}` }>
       { isMobile() ?
-          <h2>{ `Step ${1 + selectedIdx} of ${availableAttributes.length}: ${selectedAttr.label}` }</h2> :
+          <h2>{ selectedAttr.label }</h2> :
           availableAttributes.map((attr, idx) => (
             <div
               key={ attr.label }
               className={`header-container ${idx === selectedIdx ? 'active' : ''}`}
               onClick={ () => { setSelectedIdx(idx); }}
             >
-              <h2>{ `${1 + idx}. ${attr.label}` }</h2>
+              <h2>{ `${attr.label}` }</h2>
             </div>
           ))
       }
-      <img
+      {/* <img
         className='zoom-icon'
         onClick={ () => { setZoomedOut(!zoomedOut); }}
         src={`https://uncut-public.s3.amazonaws.com/assets/${zoomedOut ? 'zoom-in' : 'search'}.svg`}
         alt='expand'
-      />
+      /> */}
+      <div
+        className='zoom-btn btn'
+        onClick={ () => { setZoomedOut(!zoomedOut); }}
+      >
+        { `zoom ${zoomedOut ? 'in' : 'out'}`}
+      </div>
     </div>
   );
 }
