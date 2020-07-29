@@ -92,6 +92,7 @@ export const VersionList = ({ controllerActions, selectedIdx, setSelectedIdx }) 
             value={ text }
             autoFocus
           />
+          <h1 className='sel-attr-title'>custom text</h1>
         </div>
       );
       break;

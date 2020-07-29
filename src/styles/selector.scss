@@ -102,6 +102,10 @@
   letter-spacing: 1.3px;
 }
 
+.nav-btn-container {
+  color: $black;
+}
+
 .selector.show-versions {
   .version-list {
     animation-delay: .1s;
@@ -116,7 +120,7 @@
 }
 
 .nav-btn-container {
-  background: $main-purp;
+  background: $white;
   display: flex;
   align-items: stretch;
   justify-content: space-between;
@@ -138,7 +142,7 @@
   }
   
   div:hover {
-    background: $main-purp-hover;
+    color: $main-purp-hover;
   }
 
   img {
@@ -187,20 +191,28 @@
 
 .custom-message-container {
   display: flex;
-  justify-content: center;
+  justify-content: space-between;
   align-items: center;
-  padding: 25px;
-  flex-grow: 1;
+  margin: 4px;
+  border-radius: 10px;
+  padding: 18px;
+  padding-bottom: 2px;
+  flex-direction: column;
   background: $main-purp;
+
+  .sel-attr-title {
+    position: relative;
+    margin-top: 25px;
+  }
 }
 
 #custom-message {
   background-color: transparent;
   font-style: normal;
-  width: 200px;
+  width: 173px;
   color: white;
   text-transform: none;
-  border: $border-1;
+  border: 1px solid rgba(255, 255, 255, .5);
   padding: 10px;
 }
 
