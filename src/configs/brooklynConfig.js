@@ -65,7 +65,7 @@ export default {
     text: {
       label: 'Custom Text',
       maxTextLength: 12,
-      horizontalCenterMeters: .04,
+      horizontalCenterMeters: .028575,
       verticalCenterMeters: .004445,
       bendText: true,
     }

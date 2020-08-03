@@ -30,19 +30,21 @@ export const VersionList = ({ controllerActions, selectedIdx, setSelectedIdx }) 
       <div className='nav-btn-container'>
         { isMobile() && selectedIdx > 0 &&
           <div onClick={ () => { setSelectedIdx(selectedIdx - 1); } } >
-            <img src={`${ASSET_PATH}back.svg`} alt='back' />
+            {/* <img src={`${ASSET_PATH}back-black.svg`} alt='back' /> */}
+            back
           </div>
         }
         { selectedIdx < availableAttributes.length - 1 &&
           <div onClick={ () => { setSelectedIdx(selectedIdx + 1); } }>
-            { isMobile() ?
+            {/* { isMobile() ?
               <img
-                src={`${ASSET_PATH}back.svg`}
+                src={`${ASSET_PATH}back-black.svg`}
                 alt='forward'
                 style={ { transform: 'rotate(180deg)' } } 
-              /> :
+              /> : 
               <span>Next</span>
-            }
+            } */}
+              <span>Next</span>
           </div>
         }
         { selectedIdx === availableAttributes.length - 1 &&
