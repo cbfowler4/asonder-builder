@@ -39,27 +39,29 @@ export default {
       label: 'Material',
       versions: [
         {
-          id: 'Matte Black',
-          text: 'Matte Black',
+          id: 'Black',
+          text: 'Black',
           color: 'rgb(0, 0, 0)',
           materialProperties: {
             color: new THREE.Color('rgb(40, 40, 40)'),
-            specular: new THREE.Color('rgb(40, 40, 40)'),
+            specular: new THREE.Color('rgb(60, 60, 60)'),
             shininess: 18,
             texture: 'black',
           }
         },
         {
-          id: 'Bronze-Silver',
-          text: 'Bronze Silver',
-          color: 'rgb(140, 137, 120)',
+          id: 'Bronze',
+          text: 'Bronze',
+          color: 'rgb(97, 81, 59)',
           materialProperties: {
-            color: new THREE.Color('rgb(195, 192, 189)'),
-            specular: new THREE.Color('rgb(30, 30, 30)'),
-            shininess: 38,
+            color: new THREE.Color('rgb(97, 81, 59)'),
+            specular: new THREE.Color('rgb(97, 81, 59)'),
+            shininess: 20,
             texture: 'silver',
           },
         },
+        
+        
       ]
     },
     text: {
