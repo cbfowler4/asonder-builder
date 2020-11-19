@@ -3,7 +3,7 @@ import {
   PRODUCT_QS_NAME,
   COLLECTION_QS_NAME,
   UNCUT_PIPES_CLOUDFRONT,
-} from '../configs/envConfig';
+} from '../configs/environmentConfig';
 
 import ORIGINS_CONFIG from '../configs/originsConfig';
 import BROOKLYN_CONFIG from '../configs/brooklynConfig';

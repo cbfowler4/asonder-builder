@@ -1,3 +1,4 @@
+//CONFIG FILE FOR ORIGINS PIPE
 import * as THREE from 'three';
 
 const MIN_CAMERA_DISTANCE = .14;

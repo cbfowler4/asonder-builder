@@ -5,7 +5,7 @@ import {
   BG_COLOR,
   BG_ALPHA,
   TEXTURES_PATH,
-} from '../configs/envConfig';
+} from '../configs/environmentConfig';
 
 import '../helpers/bendModifier';
 

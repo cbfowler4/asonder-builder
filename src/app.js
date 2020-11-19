@@ -13,22 +13,31 @@ import './styles/index.css';
 
 const { useState, useEffect } = React;
 
+const updateSelectedIndex = (selectedIndex, setSelectedIndex, numOfAvailableAttributes) => { 
+  if (numOfAvailableAttributes === 0) return;
+
+  if (selectedIndex >= numOfAvailableAttributes) {
+    setSelectedIndex(numOfAvailableAttributes - 1);
+  }
+}
+
 export const App = () => {
   const [selectedIdx, setSelectedIdx] = useState(-1);
   const { controllerActions } = useModelController();
 
   useEffect(() => {
-    const maxLength = controllerActions.Info.getAvailableAttributes().length;
-    if (maxLength === 0) return;
- 
-    if (selectedIdx >= maxLength) {
-      setSelectedIdx(maxLength - 1);
-    }
+    updateSelectedIndex(
+      selectedIdx,
+      setSelectedIdx,
+      controllerActions.Info.getAvailableAttributes().length
+    );
   }, [selectedIdx]);
 
-  useEffect(() => updateViewHeight(), []);
+  useEffect(() => {
+    updateViewHeight();
+    window.addEventListener('resize', () => updateViewHeight());
+  }, []);
 
-  window.addEventListener('resize', () => updateViewHeight());
 
   return (
     <div className='configurator-root'>

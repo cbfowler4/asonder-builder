@@ -1,4 +1,4 @@
-// const { THREE } = window;
+//CONFIG FILE FOR BROOKLYN PIPE
 import * as THREE from 'three';
 
 const MIN_CAMERA_DISTANCE = 0.14;

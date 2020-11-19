@@ -1,17 +1,15 @@
-import { ASSET_PATH } from '../configs/envConfig';
-import { isMobile, navigateToProductPage, getConfig } from '../helpers/helpers';
 import React from 'react';
+import { ASSET_PATH } from '../configs/environmentConfig';
+import { isMobile, navigateToProductPage, getConfig } from '../helpers/helpers';
 
-const { useEffect } = React;
 
-
-export const VersionList = ({ controllerActions, selectedIdx, setSelectedIdx }) => {
+export const AttributeSelector = ({ controllerActions, selectedIdx, setSelectedIdx }) => {
   let content = null;
 
   const availableAttributes = controllerActions.Info.getAvailableAttributes();
   const { name } = controllerActions.Info.getAttributeFromIndex(selectedIdx);
   
-  const VersionBackButton = () => {
+  const BackButton = () => {
     if (availableAttributes.length === 0) return null;
 
     if (selectedIdx < 0) {
@@ -30,20 +28,11 @@ export const VersionList = ({ controllerActions, selectedIdx, setSelectedIdx }) 
       <div className='nav-btn-container'>
         { isMobile() && selectedIdx > 0 &&
           <div onClick={ () => { setSelectedIdx(selectedIdx - 1); } } >
-            {/* <img src={`${ASSET_PATH}back-black.svg`} alt='back' /> */}
             back
           </div>
         }
         { selectedIdx < availableAttributes.length - 1 &&
           <div onClick={ () => { setSelectedIdx(selectedIdx + 1); } }>
-            {/* { isMobile() ?
-              <img
-                src={`${ASSET_PATH}back-black.svg`}
-                alt='forward'
-                style={ { transform: 'rotate(180deg)' } } 
-              /> : 
-              <span>Next</span>
-            } */}
               <span>Next</span>
           </div>
         }
@@ -125,7 +114,7 @@ export const VersionList = ({ controllerActions, selectedIdx, setSelectedIdx }) 
       <div className='top-container'>
         { content }
       </div>
-        <VersionBackButton />
+        <BackButton />
     </div>
   )
 }

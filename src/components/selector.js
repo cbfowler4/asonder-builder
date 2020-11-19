@@ -1,5 +1,5 @@
 import { isMobile } from '../helpers/helpers';
-import { VersionList } from './versionList';
+import { AttributeSelector } from './attributeSelector';
 
 import React from 'react';
 
@@ -20,7 +20,7 @@ export const Selector = ({ controllerActions, selectedIdx, setSelectedIdx }) => 
         ${isMobile() ? '' : 'not-mobile'}`
       }
     >
-      <VersionList
+      <AttributeSelector
         selectedIdx={ selectedIdx }
         setSelectedIdx={ setSelectedIdx }
         controllerActions={ controllerActions }

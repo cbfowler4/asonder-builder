@@ -1,7 +1,7 @@
 import Configurator from './configurator';
 import { debounce, getUrlParams, getConfig } from './helpers';
 
-import { ASSET_PATH } from '../configs/envConfig';
+import { ASSET_PATH } from '../configs/environmentConfig';
 
 import React from 'react';
 
