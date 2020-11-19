@@ -1,12 +1,13 @@
 import { isMobile } from '../helpers/helpers';
 import { AttributeSelector } from './attributeSelector';
+import { NavigationButton } from './navigationButton';
 
 import React from 'react';
 
 const { useEffect } = React;
 
 
-export const Selector = ({ controllerActions, selectedIdx, setSelectedIdx }) => {
+export const SelectorContainer = ({ controllerActions, selectedIdx, setSelectedIdx }) => {
   const { name } = controllerActions.Info.getAttributeFromIndex(selectedIdx);
 
   useEffect(() => {
@@ -22,9 +23,14 @@ export const Selector = ({ controllerActions, selectedIdx, setSelectedIdx }) => 
     >
       <AttributeSelector
         selectedIdx={ selectedIdx }
+        controllerActions={ controllerActions }
+      />
+      <NavigationButton
+        selectedIdx={ selectedIdx }
         setSelectedIdx={ setSelectedIdx }
         controllerActions={ controllerActions }
       />
+
     </div>
   );
 }

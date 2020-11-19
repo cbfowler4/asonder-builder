@@ -9,13 +9,6 @@
   width: 100%;
 }
 
-.version-list .top-container {  
-  display: flex;
-  flex-direction: row;
-  flex-wrap: wrap;
-  justify-content: center;
-}
-
 .version-tile {
   -webkit-box-shadow: $tile-shadow;
   -moz-box-shadow: $tile-shadow;
@@ -66,16 +59,13 @@
 }
 
 .version-list {
-  flex-direction: column;
   width: 100%;
   height: unset;
-  position: absolute;
-  bottom: 0;
-
-  .top-container {
-    display: flex;
-    justify-content: center;
-  }
+  display: flex;
+  flex-direction: row;
+  flex-wrap: wrap;
+  justify-content: center;
+  margin-bottom: 15px;
 
   .header {
     display: none;

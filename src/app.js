@@ -1,6 +1,6 @@
 import React from 'react';
 import { CanvasContainer } from './components/canvasContainer';
-import { Selector } from './components/selector';
+import { SelectorContainer } from './components/selectorContainer';
 import { AttributeHeader } from './components/attributeHeader';
 import { useModelController } from './helpers/modelController';
 import { updateViewHeight } from './helpers/helpers';
@@ -47,7 +47,7 @@ export const App = () => {
         selectedIdx={ selectedIdx }
       />
       <CanvasContainer controllerActions={ controllerActions } />
-      <Selector
+      <SelectorContainer
         controllerActions={ controllerActions }
         selectedIdx={ selectedIdx }
         setSelectedIdx={ setSelectedIdx }

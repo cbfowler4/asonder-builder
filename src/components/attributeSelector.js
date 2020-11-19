@@ -1,52 +1,12 @@
 import React from 'react';
 import { ASSET_PATH } from '../configs/environmentConfig';
-import { isMobile, navigateToProductPage, getConfig } from '../helpers/helpers';
+import { getConfig } from '../helpers/helpers';
 
 
-export const AttributeSelector = ({ controllerActions, selectedIdx, setSelectedIdx }) => {
+export const AttributeSelector = ({ controllerActions, selectedIdx }) => {
   let content = null;
 
-  const availableAttributes = controllerActions.Info.getAvailableAttributes();
   const { name } = controllerActions.Info.getAttributeFromIndex(selectedIdx);
-  
-  const BackButton = () => {
-    if (availableAttributes.length === 0) return null;
-
-    if (selectedIdx < 0) {
-      return (
-        <div className='start-btn'>
-          <div onClick={ () => {
-            controllerActions.Action.resetModelRotation();
-            setSelectedIdx(0);
-          } } >
-            Start Building
-          </div>
-        </div>
-      )
-    }
-    return (
-      <div className='nav-btn-container'>
-        { isMobile() && selectedIdx > 0 &&
-          <div onClick={ () => { setSelectedIdx(selectedIdx - 1); } } >
-            back
-          </div>
-        }
-        { selectedIdx < availableAttributes.length - 1 &&
-          <div onClick={ () => { setSelectedIdx(selectedIdx + 1); } }>
-              <span>Next</span>
-          </div>
-        }
-        { selectedIdx === availableAttributes.length - 1 &&
-          <div onClick={ () => {
-            const search = controllerActions.Info.getSearchAttrsForUrl();
-            navigateToProductPage(search);
-            } }>
-            <span>DONE</span>
-          </div>
-        }
-      </div>
-    );
-  }
 
   switch (name) {
     case 'material':
@@ -111,10 +71,7 @@ export const AttributeSelector = ({ controllerActions, selectedIdx, setSelectedI
 
   return (
     <div className='version-list'>
-      <div className='top-container'>
-        { content }
-      </div>
-        <BackButton />
+      { content }
     </div>
   )
 }
