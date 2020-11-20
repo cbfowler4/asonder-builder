@@ -1,8 +1,8 @@
+import * as React from 'react';
 import { isMobile } from '../helpers/helpers';
 import { AttributeSelector } from './attributeSelector';
 import { NavigationButton } from './navigationButton';
 
-import React from 'react';
 
 const { useEffect } = React;
 

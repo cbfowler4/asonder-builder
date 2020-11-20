@@ -1,4 +1,4 @@
-import React from 'react';
+import * as React from 'react';
 import { ASSET_PATH } from '../configs/environmentConfig';
 import { getConfig } from '../helpers/helpers';
 

@@ -5,11 +5,12 @@ const TerserPlugin = require("terser-webpack-plugin");
 const BundleAnalyzerPlugin = require('webpack-bundle-analyzer').BundleAnalyzerPlugin;
 
 module.exports = {
-  entry: { uncutbk: './src/index.js' },
+  entry: { uncutbk: './src/index.tsx' },
   output: {
     path: path.join(__dirname, './dist'),
     filename: '[name].bundle.js',
   },
+  devtool: 'inline-source-map',
   optimization: {
     splitChunks: {
       chunks: 'all',
@@ -22,6 +23,11 @@ module.exports = {
   },
   module: {
     rules: [
+      {
+        test: /\.tsx?$/,
+        use: 'ts-loader',
+        exclude: /node_modules/,
+      },
       {
         test: /\.(js|jsx)$/,
         exclude: /node_modules/,
@@ -55,5 +61,8 @@ module.exports = {
   optimization: {
     minimize: true,
     minimizer: [new TerserPlugin()],
+  },
+  resolve: {
+    extensions: [ '.tsx', '.ts', '.js' ],
   },
 };

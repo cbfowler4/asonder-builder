@@ -1,4 +1,4 @@
-import React from 'react';
+import * as React from 'react';
 
 import Configurator from '../helpers/configurator';
 import { HashLoader } from 'react-spinners';
