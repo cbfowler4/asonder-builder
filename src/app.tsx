@@ -1,4 +1,4 @@
-import React from 'react';
+import * as React from 'react';
 import { CanvasContainer } from './components/canvasContainer';
 import { SelectorContainer } from './components/selectorContainer';
 import { AttributeHeader } from './components/attributeHeader';
