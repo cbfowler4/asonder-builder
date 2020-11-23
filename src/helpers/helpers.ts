@@ -38,7 +38,7 @@ export const getConfig = () => {
   return configMap[productName];
 }
 
-export const navigateToProductPage = (search) => {
+export const navigateToProductPage = (search: string) => {
   if (isLocal()) return;
   const { origin } = window.location;
   const productName = getProductName();
@@ -56,8 +56,8 @@ export const getModelPath = () => {
   return `https://${UNCUT_PIPES_CLOUDFRONT}/pipes/${productName}.glb`
 }
 
-export const debounce = (func, wait, immediate) => {
-  var timeout;
+export const debounce = (func: () => void, wait: number, immediate: boolean) => {
+  var timeout: NodeJS.Timeout;
 
   return function executedFunction() {
     var context = this;

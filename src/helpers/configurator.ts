@@ -7,9 +7,9 @@ import {
   TEXTURES_PATH,
 } from '../configs/environmentConfig';
 
-import '../helpers/bendModifier';
+import './bendModifier';
 
-import { isMobile, getConfig } from '../helpers/helpers';
+import { isMobile, getConfig } from './helpers';
 import * as THREE from 'three';
 
 import { OrbitControls } from 'three/examples/jsm/controls/OrbitControls.js';
@@ -25,7 +25,7 @@ import { ShaderPass } from 'three/examples/jsm/postprocessing/ShaderPass.js';
 import { TAARenderPass } from 'three/examples/jsm/postprocessing/TAARenderPass.js';
 
 class Configurator {
-  init(canvas, container) {
+  init(canvas: HTMLCanvasElement, container: HTMLElement) {
     this.container = container;
     this.canvas = canvas;
     this._createRenderer();

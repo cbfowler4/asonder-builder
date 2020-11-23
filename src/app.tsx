@@ -13,7 +13,11 @@ import './styles/index.css';
 
 const { useState, useEffect } = React;
 
-const updateSelectedIndex = (selectedIndex, setSelectedIndex, numOfAvailableAttributes) => { 
+const updateSelectedIndex = (
+  selectedIndex: number,
+  setSelectedIndex: React.Dispatch<React.SetStateAction<number>>,
+  numOfAvailableAttributes: number
+): void => { 
   if (numOfAvailableAttributes === 0) return;
 
   if (selectedIndex >= numOfAvailableAttributes) {
