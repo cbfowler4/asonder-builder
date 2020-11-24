@@ -26,7 +26,7 @@ const rotateModel = () => {
   }, stepTime)
 }
 
-const preloadImages = (imageUrls) => {
+const preloadImages = (imageUrls: string[]) => {
   imageUrls.forEach((url) => {
     const image = new Image();
     image.src = url;
@@ -82,8 +82,11 @@ export const CanvasContainer = ({ controllerActions }) => {
   useEffect(() => {
     // HANDLE GRABBING BASED ON EVENTS
     if (!canvasRef) return;
+    // GRABBING STARTS
     canvasRef.addEventListener('mousedown', () => { setGrabbing(true); });
     canvasRef.addEventListener('touchstart', () => { setGrabbing(true); });
+
+    // GRABBING ENDS
     canvasRef.addEventListener('mouseout', () => { setGrabbing(false); });
     canvasRef.addEventListener('mouseup', () => { setGrabbing(false); });
     canvasRef.addEventListener('touchend', () => { setGrabbing(false); });
@@ -96,7 +99,7 @@ export const CanvasContainer = ({ controllerActions }) => {
     >
       <canvas id='configurator-canvas' ref={ node => setCanvasRef(node) } />
       { Boolean(loading) &&
-        <LoadingBarOverlay loading={ loading } />
+        <LoadingBarOverlay />
       }
     </div>
   );

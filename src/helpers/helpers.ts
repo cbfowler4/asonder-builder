@@ -56,7 +56,7 @@ export const getModelPath = () => {
   return `https://${UNCUT_PIPES_CLOUDFRONT}/pipes/${productName}.glb`
 }
 
-export const debounce = (func: () => void, wait: number, immediate: boolean) => {
+export const debounce = (func: () => void, wait: number, immediate?: boolean) => {
   var timeout: NodeJS.Timeout;
 
   return function executedFunction() {

@@ -25,6 +25,10 @@ import { ShaderPass } from 'three/examples/jsm/postprocessing/ShaderPass.js';
 import { TAARenderPass } from 'three/examples/jsm/postprocessing/TAARenderPass.js';
 
 class Configurator {
+  container: HTMLElement;
+  canvas: HTMLCanvasElement;
+  
+
   init(canvas: HTMLCanvasElement, container: HTMLElement) {
     this.container = container;
     this.canvas = canvas;

@@ -27,7 +27,7 @@ const updateSelectedIndex = (
 
 export const App = () => {
   const [selectedIdx, setSelectedIdx] = useState(-1);
-  const { controllerActions } = useModelController();
+  const { controllerActions } = useModelController({}, {});
 
   useEffect(() => {
     updateSelectedIndex(
